@@ -166,7 +166,7 @@ defmodule Dsl.HtmlTest do
 
       result =
         htm do
-          flex class: "justify-between", id: "king"
+          flex(class: "justify-between", id: "king")
         end
 
       assert result =~ ~s{class="flex justify-between"}

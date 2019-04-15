@@ -115,21 +115,13 @@ defmodule Dsl.Html do
           end
 
         quote do
-          unquote(name)(unquote(attrs), unquote(inner), unquote(outer))
+          unquote(name)(unquote(attrs), unquote(inner))
         end
       end
 
       defmacro unquote(name)(attrs, inner) do
         outer = unquote(Macro.escape(block))
         name = unquote(name)
-
-        quote do
-          unquote(name)(unquote(attrs), unquote(inner), unquote(outer))
-        end
-      end
-
-      defmacro unquote(name)(attrs, inner, outer) do
-        outer = unquote(Macro.escape(block))
 
         {tag, meta, [old_attrs]} = outer
 
