@@ -1,6 +1,6 @@
 defmodule Dsl.HtmlTest do
   use ExUnit.Case, async: true
-  import Dsl.Html
+  use Dsl
 
   describe "non-void elements" do
     test "renders two divs" do
