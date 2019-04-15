@@ -96,7 +96,7 @@ defmodule Dsl.Html do
 
   defmacro partial(text), do: quote(do: text(unquote(text)))
 
-  defmacro deftag(name, do: block) do
+  defmacro component(name, do: block) do
     quote do
       defmacro unquote(name)(attrs \\ [])
 

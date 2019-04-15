@@ -130,7 +130,7 @@ defmodule Dsl.HtmlTest do
   end
 
   defmodule CustomTag do
-    deftag :flex do
+    component :flex do
       div(class: "flex")
     end
   end
