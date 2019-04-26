@@ -2,6 +2,62 @@ defmodule Dsl.HtmlTest do
   use ExUnit.Case, async: true
   use Dsl
 
+  defmodule Component do
+    component :flex do
+      div(class: "flex")
+    end
+
+    component :takes_children do
+      div do
+        div(id: "static-child-1")
+        @children
+        div(id: "static-child-2")
+      end
+    end
+
+    component :arbitrary_code do
+      num = 1..10 |> Enum.reduce(0, fn x, sum -> x + sum end)
+
+      div do
+        text(num)
+      end
+    end
+
+    component :uses_conditionals do
+      if @condition do
+        div()
+      else
+        span()
+      end
+    end
+
+    component :arbitrary_data do
+      for item <- @lists do
+        div do
+          text(inspect(item))
+        end
+      end
+    end
+
+    component :safe do
+      div()
+    end
+
+    component :safe_with_prop do
+      div id: "safe-with-prop" do
+        text(@prop)
+
+        div do
+          span do
+            for x <- @lists do
+              div(do: text(x))
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe "non-void elements" do
     test "renders two divs" do
       result =
@@ -97,14 +153,13 @@ defmodule Dsl.HtmlTest do
   end
 
   describe "escaping" do
-    test "marks as safe" do
-      {safe?, result} =
-        htm safe: true do
-          div()
+    test "text is excaped" do
+      result =
+        htm do
+          text "<div>Text</div>"
         end
 
-      assert safe? == :safe
-      assert IO.iodata_to_binary(result) == ~s{&lt;div&gt;&lt;/div&gt;}
+      assert result == ~s{&lt;div&gt;Text&lt;/div&gt;}
     end
   end
 
@@ -129,15 +184,9 @@ defmodule Dsl.HtmlTest do
     end
   end
 
-  defmodule CustomTag do
-    component :flex do
-      div(class: "flex")
-    end
-  end
-
-  describe "custom tags" do
-    test "defines a basic tag that acts as partial" do
-      import CustomTag
+  describe "custom component" do
+    test "defines a basic component" do
+      import Component
 
       result =
         htm do
@@ -147,44 +196,84 @@ defmodule Dsl.HtmlTest do
       assert result == ~s{<div class="flex"></div>}
     end
 
-    test "defines a tag that takes children" do
-      import CustomTag
+    test "defines a component that takes 1 child" do
+      import Component
 
       result =
         htm do
-          flex do
-            div()
-            div()
+          takes_children do
+            div(id: "dynamic-child")
           end
         end
 
-      assert result == ~s{<div class="flex"><div></div><div></div></div>}
+      assert result ==
+               ~s{<div><div id="static-child-1"></div><div id="dynamic-child"></div><div id="static-child-2"></div></div>}
     end
 
-    test "defines a tag that has attributes" do
-      import CustomTag
+    test "defines a component that takes multiple children" do
+      import Component
 
       result =
         htm do
-          flex(class: "justify-between", id: "king")
-        end
-
-      assert result =~ ~s{class="flex justify-between"}
-      assert result =~ ~s{id="king"}
-    end
-
-    test "defines a tag that has attributes AND children" do
-      import CustomTag
-
-      result =
-        htm do
-          flex class: "justify-between" do
-            div()
-            div()
+          takes_children do
+            div(id: "dynamic-child-1")
+            div(id: "dynamic-child-2")
           end
         end
 
-      assert result == ~s{<div class="flex justify-between"><div></div><div></div></div>}
+      assert result ==
+               ~s{<div><div id="static-child-1"></div><div id="dynamic-child-1"></div><div id="dynamic-child-2"></div><div id="static-child-2"></div></div>}
+    end
+
+    test "can access a prop" do
+      import Component
+
+      result =
+        htm do
+          takes_children name: "mitch" do
+            text(@name)
+          end
+        end
+
+      assert result ==
+               ~s{<div><div id="static-child-1"></div>mitch<div id="static-child-2"></div></div>}
+    end
+
+    test "can have arbitrary code inside the definition" do
+      import Component
+
+      result =
+        htm do
+          arbitrary_code()
+        end
+
+      assert result == ~s{<div>55</div>}
+    end
+
+    test "can use conditionals to render different markup" do
+      import Component
+
+      result =
+        htm do
+          uses_conditionals(condition: true)
+          uses_conditionals(condition: false)
+        end
+
+      assert result == ~s{<div></div><span></span>}
+    end
+
+    test "can pass arbitrary data as props" do
+      import Component
+
+      result =
+        htm do
+          arbitrary_data(
+            lists: [:atom, %{key: "value"}, {:status, :tuple}, "string", 1, [1, 2, 3]]
+          )
+        end
+
+      assert result ==
+               ~s|<div>:atom</div><div>%{key: &quot;value&quot;}</div><div>{:status, :tuple}</div><div>&quot;string&quot;</div><div>1</div><div>[1, 2, 3]</div>|
     end
   end
 end

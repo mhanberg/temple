@@ -24,13 +24,7 @@ defmodule Dsl.Html do
     area br col embed hr img input keygen param source track wbr
   ]a
 
-  defmacro htm(opts) do
-    quote do
-      htm(unquote(Keyword.get(opts, :safe, false)), unquote(opts[:do]))
-    end
-  end
-
-  defmacro htm(safe?, block) do
+  defmacro htm(do: block) do
     quote do
       import Kernel, except: [div: 2]
 
@@ -42,11 +36,7 @@ defmodule Dsl.Html do
 
       :ok = stop_buffer(var!(buff, Dsl.Html))
 
-      if unquote(safe?) do
-        markup |> Enum.reverse() |> Enum.join("") |> HTML.html_escape()
-      else
-        markup |> Enum.reverse() |> Enum.join("")
-      end
+      markup |> Enum.reverse() |> Enum.join("")
     end
   end
 
@@ -90,7 +80,7 @@ defmodule Dsl.Html do
 
   defmacro text(text) do
     quote do
-      put_buffer(var!(buff, Dsl.Html), to_string(unquote(text)))
+      put_buffer(var!(buff, Dsl.Html), unquote(text) |> to_string |> HTML.html_escape |> HTML.safe_to_string())
     end
   end
 
@@ -98,40 +88,27 @@ defmodule Dsl.Html do
 
   defmacro component(name, do: block) do
     quote do
-      defmacro unquote(name)(attrs \\ [])
+      defmacro unquote(name)(props \\ [])
 
-      defmacro unquote(name)(attrs) do
+      defmacro unquote(name)(props) do
         outer = unquote(Macro.escape(block))
         name = unquote(name)
 
-        {inner, attrs} = Keyword.pop(attrs, :do, nil)
-
-        inner =
-          case inner do
-            {_, _, inner} ->
-              inner
-
-            nil ->
-              nil
-          end
+        {inner, props} = Keyword.pop(props, :do, nil)
 
         quote do
-          unquote(name)(unquote(attrs), unquote(inner))
+          unquote(name)(unquote(props), unquote(inner))
         end
       end
 
-      defmacro unquote(name)(attrs, inner) do
-        outer = unquote(Macro.escape(block))
+      defmacro unquote(name)(props, inner) do
+        import Kernel, except: [div: 2]
+
+        outer =
+          unquote(Macro.escape(block))
+          |> Macro.prewalk(&insert_props(&1, [{:children, inner} | props]))
+
         name = unquote(name)
-
-        {tag, meta, [old_attrs]} = outer
-
-        attrs = [
-          {:do, inner}
-          | Keyword.merge(old_attrs, attrs, fn _, two, three -> two <> " " <> three end)
-        ]
-
-        outer = {tag, meta, [attrs]}
 
         quote do
           unquote(outer)
@@ -139,6 +116,12 @@ defmodule Dsl.Html do
       end
     end
   end
+
+  def insert_props({:@, _, [{name, _, _}]}, props) when is_atom(name) do
+    props[name]
+  end
+
+  def insert_props(ast, _inner), do: ast
 
   defp compile_attrs([]), do: ""
 
