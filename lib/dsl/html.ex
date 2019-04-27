@@ -41,9 +41,15 @@ defmodule Dsl.Html do
   end
 
   for el <- @nonvoid_elements do
-    defmacro unquote(el)(attrs \\ [])
+    defmacro unquote(el)() do
+      el = unquote(el)
 
-    defmacro unquote(el)(attrs) do
+      quote do
+        unquote(el)([], nil)
+      end
+    end
+
+    defmacro unquote(el)(attrs) when is_list(attrs) do
       el = unquote(el)
       {inner, attrs} = Keyword.pop(attrs, :do, nil)
 
@@ -52,7 +58,24 @@ defmodule Dsl.Html do
       end
     end
 
-    defmacro unquote(el)(attrs, inner) do
+    defmacro unquote(el)(content) when is_binary(content) do
+      el = unquote(el)
+
+      quote do
+        unquote(el)(unquote(content), [])
+      end
+    end
+
+    defmacro unquote(el)(content, attrs) when not is_list(content) and is_list(attrs) do
+      el = unquote(el)
+      text = {:text, [], [content]}
+
+      quote do
+        unquote(el)(unquote(attrs), unquote(text))
+      end
+    end
+
+    defmacro unquote(el)(attrs, inner) when is_list(attrs) do
       el = unquote(el)
 
       quote do
@@ -81,7 +104,10 @@ defmodule Dsl.Html do
 
   defmacro text(text) do
     quote do
-      put_buffer(var!(buff, Dsl.Html), unquote(text) |> to_string |> HTML.html_escape |> HTML.safe_to_string())
+      put_buffer(
+        var!(buff, Dsl.Html),
+        unquote(text) |> to_string |> HTML.html_escape() |> HTML.safe_to_string()
+      )
     end
   end
 

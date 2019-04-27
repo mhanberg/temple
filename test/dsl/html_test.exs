@@ -130,6 +130,16 @@ defmodule Dsl.HtmlTest do
 
       assert result == ~s{<div class="hello" id="12"></div>}
     end
+
+    test "can accept content as the first argument" do
+      {:safe, result} =
+        htm do
+          div("CONTENT")
+          div("MORE", class: "hi")
+        end
+
+      assert result == ~s{<div>CONTENT</div><div class="hi">MORE</div>}
+    end
   end
 
   describe "void elements" do
@@ -156,7 +166,7 @@ defmodule Dsl.HtmlTest do
     test "text is excaped" do
       {:safe, result} =
         htm do
-          text "<div>Text</div>"
+          text("<div>Text</div>")
         end
 
       assert result == ~s{&lt;div&gt;Text&lt;/div&gt;}
