@@ -3,11 +3,11 @@ defmodule Dsl.HtmlTest do
   use Dsl
 
   defmodule Component do
-    component :flex do
+    defcomponent :flex do
       div(class: "flex")
     end
 
-    component :takes_children do
+    defcomponent :takes_children do
       div do
         div(id: "static-child-1")
         @children
@@ -15,7 +15,7 @@ defmodule Dsl.HtmlTest do
       end
     end
 
-    component :arbitrary_code do
+    defcomponent :arbitrary_code do
       num = 1..10 |> Enum.reduce(0, fn x, sum -> x + sum end)
 
       div do
@@ -23,7 +23,7 @@ defmodule Dsl.HtmlTest do
       end
     end
 
-    component :uses_conditionals do
+    defcomponent :uses_conditionals do
       if @condition do
         div()
       else
@@ -31,7 +31,7 @@ defmodule Dsl.HtmlTest do
       end
     end
 
-    component :arbitrary_data do
+    defcomponent :arbitrary_data do
       for item <- @lists do
         div do
           text(inspect(item))
@@ -39,11 +39,11 @@ defmodule Dsl.HtmlTest do
       end
     end
 
-    component :safe do
+    defcomponent :safe do
       div()
     end
 
-    component :safe_with_prop do
+    defcomponent :safe_with_prop do
       div id: "safe-with-prop" do
         text(@prop)
 
