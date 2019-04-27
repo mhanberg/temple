@@ -36,7 +36,7 @@ defmodule Dsl.Html do
 
       :ok = stop_buffer(var!(buff, Dsl.Html))
 
-      markup |> Enum.reverse() |> Enum.join("")
+      markup |> Enum.reverse() |> Enum.join("") |> HTML.raw()
     end
   end
 

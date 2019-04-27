@@ -60,7 +60,7 @@ defmodule Dsl.HtmlTest do
 
   describe "non-void elements" do
     test "renders two divs" do
-      result =
+      {:safe, result} =
         htm do
           div()
           div()
@@ -70,7 +70,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders two els in the right order" do
-      result =
+      {:safe, result} =
         htm do
           div()
           span()
@@ -80,7 +80,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders two divs that are rendered by a loop" do
-      result =
+      {:safe, result} =
         htm do
           for _ <- 1..2 do
             div()
@@ -91,7 +91,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders two spans" do
-      result =
+      {:safe, result} =
         htm do
           span()
           span()
@@ -101,7 +101,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders a div within a div" do
-      result =
+      {:safe, result} =
         htm do
           div do
             div()
@@ -112,7 +112,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders an attribute on a div" do
-      result =
+      {:safe, result} =
         htm do
           div class: "hello" do
             div(class: "hi")
@@ -123,7 +123,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders multiple attributes on a div without block" do
-      result =
+      {:safe, result} =
         htm do
           div(class: "hello", id: "12")
         end
@@ -134,7 +134,7 @@ defmodule Dsl.HtmlTest do
 
   describe "void elements" do
     test "renders an input" do
-      result =
+      {:safe, result} =
         htm do
           input()
         end
@@ -143,7 +143,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "renders an input with an attribute" do
-      result =
+      {:safe, result} =
         htm do
           input(type: "number")
         end
@@ -154,7 +154,7 @@ defmodule Dsl.HtmlTest do
 
   describe "escaping" do
     test "text is excaped" do
-      result =
+      {:safe, result} =
         htm do
           text "<div>Text</div>"
         end
@@ -165,7 +165,7 @@ defmodule Dsl.HtmlTest do
 
   describe "data attributes" do
     test "can have one data attributes" do
-      result =
+      {:safe, result} =
         htm do
           div(data_controller: "stimulus-controller")
         end
@@ -174,7 +174,7 @@ defmodule Dsl.HtmlTest do
     end
 
     test "can have multiple data attributes" do
-      result =
+      {:safe, result} =
         htm do
           div(data_controller: "stimulus-controller", data_target: "stimulus-target")
         end
@@ -188,7 +188,7 @@ defmodule Dsl.HtmlTest do
     test "defines a basic component" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           flex()
         end
@@ -199,7 +199,7 @@ defmodule Dsl.HtmlTest do
     test "defines a component that takes 1 child" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           takes_children do
             div(id: "dynamic-child")
@@ -213,7 +213,7 @@ defmodule Dsl.HtmlTest do
     test "defines a component that takes multiple children" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           takes_children do
             div(id: "dynamic-child-1")
@@ -228,7 +228,7 @@ defmodule Dsl.HtmlTest do
     test "can access a prop" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           takes_children name: "mitch" do
             text(@name)
@@ -242,7 +242,7 @@ defmodule Dsl.HtmlTest do
     test "can have arbitrary code inside the definition" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           arbitrary_code()
         end
@@ -253,7 +253,7 @@ defmodule Dsl.HtmlTest do
     test "can use conditionals to render different markup" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           uses_conditionals(condition: true)
           uses_conditionals(condition: false)
@@ -265,7 +265,7 @@ defmodule Dsl.HtmlTest do
     test "can pass arbitrary data as props" do
       import Component
 
-      result =
+      {:safe, result} =
         htm do
           arbitrary_data(
             lists: [:atom, %{key: "value"}, {:status, :tuple}, "string", 1, [1, 2, 3]]
