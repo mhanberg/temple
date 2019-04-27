@@ -275,5 +275,16 @@ defmodule Dsl.HtmlTest do
       assert result ==
                ~s|<div>:atom</div><div>%{key: &quot;value&quot;}</div><div>{:status, :tuple}</div><div>&quot;string&quot;</div><div>1</div><div>[1, 2, 3]</div>|
     end
+
+    test "can use string interpolation in props" do
+      interop = "hi"
+
+      {:safe, result} =
+        htm do
+          div(class: "#{interop} world")
+        end
+
+      assert result == ~s{<div class="hi world"></div>}
+    end
   end
 end

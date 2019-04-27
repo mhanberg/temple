@@ -56,7 +56,8 @@ defmodule Dsl.Html do
       el = unquote(el)
 
       quote do
-        put_buffer(var!(buff, Dsl.Html), "<#{unquote(el)}#{unquote(compile_attrs(attrs))}>")
+        attrs = unquote(attrs)
+        put_buffer(var!(buff, Dsl.Html), "<#{unquote(el)}#{compile_attrs(attrs)}>")
         unquote(inner)
         put_buffer(var!(buff, Dsl.Html), "</#{unquote(el)}>")
       end
@@ -123,9 +124,9 @@ defmodule Dsl.Html do
 
   def insert_props(ast, _inner), do: ast
 
-  defp compile_attrs([]), do: ""
+  def compile_attrs([]), do: ""
 
-  defp compile_attrs(attrs) do
+  def compile_attrs(attrs) do
     for {name, value} <- attrs, into: "" do
       name = name |> Atom.to_string() |> String.replace("_", "-")
 
