@@ -27,6 +27,7 @@ defmodule Dsl.Html do
   defmacro htm(do: block) do
     quote do
       import Kernel, except: [div: 2]
+      import HTML.Link, except: [link: 1, link: 2]
 
       {:ok, var!(buff, Dsl.Html)} = start_buffer([])
 
@@ -113,7 +114,31 @@ defmodule Dsl.Html do
     end
   end
 
-  defmacro partial(text), do: quote(do: text(unquote(text)))
+  defmacro javascript(code) do
+    quote do
+      put_buffer(
+        var!(buff, Dsl.Html),
+        unquote(code) |> to_string
+      )
+    end
+  end
+
+  defmacro partial(partial) do
+    quote do
+      put_buffer(
+        var!(buff, Dsl.Html),
+        unquote(partial) |> from_safe()
+      )
+    end
+  end
+
+  def from_safe({:safe, partial}) do
+    partial
+  end
+
+  def from_safe(partial) do
+    partial |> HTML.html_escape() |> HTML.safe_to_string()
+  end
 
   defmacro defcomponent(name, do: block) do
     quote do
