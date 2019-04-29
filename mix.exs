@@ -26,7 +26,9 @@ defmodule Dsl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix_html, "~> 2.13"}
+      {:phoenix_html, "~> 2.13"},
+      {:phoenix, "~> 1.4", optional: true},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
     ]
   end
 end
