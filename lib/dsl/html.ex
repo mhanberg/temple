@@ -94,9 +94,11 @@ defmodule Dsl.Html do
       el = unquote(el)
 
       quote do
+        attrs = unquote(attrs)
+
         put_buffer(
           var!(buff, Dsl.Html),
-          "<#{unquote(el)}#{unquote(compile_attrs(attrs))}>"
+          "<#{unquote(el)}#{compile_attrs(attrs)}>"
         )
       end
     end
