@@ -11,7 +11,7 @@ defmodule Dsl.Engine do
     quote do
       use Dsl
 
-      htm(do: unquote(template))
+      htm do: unquote(template)
     end
   end
 

@@ -68,7 +68,6 @@ defmodule Dsl.HtmlTest do
     end
   end
 
-
   describe "non-void elements" do
     test "renders two divs" do
       {:safe, result} =
@@ -161,7 +160,7 @@ defmodule Dsl.HtmlTest do
       {:safe, result} =
         htm do
           div class: "hello" do
-            div(class: "hi")
+            div class: "hi"
           end
         end
 
@@ -175,7 +174,7 @@ defmodule Dsl.HtmlTest do
       {:safe, result} =
         htm do
           div attrs1 do
-            div(attrs2)
+            div attrs2
           end
         end
 
@@ -185,7 +184,7 @@ defmodule Dsl.HtmlTest do
     test "renders multiple attributes on a div without block" do
       {:safe, result} =
         htm do
-          div(class: "hello", id: "12")
+          div class: "hello", id: "12"
         end
 
       assert result == ~s{<div class="hello" id="12"></div>}
@@ -194,8 +193,8 @@ defmodule Dsl.HtmlTest do
     test "can accept content as the first argument" do
       {:safe, result} =
         htm do
-          div("CONTENT")
-          div("MORE", class: "hi")
+          div "CONTENT"
+          div "MORE", class: "hi"
         end
 
       assert result == ~s{<div>CONTENT</div><div class="hi">MORE</div>}
@@ -204,10 +203,11 @@ defmodule Dsl.HtmlTest do
     test "can accept content as first argument passed as a variable" do
       content = "CONTENT"
       more = "MORE"
+
       {:safe, result} =
         htm do
-          div(content)
-          div(more, class: "hi")
+          div content
+          div more, class: "hi"
         end
 
       assert result == ~s{<div>CONTENT</div><div class="hi">MORE</div>}
@@ -227,7 +227,7 @@ defmodule Dsl.HtmlTest do
     test "renders an input with an attribute" do
       {:safe, result} =
         htm do
-          input(type: "number")
+          input type: "number"
         end
 
       assert result == ~s{<input type="number">}
@@ -238,7 +238,7 @@ defmodule Dsl.HtmlTest do
     test "text is excaped" do
       {:safe, result} =
         htm do
-          text("<div>Text</div>")
+          text "<div>Text</div>"
         end
 
       assert result == ~s{&lt;div&gt;Text&lt;/div&gt;}
@@ -249,7 +249,7 @@ defmodule Dsl.HtmlTest do
     test "can have one data attributes" do
       {:safe, result} =
         htm do
-          div(data_controller: "stimulus-controller")
+          div data_controller: "stimulus-controller"
         end
 
       assert result == ~s{<div data-controller="stimulus-controller"></div>}
@@ -258,7 +258,7 @@ defmodule Dsl.HtmlTest do
     test "can have multiple data attributes" do
       {:safe, result} =
         htm do
-          div(data_controller: "stimulus-controller", data_target: "stimulus-target")
+          div data_controller: "stimulus-controller", data_target: "stimulus-target"
         end
 
       assert result ==
@@ -284,7 +284,7 @@ defmodule Dsl.HtmlTest do
       {:safe, result} =
         htm do
           takes_children do
-            div(id: "dynamic-child")
+            div id: "dynamic-child"
           end
         end
 
@@ -298,8 +298,8 @@ defmodule Dsl.HtmlTest do
       {:safe, result} =
         htm do
           takes_children do
-            div(id: "dynamic-child-1")
-            div(id: "dynamic-child-2")
+            div id: "dynamic-child-1"
+            div id: "dynamic-child-2"
           end
         end
 
@@ -313,7 +313,7 @@ defmodule Dsl.HtmlTest do
       {:safe, result} =
         htm do
           takes_children name: "mitch" do
-            text(@name)
+            text @name
           end
         end
 
@@ -365,7 +365,7 @@ defmodule Dsl.HtmlTest do
 
       {:safe, result} =
         htm do
-          variable_as_prop bob: bob
+          variable_as_prop(bob: bob)
         end
 
       assert result ==
@@ -393,7 +393,7 @@ defmodule Dsl.HtmlTest do
 
       {:safe, result} =
         htm do
-          div(class: "#{interop} world")
+          div class: "#{interop} world"
         end
 
       assert result == ~s{<div class="hi world"></div>}
