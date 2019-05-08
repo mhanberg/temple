@@ -56,7 +56,18 @@ defmodule Dsl.HtmlTest do
         end
       end
     end
+
+    defcomponent :variable_as_prop do
+      div id: @bob
+    end
+
+    defcomponent :variable_as_prop_with_block do
+      div id: @bob do
+        @children
+      end
+    end
   end
+
 
   describe "non-void elements" do
     test "renders two divs" do
@@ -77,6 +88,41 @@ defmodule Dsl.HtmlTest do
         end
 
       assert result == "<div></div><span></span>"
+    end
+
+    test "renders an el that taks attrs and a block" do
+      {:safe, result} =
+        htm do
+          div class: "bob" do
+            span()
+            span()
+          end
+        end
+
+      assert result == ~s{<div class="bob"><span></span><span></span></div>}
+    end
+
+    test "renders one els nested inside an el" do
+      {:safe, result} =
+        htm do
+          div do
+            span()
+          end
+        end
+
+      assert result == "<div><span></span></div>"
+    end
+
+    test "renders two els nested inside an el" do
+      {:safe, result} =
+        htm do
+          div do
+            span()
+            span()
+          end
+        end
+
+      assert result == "<div><span></span><span></span></div>"
     end
 
     test "renders two divs that are rendered by a loop" do
@@ -122,6 +168,20 @@ defmodule Dsl.HtmlTest do
       assert result == ~s{<div class="hello"><div class="hi"></div></div>}
     end
 
+    test "renders an attribute on a div passed as a variable" do
+      attrs1 = [class: "hello"]
+      attrs2 = [class: "hi"]
+
+      {:safe, result} =
+        htm do
+          div attrs1 do
+            div(attrs2)
+          end
+        end
+
+      assert result == ~s{<div class="hello"><div class="hi"></div></div>}
+    end
+
     test "renders multiple attributes on a div without block" do
       {:safe, result} =
         htm do
@@ -136,6 +196,18 @@ defmodule Dsl.HtmlTest do
         htm do
           div("CONTENT")
           div("MORE", class: "hi")
+        end
+
+      assert result == ~s{<div>CONTENT</div><div class="hi">MORE</div>}
+    end
+
+    test "can accept content as first argument passed as a variable" do
+      content = "CONTENT"
+      more = "MORE"
+      {:safe, result} =
+        htm do
+          div(content)
+          div(more, class: "hi")
         end
 
       assert result == ~s{<div>CONTENT</div><div class="hi">MORE</div>}
@@ -284,6 +356,36 @@ defmodule Dsl.HtmlTest do
 
       assert result ==
                ~s|<div>:atom</div><div>%{key: &quot;value&quot;}</div><div>{:status, :tuple}</div><div>&quot;string&quot;</div><div>1</div><div>[1, 2, 3]</div>|
+    end
+
+    test "can pass a variable as a prop" do
+      import Component
+
+      bob = "hi"
+
+      {:safe, result} =
+        htm do
+          variable_as_prop bob: bob
+        end
+
+      assert result ==
+               ~s|<div id="hi"></div>|
+    end
+
+    test "can pass a variable as a prop to a component with a block" do
+      import Component
+
+      bob = "hi"
+      class = "joe"
+
+      {:safe, result} =
+        htm do
+          variable_as_prop_with_block bob: bob do
+            div()
+          end
+        end
+
+      assert result == ~s|<div id="hi"><div></div></div>|
     end
 
     test "can use string interpolation in props" do

@@ -46,52 +46,68 @@ defmodule Dsl.Html do
       el = unquote(el)
 
       quote do
-        unquote(el)([], nil)
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), [])
+        put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
-    defmacro unquote(el)(attrs) when is_list(attrs) do
-      el = unquote(el)
-      {inner, attrs} = Keyword.pop(attrs, :do, nil)
-
-      quote do
-        unquote(el)(unquote(attrs), unquote(inner))
-      end
-    end
-
-    defmacro unquote(el)(content) when is_binary(content) do
+    defmacro unquote(el)([{:do, inner} | attrs]) do
       el = unquote(el)
 
       quote do
-        unquote(el)(unquote(content), [])
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs))
+        _ = unquote(inner)
+        put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
-    defmacro unquote(el)(content, attrs) when not is_list(content) and is_list(attrs) do
+    defmacro unquote(el)(attrs_or_content) do
       el = unquote(el)
-      text = {:text, [], [content]}
 
       quote do
-        unquote(el)(unquote(attrs), unquote(text))
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs_or_content))
+        put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
-    defmacro unquote(el)(attrs, inner) when is_list(attrs) do
+    defmacro unquote(el)(attrs, [{:do, inner}]) do
       el = unquote(el)
 
       quote do
         attrs = unquote(attrs)
-        put_buffer(var!(buff, Dsl.Html), "<#{unquote(el)}#{compile_attrs(attrs)}>")
-        unquote(inner)
-        put_buffer(var!(buff, Dsl.Html), "</#{unquote(el)}>")
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), attrs)
+        _ = unquote(inner)
+        put_close_tag(var!(buff, Dsl.Html), unquote(el))
+      end
+    end
+
+    defmacro unquote(el)(content, attrs) do
+      el = unquote(el)
+
+      quote do
+        attrs = unquote(attrs)
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), attrs)
+        text unquote(content)
+        put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
   end
 
-  for el <- @void_elements do
-    defmacro unquote(el)(attrs \\ [])
+  def put_open_tag(buff, el, attrs) when is_list(attrs) do
+    put_buffer(buff, "<#{el}#{compile_attrs(attrs)}>")
+  end
 
-    defmacro unquote(el)(attrs) do
+  def put_open_tag(buff, el, content) when is_binary(content) do
+    put_buffer(buff, "<#{el}>")
+    put_buffer(buff, content)
+  end
+
+  def put_close_tag(buff, el) do
+    put_buffer(buff, "</#{el}>")
+  end
+
+  for el <- @void_elements do
+    defmacro unquote(el)(attrs \\ []) do
       el = unquote(el)
 
       quote do
@@ -142,9 +158,7 @@ defmodule Dsl.Html do
 
   defmacro defcomponent(name, do: block) do
     quote do
-      defmacro unquote(name)(props \\ [])
-
-      defmacro unquote(name)(props) do
+      defmacro unquote(name)(props \\ []) do
         outer = unquote(Macro.escape(block))
         name = unquote(name)
 
