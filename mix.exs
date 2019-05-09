@@ -8,7 +8,14 @@ defmodule Dsl.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      name: "Dsl",
+      source_url: "https://github.com/mhanberg/cogent",
+      docs: [
+        main: "Dsl",
+        extras: ["README.md"]
+      ],
+      dialyzer: [plt_add_apps: [:mix, :phoenix, :html_sanitize_ex]]
     ]
   end
 
@@ -27,7 +34,10 @@ defmodule Dsl.MixProject do
   defp deps do
     [
       {:phoenix_html, "~> 2.13"},
+      {:ex_doc, "~> 0.0", only: [:dev], runtime: false},
+      {:html_sanitize_ex, "~> 1.3", only: [:dev], runtime: false},
       {:phoenix, "~> 1.4", optional: true},
+      {:plug, "~> 1.8", optional: true},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
     ]
   end
