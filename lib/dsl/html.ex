@@ -1,5 +1,6 @@
 defmodule Dsl.Html do
   alias Phoenix.HTML
+  alias Dsl.Utils
 
   @nonvoid_elements ~w[
     html
@@ -55,13 +56,13 @@ defmodule Dsl.Html do
       import Kernel, except: [div: 2]
       import HTML.Link, except: [link: 1, link: 2]
 
-      {:ok, var!(buff, Dsl.Html)} = start_buffer([])
+      {:ok, var!(buff, Dsl.Html)} = Utils.start_buffer([])
 
       unquote(block)
 
-      markup = get_buffer(var!(buff, Dsl.Html))
+      markup = Utils.get_buffer(var!(buff, Dsl.Html))
 
-      :ok = stop_buffer(var!(buff, Dsl.Html))
+      :ok = Utils.stop_buffer(var!(buff, Dsl.Html))
 
       markup |> Enum.reverse() |> Enum.join("") |> HTML.raw()
     end
@@ -75,8 +76,8 @@ defmodule Dsl.Html do
       el = unquote(el)
 
       quote do
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), [])
-        put_close_tag(var!(buff, Dsl.Html), unquote(el))
+        Utils.put_open_tag(var!(buff, Dsl.Html), unquote(el), [])
+        Utils.put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
@@ -85,9 +86,9 @@ defmodule Dsl.Html do
       el = unquote(el)
 
       quote do
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), [])
+        Utils.put_open_tag(var!(buff, Dsl.Html), unquote(el), [])
         _ = unquote(inner)
-        put_close_tag(var!(buff, Dsl.Html), unquote(el))
+        Utils.put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
@@ -95,8 +96,8 @@ defmodule Dsl.Html do
       el = unquote(el)
 
       quote do
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs_or_content_or_block))
-        put_close_tag(var!(buff, Dsl.Html), unquote(el))
+        Utils.put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs_or_content_or_block))
+        Utils.put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
@@ -106,9 +107,9 @@ defmodule Dsl.Html do
 
       quote do
         attrs = unquote(attrs)
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), attrs)
+        Utils.put_open_tag(var!(buff, Dsl.Html), unquote(el), attrs)
         _ = unquote(inner)
-        put_close_tag(var!(buff, Dsl.Html), unquote(el))
+        Utils.put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
@@ -117,24 +118,11 @@ defmodule Dsl.Html do
 
       quote do
         attrs = unquote(attrs)
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), attrs)
+        Utils.put_open_tag(var!(buff, Dsl.Html), unquote(el), attrs)
         text unquote(content)
-        put_close_tag(var!(buff, Dsl.Html), unquote(el))
+        Utils.put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
-  end
-
-  def put_open_tag(buff, el, attrs) when is_list(attrs) do
-    put_buffer(buff, "<#{el}#{compile_attrs(attrs)}>")
-  end
-
-  def put_open_tag(buff, el, content) when is_binary(content) do
-    put_buffer(buff, "<#{el}>")
-    put_buffer(buff, content)
-  end
-
-  def put_close_tag(buff, el) do
-    put_buffer(buff, "</#{el}>")
   end
 
   for el <- @void_elements do
@@ -148,9 +136,9 @@ defmodule Dsl.Html do
       quote do
         attrs = unquote(attrs)
 
-        put_buffer(
+        Utils.put_buffer(
           var!(buff, Dsl.Html),
-          "<#{unquote(el)}#{compile_attrs(attrs)}>"
+          "<#{unquote(el)}#{Utils.compile_attrs(attrs)}>"
         )
       end
     end
@@ -158,7 +146,7 @@ defmodule Dsl.Html do
 
   defmacro text(text) do
     quote do
-      put_buffer(
+      Utils.put_buffer(
         var!(buff, Dsl.Html),
         unquote(text) |> to_string |> HTML.html_escape() |> HTML.safe_to_string()
       )
@@ -167,7 +155,7 @@ defmodule Dsl.Html do
 
   defmacro javascript(code) do
     quote do
-      put_buffer(
+      Utils.put_buffer(
         var!(buff, Dsl.Html),
         unquote(code) |> to_string
       )
@@ -176,19 +164,11 @@ defmodule Dsl.Html do
 
   defmacro partial(partial) do
     quote do
-      put_buffer(
+      Utils.put_buffer(
         var!(buff, Dsl.Html),
-        unquote(partial) |> from_safe()
+        unquote(partial) |> Utils.from_safe()
       )
     end
-  end
-
-  def from_safe({:safe, partial}) do
-    partial
-  end
-
-  def from_safe(partial) do
-    partial |> HTML.html_escape() |> HTML.safe_to_string()
   end
 
   defmacro defcomponent(name, do: block) do
@@ -209,7 +189,7 @@ defmodule Dsl.Html do
 
         outer =
           unquote(Macro.escape(block))
-          |> Macro.prewalk(&insert_props(&1, [{:children, inner} | props]))
+          |> Macro.prewalk(&Utils.insert_props(&1, [{:children, inner} | props]))
 
         name = unquote(name)
 
@@ -220,24 +200,12 @@ defmodule Dsl.Html do
     end
   end
 
-  def insert_props({:@, _, [{name, _, _}]}, props) when is_atom(name) do
-    props[name]
   end
 
-  def insert_props(ast, _inner), do: ast
 
-  def compile_attrs([]), do: ""
 
-  def compile_attrs(attrs) do
-    for {name, value} <- attrs, into: "" do
-      name = name |> Atom.to_string() |> String.replace("_", "-")
 
-      " " <> name <> "=\"" <> to_string(value) <> "\""
     end
   end
 
-  def start_buffer(initial_buffer), do: Agent.start(fn -> initial_buffer end)
-  def put_buffer(buff, content), do: Agent.update(buff, &[content | &1])
-  def get_buffer(buff), do: Agent.get(buff, & &1)
-  def stop_buffer(buff), do: Agent.stop(buff)
 end
