@@ -24,6 +24,9 @@ defmodule Dsl.Html do
     area br col embed hr img input keygen param source track wbr
   ]a
 
+  def nonvoid_elements, do: @nonvoid_elements
+  def void_elements, do: @void_elements
+
   @doc """
   Creates a markup context.
 
@@ -65,6 +68,9 @@ defmodule Dsl.Html do
   end
 
   for el <- @nonvoid_elements do
+    @doc """
+    #{File.read!("./tmp/docs/#{el}.txt")}
+    """
     defmacro unquote(el)() do
       el = unquote(el)
 
@@ -74,26 +80,28 @@ defmodule Dsl.Html do
       end
     end
 
-    defmacro unquote(el)([{:do, inner} | attrs]) do
+    @doc false
+    defmacro unquote(el)([{:do, inner}] = _attrs_or_content_or_block) do
       el = unquote(el)
 
       quote do
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs))
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), [])
         _ = unquote(inner)
         put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
-    defmacro unquote(el)(attrs_or_content) do
+    defmacro unquote(el)(attrs_or_content_or_block) do
       el = unquote(el)
 
       quote do
-        put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs_or_content))
+        put_open_tag(var!(buff, Dsl.Html), unquote(el), unquote(attrs_or_content_or_block))
         put_close_tag(var!(buff, Dsl.Html), unquote(el))
       end
     end
 
-    defmacro unquote(el)(attrs, [{:do, inner}]) do
+    @doc false
+    defmacro unquote(el)(attrs, [{:do, inner}] = _block) do
       el = unquote(el)
 
       quote do
@@ -130,6 +138,10 @@ defmodule Dsl.Html do
   end
 
   for el <- @void_elements do
+    @doc """
+    #{File.read!("./tmp/docs/#{el}.txt")}
+    """
+
     defmacro unquote(el)(attrs \\ []) do
       el = unquote(el)
 
