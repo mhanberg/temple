@@ -24,7 +24,30 @@ defmodule Dsl.Html do
     area br col embed hr img input keygen param source track wbr
   ]a
 
-  defmacro htm(do: block) do
+  @doc """
+  Creates a markup context.
+
+  All tags must be called inside of a `Dsl.Html.htm/1` block.
+
+  Returns a safe result of the form `{:safe, result}`
+
+  ## Example
+
+  ```
+  team = ["Alice", "Bob", "Carol"]
+
+  htm do
+    for name <- team do
+      div class: "text-bold" do
+        text name
+      end
+    end
+  end
+
+  # {:safe, "<div class=\"text-bold\">Alice</div><div class=\"text-bold\">Bob</div><div class=\"text-bold\">Carol</div>"}
+  ```
+  """
+  defmacro htm([do: block] = _block) do
     quote do
       import Kernel, except: [div: 2]
       import HTML.Link, except: [link: 1, link: 2]
