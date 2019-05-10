@@ -169,15 +169,6 @@ defmodule Dsl.Html do
     end
   end
 
-  defmacro javascript(code) do
-    quote do
-      Utils.put_buffer(
-        var!(buff, Dsl.Html),
-        unquote(code) |> to_string
-      )
-    end
-  end
-
   defmacro partial(partial) do
     quote do
       Utils.put_buffer(
