@@ -6,7 +6,7 @@ defmodule Mix.Tasks.UpdateMdnDocs do
 
   @shortdoc "Update the MDN documentation"
   def run(_) do
-    (Dsl.Html.nonvoid_elements() ++ Dsl.Html.void_elements())
+    (Dsl.Tags.nonvoid_elements() ++ Dsl.Tags.void_elements())
     |> Enum.each(fn el ->
       el = to_string(el)
 

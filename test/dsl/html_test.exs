@@ -376,7 +376,6 @@ defmodule Dsl.HtmlTest do
       import Component
 
       bob = "hi"
-      class = "joe"
 
       {:safe, result} =
         htm do

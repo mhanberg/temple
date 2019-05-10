@@ -5,7 +5,8 @@ defmodule Dsl do
 
   defmacro __using__(_) do
     quote do
-      import Dsl.Html
+      import Dsl.Tags
+      import Dsl.Form
     end
   end
 end
