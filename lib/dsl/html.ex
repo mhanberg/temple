@@ -147,6 +147,19 @@ defmodule Dsl.Html do
     end
   end
 
+  @doc """
+  Emits a text node into the markup.
+
+  ```
+  htm do
+    div do
+      text "Hello, world!"
+    end
+  end
+
+  # {:safe, "<div>Hello, world!</div>"}
+  ```
+  """
   defmacro text(text) do
     quote do
       Utils.put_buffer(
