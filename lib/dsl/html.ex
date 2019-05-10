@@ -169,6 +169,32 @@ defmodule Dsl.Html do
     end
   end
 
+  @doc """
+  Emits a Phoenix partial into the markup
+
+  ```
+  htm do
+    html lang: "en" do
+      head do
+        title "MyApp"
+
+        link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
+      end
+
+      body do
+        main role: "main", class: "container" do
+          p get_flash(@conn, :info), class: "alert alert-info", role: "alert"
+          p get_flash(@conn, :error), class: "alert alert-danger", role: "alert"
+
+          partial render(@view_module, @view_template, assigns)
+        end
+
+        script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
+      end
+    end
+  end
+  ```
+  """
   defmacro partial(partial) do
     quote do
       Utils.put_buffer(
