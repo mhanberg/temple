@@ -13,7 +13,7 @@ defmodule Dsl.Html do
     sub sup i b u mark ruby rt rp bdi bdo span
     ins del
     iframe object video audio canvas
-    map math
+    map 
     table caption colgroup tbody thead tfoot tr td th
     form fieldset legend label button select datalist optgroup
     option textarea output progress meter
