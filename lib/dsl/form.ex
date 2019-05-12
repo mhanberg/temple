@@ -1,4 +1,8 @@
 defmodule Dsl.Form do
+  @moduledoc """
+  This modules wraps all of the functions from the `Phoenix.HTML.Form` module to make them compatible with with Dsl.
+  """
+
   alias Phoenix.HTML
   alias Dsl.Utils
 
