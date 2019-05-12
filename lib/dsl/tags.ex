@@ -1,4 +1,59 @@
 defmodule Dsl.Tags do
+  @moduledoc """
+  The `Dsl.Tags` module defines macros for all HTML5 compliant elements.
+
+  ## Attributes
+
+  Tags accept a keyword list of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
+
+  ## Children
+
+  Non-void elements (such as `div`) accept a block that can be used to nest other tags or text nodes. These blocks can contain arbitrary Elixir code such as variables and for comprehensions.
+
+  If you are only emitting a text node within a block, you can use the shortened syntax by passing the text in as the first parameter of the tag.
+
+  ## Example
+
+  ```
+  htm do
+    # empty non-void element
+    div()
+
+    # non-void element with attributes
+    div class: "text-red", id: "my-el"
+
+    # non-void element with children
+    div do
+      text "Hello, world!"
+      
+      for name <- @names do
+        div data_name: name
+      end
+    end
+
+    # non-void element with a single text node
+    div "Hello, world!", class: "text-green"
+    
+    # void elements
+    input name: "comments", placeholder: "Enter a comment..."
+  end
+
+  # {:save,
+  #  "<div></div>
+  #   <div class=\"text-red\" id=\"my-el\"></div>
+  #   <div>
+  #     Hello, world!
+  #     <div data-name=\"Alice\"></div>
+  #     <div data-name=\"Bob\"></div>
+  #     <div data-name=\"Carol\"></div>
+  #   </div>
+  #   <div class=\"text-green\">Hello, world!</div>
+  #   <input name=\"comments\" placeholder=\"Enter a comment...\">"
+  # }
+  ```
+
+  """
+
   @nonvoid_elements ~w[
     html
     head title style script
@@ -40,8 +95,9 @@ defmodule Dsl.Tags do
       end
     end
 
-    @doc false
-    defmacro unquote(el)([{:do, inner}] = _attrs_or_content_or_block) do
+    defmacro unquote(el)(attrs_or_content_or_block)
+
+    defmacro unquote(el)([{:do, inner}]) do
       el = unquote(el)
 
       quote do
@@ -51,22 +107,22 @@ defmodule Dsl.Tags do
       end
     end
 
-    defmacro unquote(el)(attrs_or_content_or_block) do
+    defmacro unquote(el)(attrs_or_content) do
       el = unquote(el)
 
       quote do
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), unquote(attrs_or_content_or_block))
+        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), unquote(attrs_or_content))
         Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
       end
     end
 
-    @doc false
+    defmacro unquote(el)(attrs_or_content, block_or_attrs)
+
     defmacro unquote(el)(attrs, [{:do, inner}] = _block) do
       el = unquote(el)
 
       quote do
-        attrs = unquote(attrs)
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), attrs)
+        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote_splicing([el, attrs]))
         _ = unquote(inner)
         Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
       end
@@ -76,8 +132,7 @@ defmodule Dsl.Tags do
       el = unquote(el)
 
       quote do
-        attrs = unquote(attrs)
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), attrs)
+        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote_splicing([el, attrs]))
         text unquote(content)
         Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
       end
