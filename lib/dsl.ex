@@ -125,7 +125,7 @@ defmodule Dsl do
   If a block is passed to the component, it can be referenced by a special assign called `@children`.
 
   ## Example
-  
+
   ```
   defcomponent :flex do
     div id: @id, class: "flex" do

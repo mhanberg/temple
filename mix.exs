@@ -37,6 +37,8 @@ defmodule Dsl.MixProject do
   defp deps do
     [
       {:phoenix_html, "~> 2.13"},
+      {:ecto, "~> 3.0", optional: true},
+      {:phoenix_ecto, "~> 4.0", optional: true},
       {:ex_doc, "~> 0.0", only: [:dev], runtime: false},
       {:html_sanitize_ex, "~> 1.3", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.4", optional: true},

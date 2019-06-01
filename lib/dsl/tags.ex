@@ -51,7 +51,6 @@ defmodule Dsl.Tags do
   #   <input name=\"comments\" placeholder=\"Enter a comment...\">"
   # }
   ```
-
   """
 
   @nonvoid_elements ~w[

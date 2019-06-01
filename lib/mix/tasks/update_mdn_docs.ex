@@ -11,7 +11,7 @@ defmodule Mix.Tasks.UpdateMdnDocs do
       el = to_string(el)
 
       page =
-        if Enum.any?(["h1", "h2", "h3", "h4", "h5", "h6"], & &1 == el) do
+        if Enum.any?(["h1", "h2", "h3", "h4", "h5", "h6"], &(&1 == el)) do
           "Heading_Elements"
         else
           el
