@@ -6,11 +6,11 @@ defmodule Dsl.MixProject do
       app: :dsl,
       version: "0.1.0",
       elixirc_paths: elixirc_paths(Mix.env()),
-      elixir: "~> 1.8",
+      elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       name: "Dsl",
-      source_url: "https://github.com/mhanberg/cogent",
+      source_url: "https://github.com/mhanberg/dsl",
       docs: [
         main: "Dsl",
         extras: ["README.md"],

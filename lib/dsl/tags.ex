@@ -82,9 +82,11 @@ defmodule Dsl.Tags do
   def void_elements, do: @void_elements
 
   for el <- @nonvoid_elements do
-    @doc """
-    #{File.read!("./tmp/docs/#{el}.txt")}
-    """
+    @doc (if File.exists?("./tmp/docs/#{el}.txt") do
+            """
+            #{File.read!("./tmp/docs/#{el}.txt")}
+            """
+          end)
     defmacro unquote(el)() do
       el = unquote(el)
 
@@ -139,9 +141,11 @@ defmodule Dsl.Tags do
   end
 
   for el <- @void_elements do
-    @doc """
-    #{File.read!("./tmp/docs/#{el}.txt")}
-    """
+    @doc (if File.exists?("./tmp/docs/#{el}.txt") do
+            """
+            #{File.read!("./tmp/docs/#{el}.txt")}
+            """
+          end)
 
     defmacro unquote(el)(attrs \\ []) do
       el = unquote(el)
