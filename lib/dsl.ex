@@ -8,6 +8,7 @@ defmodule Dsl do
       import unquote(__MODULE__)
       import Dsl.Tags
       import Dsl.Form
+      import Dsl.Link
     end
   end
 
