@@ -38,6 +38,10 @@ defmodule Dsl.Utils do
     end
   end
 
+  def lexical_scope(work) do
+    work.()
+  end
+
   def start_buffer(initial_buffer), do: Agent.start(fn -> initial_buffer end)
   def put_buffer(buff, content), do: Agent.update(buff, &[content | &1])
   def get_buffer(buff), do: Agent.get(buff, & &1)

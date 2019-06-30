@@ -9,9 +9,22 @@ defmodule Dsl.Link do
   @doc """
   Please see `Phoenix.HTML.Link.link/2` for details.
   """
-  defmacro phx_link(content_or_opts, opts_or_block) do
+  defmacro phx_link(opts, do: block) do
     quote do
-      {:safe, link} = HTML.Link.link(unquote_splicing([content_or_opts, opts_or_block]))
+      {:safe, content} =
+        htm do
+          unquote(block)
+        end
+
+      {:safe, link} = HTML.Link.link(content, unquote(opts))
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), link)
+    end
+  end
+
+  defmacro phx_link(content, opts) do
+    quote do
+      {:safe, link} = HTML.Link.link(unquote_splicing([content, opts]))
 
       Utils.put_buffer(var!(buff, Dsl.Tags), link)
     end
@@ -20,9 +33,22 @@ defmodule Dsl.Link do
   @doc """
   Please see `Phoenix.HTML.Link.button/2` for details.
   """
-  defmacro phx_button(content_or_opts, opts_or_block) do
+  defmacro phx_button(opts, do: block) do
     quote do
-      {:safe, link} = HTML.Link.button(unquote_splicing([content_or_opts, opts_or_block]))
+      {:safe, content} =
+        htm do
+          unquote(block)
+        end
+
+      {:safe, link} = HTML.Link.button(content, unquote(opts))
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), link)
+    end
+  end
+
+  defmacro phx_button(content, opts) do
+    quote do
+      {:safe, link} = HTML.Link.button(unquote_splicing([content, opts]))
 
       Utils.put_buffer(var!(buff, Dsl.Tags), link)
     end

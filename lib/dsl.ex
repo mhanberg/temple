@@ -41,15 +41,17 @@ defmodule Dsl do
       import Phoenix.HTML.Link, except: [link: 1, link: 2]
       import Phoenix.HTML.Form, only: []
 
-      {:ok, var!(buff, Dsl.Tags)} = Dsl.Utils.start_buffer([])
+      Dsl.Utils.lexical_scope(fn ->
+        {:ok, var!(buff, Dsl.Tags)} = Dsl.Utils.start_buffer([])
 
-      unquote(block)
+        unquote(block)
 
-      markup = Dsl.Utils.get_buffer(var!(buff, Dsl.Tags))
+        markup = Dsl.Utils.get_buffer(var!(buff, Dsl.Tags))
 
-      :ok = Dsl.Utils.stop_buffer(var!(buff, Dsl.Tags))
+        :ok = Dsl.Utils.stop_buffer(var!(buff, Dsl.Tags))
 
-      markup |> Enum.reverse() |> Enum.join("") |> Phoenix.HTML.raw()
+        markup |> Enum.reverse() |> Enum.join("") |> Phoenix.HTML.raw()
+      end)
     end
   end
 
