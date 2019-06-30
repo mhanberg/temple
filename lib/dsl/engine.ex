@@ -9,6 +9,14 @@ defmodule Dsl.Engine do
   ```elixir
   # config.exs
   config :phoenix, :template_engines, exs: Dsl.Engine
+
+  # your_app_web.ex
+  def view do
+    quote do
+      # ...
+      use Dsl # Replaces the call to import Phoenix.HTML
+    end
+  end
   ```
 
   ## Usage
