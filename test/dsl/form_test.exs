@@ -504,14 +504,16 @@ defmodule Dsl.FormTest do
       {:safe, result} =
         htm do
           phx_label :user, :name do
-            "Name"
+            div do
+              text "Name"
+            end
           end
         end
 
-      assert result =~ ~s{<label}
+      assert String.starts_with?(result, ~s{<label})
       assert result =~ ~s{for="user_name"}
       assert result =~ ~s{Name}
-      assert result =~ ~s{</label>}
+      assert String.ends_with?(result, ~s{</label>})
     end
 
     test "generates a phx_label/4 with text and opts" do
@@ -531,15 +533,17 @@ defmodule Dsl.FormTest do
       {:safe, result} =
         htm do
           phx_label :user, :name, class: "label-style" do
-            "Name"
+            div do
+              text "Name"
+            end
           end
         end
 
-      assert result =~ ~s{<label}
+      assert String.starts_with?(result, ~s{<label})
       assert result =~ ~s{for="user_name"}
       assert result =~ ~s{class="label-style"}
       assert result =~ ~s{Name}
-      assert result =~ ~s{</label>}
+      assert String.ends_with?(result, ~s{</label>})
     end
 
     test "generates a multiple_select tag" do

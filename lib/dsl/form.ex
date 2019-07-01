@@ -114,10 +114,22 @@ defmodule Dsl.Form do
   @doc """
   Please see `Phoenix.HTML.Form.label/3` for details.
   """
-  defmacro phx_label(form, field, text_or_opts_or_block) do
+  defmacro phx_label(form, field, do: block) do
     quote do
-      {:safe, input} =
-        Phoenix.HTML.Form.label(unquote_splicing([form, field, text_or_opts_or_block]))
+      {:safe, content} =
+        htm do
+          unquote(block)
+        end
+
+      {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field]), do: content)
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+    end
+  end
+
+  defmacro phx_label(form, field, text_or_opts) do
+    quote do
+      {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, text_or_opts]))
 
       Utils.put_buffer(var!(buff, Dsl.Tags), input)
     end
@@ -126,10 +138,22 @@ defmodule Dsl.Form do
   @doc """
   Please see `Phoenix.HTML.Form.label/4` for details.
   """
-  defmacro phx_label(form, field, text_or_opts, opts_or_block) do
+  defmacro phx_label(form, field, opts, do: block) do
     quote do
-      {:safe, input} =
-        Phoenix.HTML.Form.label(unquote_splicing([form, field, text_or_opts, opts_or_block]))
+      {:safe, content} =
+        htm do
+          unquote(block)
+        end
+
+      {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, opts]), do: content)
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+    end
+  end
+
+  defmacro phx_label(form, field, text, opts) do
+    quote do
+      {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, text, opts]))
 
       Utils.put_buffer(var!(buff, Dsl.Tags), input)
     end
