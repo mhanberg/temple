@@ -7,23 +7,26 @@ defmodule Mix.Tasks.UpdateMdnDocs do
   @shortdoc "Update the MDN documentation"
   def run(_) do
     (Dsl.Tags.nonvoid_elements() ++ Dsl.Tags.void_elements())
-    |> Enum.each(fn el ->
-      el = to_string(el)
+    |> Enum.map(fn el ->
+      Task.async(fn ->
+        el = to_string(el)
 
-      page =
-        if Enum.any?(["h1", "h2", "h3", "h4", "h5", "h6"], &(&1 == el)) do
-          "Heading_Elements"
-        else
-          el
-        end
+        page =
+          if Enum.any?(["h1", "h2", "h3", "h4", "h5", "h6"], &(&1 == el)) do
+            "Heading_Elements"
+          else
+            el
+          end
 
-      {doc, 0} = System.cmd("curl", [@baseurl <> page <> @params])
-      File.mkdir_p!("./tmp/docs/")
+        {doc, 0} = System.cmd("curl", ["--silent", @baseurl <> page <> @params])
+        File.mkdir_p!("./tmp/docs/")
 
-      path = "./tmp/docs/" <> el <> ".txt"
-      doc = HtmlSanitizeEx.strip_tags(doc)
+        path = "./tmp/docs/" <> el <> ".txt"
+        doc = HtmlSanitizeEx.strip_tags(doc)
 
-      File.write!(path, doc)
+        File.write!(path, doc)
+      end)
     end)
+    |> Enum.each(&Task.await/1)
   end
 end

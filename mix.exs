@@ -4,12 +4,13 @@ defmodule Dsl.MixProject do
   def project do
     [
       app: :dsl,
+      name: "Dsl",
       version: "0.1.0",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      name: "Dsl",
+      aliases: aliases(),
       source_url: "https://github.com/mhanberg/dsl",
       docs: [
         main: "Dsl",
@@ -32,8 +33,13 @@ defmodule Dsl.MixProject do
       extra_applications: [:logger]
     ]
   end
+  
+  defp aliases do
+    [
+      docs: ["update_mdn_docs", "docs"]
+    ]
+  end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:phoenix_html, "~> 2.13"},
