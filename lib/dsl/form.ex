@@ -101,6 +101,54 @@ defmodule Dsl.Form do
   end
 
   @doc """
+  Please see `Phoenix.HTML.Form.submit/1` for details.
+  """
+  defmacro submit(do: block) do
+    quote do
+      {:safe, content} =
+        htm do
+          unquote(block)
+        end
+
+      {:safe, input} = Phoenix.HTML.Form.submit(do: content)
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+    end
+  end
+
+  defmacro submit(value) do
+    quote do
+      {:safe, input} = Phoenix.HTML.Form.submit(unquote(value))
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+    end
+  end
+
+  @doc """
+  Please see `Phoenix.HTML.Form.submit/1` for details.
+  """
+  defmacro submit(opts, do: block) do
+    quote do
+      {:safe, content} =
+        htm do
+          unquote(block)
+        end
+
+      {:safe, input} = Phoenix.HTML.Form.submit(unquote(opts), do: content)
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+    end
+  end
+
+  defmacro submit(value, opts) do
+    quote do
+      {:safe, input} = Phoenix.HTML.Form.submit(unquote_splicing([value, opts]))
+
+      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+    end
+  end
+
+  @doc """
   Please see `Phoenix.HTML.Form.label/2` for details.
   """
   defmacro phx_label(form, field) do

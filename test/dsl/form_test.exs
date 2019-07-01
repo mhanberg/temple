@@ -463,6 +463,60 @@ defmodule Dsl.FormTest do
       assert result =~ ~s{class="reset-styles"}
     end
 
+    test "generates a submit/1 input" do
+      {:safe, result} =
+        htm do
+          submit("Submit")
+        end
+
+      assert String.starts_with? result, ~s{<button}
+      assert result =~ ~s{type="submit}
+      assert result =~ ~s{Submit}
+      assert String.ends_with? result, ~s{</button>}
+    end
+
+    test "generates a submit/1 input that takes a block" do
+      {:safe, result} =
+        htm do
+          submit do
+            text "Submit"
+          end
+        end
+
+      assert String.starts_with? result, ~s{<button}
+      assert result =~ ~s{type="submit}
+      assert result =~ ~s{Submit}
+      assert String.ends_with? result, ~s{</button>}
+    end
+
+    test "generates a submit/2 input that takes text and opts" do
+      {:safe, result} =
+        htm do
+          submit("Submit", class: "btn")
+        end
+
+      assert String.starts_with? result, ~s{<button}
+      assert result =~ ~s{type="submit}
+      assert result =~ ~s{class="btn"}
+      assert result =~ ~s{Submit}
+      assert String.ends_with? result, ~s{</button>}
+    end
+
+    test "generates a submit/2 input that takes opts and a block" do
+      {:safe, result} =
+        htm do
+          submit class: "btn" do
+            text "Submit"
+          end
+        end
+
+      assert String.starts_with? result, ~s{<button}
+      assert result =~ ~s{type="submit}
+      assert result =~ ~s{class="btn"}
+      assert result =~ ~s{Submit}
+      assert String.ends_with? result, ~s{</button>}
+    end
+
     test "generates a phx_label/2 tag" do
       {:safe, result} =
         htm do
