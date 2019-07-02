@@ -1,15 +1,15 @@
-defmodule Dsl.Form do
+defmodule Temple.Form do
   @moduledoc """
-  This modules wraps all of the functions from the `Phoenix.HTML.Form` module to make them compatible with with Dsl.
+  This modules wraps all of the functions from the `Phoenix.HTML.Form` module to make them compatible with with Temple.
   """
 
   alias Phoenix.HTML
-  alias Dsl.Utils
+  alias Temple.Utils
 
   @doc """
   Generates an empty form tag.
 
-  See `Dsl.Form.form_for/4` for more details
+  See `Temple.Form.form_for/4` for more details
   """
   defmacro form_for(form_data, action) do
     quote do
@@ -45,9 +45,9 @@ defmodule Dsl.Form do
     quote do
       var!(form) = HTML.Form.form_for(unquote_splicing([form_data, action, opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), var!(form) |> HTML.Safe.to_iodata())
+      Utils.put_buffer(var!(buff, Temple.Tags), var!(form) |> HTML.Safe.to_iodata())
       _ = unquote(block)
-      Utils.put_buffer(var!(buff, Dsl.Tags), "</form>")
+      Utils.put_buffer(var!(buff, Temple.Tags), "</form>")
     end
   end
 
@@ -84,7 +84,7 @@ defmodule Dsl.Form do
         {:safe, input} =
           apply(Phoenix.HTML.Form, unquote(helper), [unquote_splicing([form, field, opts])])
 
-        Utils.put_buffer(var!(buff, Dsl.Tags), input)
+        Utils.put_buffer(var!(buff, Temple.Tags), input)
       end
     end
   end
@@ -96,7 +96,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.reset(unquote_splicing([value, opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -112,7 +112,7 @@ defmodule Dsl.Form do
 
       {:safe, input} = Phoenix.HTML.Form.submit(do: content)
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -120,7 +120,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.submit(unquote(value))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -136,7 +136,7 @@ defmodule Dsl.Form do
 
       {:safe, input} = Phoenix.HTML.Form.submit(unquote(opts), do: content)
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -144,7 +144,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.submit(unquote_splicing([value, opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -155,7 +155,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -171,7 +171,7 @@ defmodule Dsl.Form do
 
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field]), do: content)
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -179,7 +179,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, text_or_opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -195,7 +195,7 @@ defmodule Dsl.Form do
 
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, opts]), do: content)
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -203,7 +203,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, text, opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -215,7 +215,7 @@ defmodule Dsl.Form do
       {:safe, input} =
         Phoenix.HTML.Form.multiple_select(unquote_splicing([form, field, options, attrs]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -226,7 +226,7 @@ defmodule Dsl.Form do
     quote do
       {:safe, input} = Phoenix.HTML.Form.select(unquote_splicing([form, field, options, attrs]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 
@@ -283,7 +283,7 @@ defmodule Dsl.Form do
         Enum.map(form.hidden, fn {k, v} ->
           Phoenix.HTML.Form.hidden_input(form, k, value: v)
         end)
-        |> Enum.each(&Utils.put_buffer(var!(buff, Dsl.Tags), &1))
+        |> Enum.each(&Utils.put_buffer(var!(buff, Temple.Tags), &1))
 
         var!(inner_form) = form
 

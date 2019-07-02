@@ -1,6 +1,6 @@
-defmodule Dsl.FormTest do
+defmodule Temple.FormTest do
   use ExUnit.Case, async: true
-  use Dsl
+  use Temple
 
   describe "form_for" do
     test "returns a form tag" do
@@ -469,10 +469,10 @@ defmodule Dsl.FormTest do
           submit("Submit")
         end
 
-      assert String.starts_with? result, ~s{<button}
+      assert String.starts_with?(result, ~s{<button})
       assert result =~ ~s{type="submit}
       assert result =~ ~s{Submit}
-      assert String.ends_with? result, ~s{</button>}
+      assert String.ends_with?(result, ~s{</button>})
     end
 
     test "generates a submit/1 input that takes a block" do
@@ -483,10 +483,10 @@ defmodule Dsl.FormTest do
           end
         end
 
-      assert String.starts_with? result, ~s{<button}
+      assert String.starts_with?(result, ~s{<button})
       assert result =~ ~s{type="submit}
       assert result =~ ~s{Submit}
-      assert String.ends_with? result, ~s{</button>}
+      assert String.ends_with?(result, ~s{</button>})
     end
 
     test "generates a submit/2 input that takes text and opts" do
@@ -495,11 +495,11 @@ defmodule Dsl.FormTest do
           submit("Submit", class: "btn")
         end
 
-      assert String.starts_with? result, ~s{<button}
+      assert String.starts_with?(result, ~s{<button})
       assert result =~ ~s{type="submit}
       assert result =~ ~s{class="btn"}
       assert result =~ ~s{Submit}
-      assert String.ends_with? result, ~s{</button>}
+      assert String.ends_with?(result, ~s{</button>})
     end
 
     test "generates a submit/2 input that takes opts and a block" do
@@ -510,11 +510,11 @@ defmodule Dsl.FormTest do
           end
         end
 
-      assert String.starts_with? result, ~s{<button}
+      assert String.starts_with?(result, ~s{<button})
       assert result =~ ~s{type="submit}
       assert result =~ ~s{class="btn"}
       assert result =~ ~s{Submit}
-      assert String.ends_with? result, ~s{</button>}
+      assert String.ends_with?(result, ~s{</button>})
     end
 
     test "generates a phx_label/2 tag" do

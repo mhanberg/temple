@@ -1,11 +1,12 @@
-defmodule Dsl.Utils do
+defmodule Temple.Utils do
   @moduledoc false
 
   def put_open_tag(buff, el, attrs) when is_list(attrs) do
     put_buffer(buff, "<#{el}#{compile_attrs(attrs)}>")
   end
 
-  def put_open_tag(buff, el, content) when is_binary(content) or is_number(content) or is_atom(content) do
+  def put_open_tag(buff, el, content)
+      when is_binary(content) or is_number(content) or is_atom(content) do
     put_buffer(buff, "<#{el}>")
     put_buffer(buff, content)
   end

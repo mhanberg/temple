@@ -1,10 +1,10 @@
-defmodule Mix.Tasks.Dsl.Gen.Html do
-  @shortdoc "Generates controller, views, and context for an HTML resource in Dsl"
+defmodule Mix.Tasks.Temple.Gen.Html do
+  @shortdoc "Generates controller, views, and context for an HTML resource in Temple"
 
   @moduledoc """
-  Generates controller, views, and context for an HTML resource Dsl.
+  Generates controller, views, and context for an HTML resource Temple.
 
-      mix dsl.gen.html Accounts User users name:string age:integer
+      mix temple.gen.html Accounts User users name:string age:integer
 
   The first argument is the context module followed by the schema module
   and its plural name (used as the schema table name).
@@ -53,7 +53,7 @@ defmodule Mix.Tasks.Dsl.Gen.Html do
   You can customize the web module namespace by passing the `--web` flag with a
   module name, for example:
 
-      mix phx.gen.html.dsl Sales User users --web Sales
+      mix phx.gen.html.temple Sales User users --web Sales
 
   Which would generate a `lib/app_web/controllers/sales/user_controller.ex` and
   `lib/app_web/views/sales/user_view.ex`.
@@ -71,7 +71,7 @@ defmodule Mix.Tasks.Dsl.Gen.Html do
   the plural name provided for the resource. To customize this value,
   a `--table` option may be provided. For example:
 
-      mix phx.gen.html.dsl Accounts User users --table cms_users
+      mix phx.gen.html.temple Accounts User users --table cms_users
 
   ## binary_id
 
@@ -102,15 +102,15 @@ defmodule Mix.Tasks.Dsl.Gen.Html do
 
   @doc false
   def run(args) do
-    if Mix.Project.umbrella? do
-      Mix.raise "mix dsl.gen.html can only be run inside an application directory"
+    if Mix.Project.umbrella?() do
+      Mix.raise("mix temple.gen.html can only be run inside an application directory")
     end
 
     {context, schema} = Gen.Context.build(args)
     Gen.Context.prompt_for_code_injection(context)
 
     binding = [context: context, schema: schema, inputs: inputs(schema)]
-    paths = [".", :dsl]
+    paths = [".", :temple]
 
     prompt_for_conflicts(context)
 
@@ -125,9 +125,11 @@ defmodule Mix.Tasks.Dsl.Gen.Html do
     |> Kernel.++(context_files(context))
     |> Mix.Phoenix.prompt_for_conflicts()
   end
+
   defp context_files(%Context{generate?: true} = context) do
     Gen.Context.files_to_be_generated(context)
   end
+
   defp context_files(%Context{generate?: false}) do
     []
   end
@@ -139,48 +141,63 @@ defmodule Mix.Tasks.Dsl.Gen.Html do
     web_path = to_string(schema.web_path)
 
     [
-      {:eex, "controller.ex", Path.join([web_prefix, "controllers", web_path, "#{schema.singular}_controller.ex"])},
-      {:eex, "edit.html.exs", Path.join([web_prefix, "templates", web_path, schema.singular, "edit.html.exs"])},
-      {:eex, "form.html.exs", Path.join([web_prefix, "templates", web_path, schema.singular, "form.html.exs"])},
-      {:eex, "index.html.exs", Path.join([web_prefix, "templates", web_path, schema.singular, "index.html.exs"])},
-      {:eex, "new.html.exs", Path.join([web_prefix, "templates", web_path, schema.singular, "new.html.exs"])},
-      {:eex, "show.html.exs", Path.join([web_prefix, "templates", web_path, schema.singular, "show.html.exs"])},
+      {:eex, "controller.ex",
+       Path.join([web_prefix, "controllers", web_path, "#{schema.singular}_controller.ex"])},
+      {:eex, "edit.html.exs",
+       Path.join([web_prefix, "templates", web_path, schema.singular, "edit.html.exs"])},
+      {:eex, "form.html.exs",
+       Path.join([web_prefix, "templates", web_path, schema.singular, "form.html.exs"])},
+      {:eex, "index.html.exs",
+       Path.join([web_prefix, "templates", web_path, schema.singular, "index.html.exs"])},
+      {:eex, "new.html.exs",
+       Path.join([web_prefix, "templates", web_path, schema.singular, "new.html.exs"])},
+      {:eex, "show.html.exs",
+       Path.join([web_prefix, "templates", web_path, schema.singular, "show.html.exs"])},
       {:eex, "view.ex", Path.join([web_prefix, "views", web_path, "#{schema.singular}_view.ex"])},
-      {:eex, "controller_test.exs", Path.join([test_prefix, "controllers", web_path, "#{schema.singular}_controller_test.exs"])},
+      {:eex, "controller_test.exs",
+       Path.join([test_prefix, "controllers", web_path, "#{schema.singular}_controller_test.exs"])}
     ]
   end
 
   @doc false
   def copy_new_files(%Context{} = context, paths, binding) do
     files = files_to_be_generated(context)
-    IO.inspect files, label: "files"
+    IO.inspect(files, label: "files")
 
-    Mix.Phoenix.copy_from(paths, "priv/templates/dsl.gen.html", binding, files)
-    if context.generate?, do: Gen.Context.copy_new_files(context, Mix.Phoenix.generator_paths(), binding)
+    Mix.Phoenix.copy_from(paths, "priv/templates/temple.gen.html", binding, files)
+
+    if context.generate?,
+      do: Gen.Context.copy_new_files(context, Mix.Phoenix.generator_paths(), binding)
+
     context
   end
 
   @doc false
   def print_shell_instructions(%Context{schema: schema, context_app: ctx_app} = context) do
     if schema.web_namespace do
-      Mix.shell.info """
+      Mix.shell().info("""
 
-      Add the resource to your #{schema.web_namespace} :browser scope in #{Mix.Phoenix.web_path(ctx_app)}/router.ex:
+      Add the resource to your #{schema.web_namespace} :browser scope in #{
+        Mix.Phoenix.web_path(ctx_app)
+      }/router.ex:
 
-          scope "/#{schema.web_path}", #{inspect Module.concat(context.web_module, schema.web_namespace)}, as: :#{schema.web_path} do
+          scope "/#{schema.web_path}", #{
+        inspect(Module.concat(context.web_module, schema.web_namespace))
+      }, as: :#{schema.web_path} do
             pipe_through :browser
             ...
-            resources "/#{schema.plural}", #{inspect schema.alias}Controller
+            resources "/#{schema.plural}", #{inspect(schema.alias)}Controller
           end
-      """
+      """)
     else
-      Mix.shell.info """
+      Mix.shell().info("""
 
       Add the resource to your browser scope in #{Mix.Phoenix.web_path(ctx_app)}/router.ex:
 
-          resources "/#{schema.plural}", #{inspect schema.alias}Controller
-      """
+          resources "/#{schema.plural}", #{inspect(schema.alias)}Controller
+      """)
     end
+
     if context.generate?, do: Gen.Context.print_shell_instructions(context)
   end
 
@@ -188,29 +205,43 @@ defmodule Mix.Tasks.Dsl.Gen.Html do
     Enum.map(schema.attrs, fn
       {_, {:references, _}} ->
         {nil, nil, nil}
+
       {key, :integer} ->
         {label(key), ~s(number_input form, #{inspect(key)}), error(key)}
+
       {key, :float} ->
         {label(key), ~s(number_input form, #{inspect(key)}, step: "any"), error(key)}
+
       {key, :decimal} ->
         {label(key), ~s(number_input form, #{inspect(key)}, step: "any"), error(key)}
+
       {key, :boolean} ->
         {label(key), ~s(checkbox form, #{inspect(key)}), error(key)}
+
       {key, :text} ->
         {label(key), ~s(textarea form, #{inspect(key)}), error(key)}
+
       {key, :date} ->
         {label(key), ~s(date_select form, #{inspect(key)}), error(key)}
+
       {key, :time} ->
         {label(key), ~s(time_select form, #{inspect(key)}), error(key)}
+
       {key, :utc_datetime} ->
         {label(key), ~s(datetime_select form, #{inspect(key)}), error(key)}
+
       {key, :naive_datetime} ->
         {label(key), ~s(datetime_select form, #{inspect(key)}), error(key)}
+
       {key, {:array, :integer}} ->
         {label(key), ~s(multiple_select form, #{inspect(key)}, ["1": 1, "2": 2]), error(key)}
+
       {key, {:array, _}} ->
-        {label(key), ~s(multiple_select form, #{inspect(key)}, ["Option 1": "option1", "Option 2": "option2"]), error(key)}
-      {key, _}  ->
+        {label(key),
+         ~s(multiple_select form, #{inspect(key)}, ["Option 1": "option1", "Option 2": "option2"]),
+         error(key)}
+
+      {key, _} ->
         {label(key), ~s(text_input form, #{inspect(key)}), error(key)}
     end)
   end

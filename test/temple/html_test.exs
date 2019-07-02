@@ -1,6 +1,6 @@
-defmodule Dsl.HtmlTest do
+defmodule Temple.HtmlTest do
   use ExUnit.Case, async: true
-  use Dsl
+  use Temple
 
   describe "non-void elements" do
     test "renders two divs" do

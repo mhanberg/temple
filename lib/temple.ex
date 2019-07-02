@@ -1,21 +1,21 @@
-defmodule Dsl do
+defmodule Temple do
   @moduledoc """
-  Documentation for Dsl.
+  Documentation for Temple.
   """
 
   defmacro __using__(_) do
     quote do
       import unquote(__MODULE__)
-      import Dsl.Tags
-      import Dsl.Form
-      import Dsl.Link
+      import Temple.Tags
+      import Temple.Form
+      import Temple.Link
     end
   end
 
   @doc """
   Creates a markup context.
 
-  All tags must be called inside of a `Dsl.htm/1` block.
+  All tags must be called inside of a `Temple.htm/1` block.
 
   Returns a safe result of the form `{:safe, result}`
 
@@ -41,14 +41,14 @@ defmodule Dsl do
       import Phoenix.HTML.Link, except: [link: 1, link: 2]
       import Phoenix.HTML.Form, only: []
 
-      Dsl.Utils.lexical_scope(fn ->
-        {:ok, var!(buff, Dsl.Tags)} = Dsl.Utils.start_buffer([])
+      Temple.Utils.lexical_scope(fn ->
+        {:ok, var!(buff, Temple.Tags)} = Temple.Utils.start_buffer([])
 
         unquote(block)
 
-        markup = Dsl.Utils.get_buffer(var!(buff, Dsl.Tags))
+        markup = Temple.Utils.get_buffer(var!(buff, Temple.Tags))
 
-        :ok = Dsl.Utils.stop_buffer(var!(buff, Dsl.Tags))
+        :ok = Temple.Utils.stop_buffer(var!(buff, Temple.Tags))
 
         markup |> Enum.reverse() |> Enum.join("") |> Phoenix.HTML.raw()
       end)
@@ -70,8 +70,8 @@ defmodule Dsl do
   """
   defmacro text(text) do
     quote do
-      Dsl.Utils.put_buffer(
-        var!(buff, Dsl.Tags),
+      Temple.Utils.put_buffer(
+        var!(buff, Temple.Tags),
         unquote(text) |> to_string |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
       )
     end
@@ -105,9 +105,9 @@ defmodule Dsl do
   """
   defmacro partial(partial) do
     quote do
-      Dsl.Utils.put_buffer(
-        var!(buff, Dsl.Tags),
-        unquote(partial) |> Dsl.Utils.from_safe()
+      Temple.Utils.put_buffer(
+        var!(buff, Temple.Tags),
+        unquote(partial) |> Temple.Utils.from_safe()
       )
     end
   end
@@ -169,7 +169,7 @@ defmodule Dsl do
 
         outer =
           unquote(Macro.escape(block))
-          |> Macro.prewalk(&Dsl.Utils.insert_props(&1, [{:children, inner} | props]))
+          |> Macro.prewalk(&Temple.Utils.insert_props(&1, [{:children, inner} | props]))
 
         name = unquote(name)
 

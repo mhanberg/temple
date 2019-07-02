@@ -1,31 +1,31 @@
-defmodule Dsl.Engine do
+defmodule Temple.Engine do
   @behaviour Phoenix.Template.Engine
 
   @moduledoc """
-  Dsl provides a templating engine for use in Phoenix web applications.
+  Temple provides a templating engine for use in Phoenix web applications.
 
-  You can configure your application to use Dsl templates by adding the following configuration.
+  You can configure your application to use Temple templates by adding the following configuration.
 
   ```elixir
   # config.exs
-  config :phoenix, :template_engines, exs: Dsl.Engine
+  config :phoenix, :template_engines, exs: Temple.Engine
 
   # your_app_web.ex
   def view do
     quote do
       # ...
-      use Dsl # Replaces the call to import Phoenix.HTML
+      use Temple # Replaces the call to import Phoenix.HTML
     end
   end
   ```
 
   ## Usage
 
-  Dsl templates use the `.exs` extension, because they are written with pure Elixir! 
+  Temple templates use the `.exs` extension, because they are written with pure Elixir! 
 
   `assigns` (@conn, etc) are handled the same as normal `Phoenix.HTML.Engine` templates.
 
-  Note: The `Dsl.htm/1` macro is _not_ needed for Dsl templates due to the engine taking care of that for you.
+  Note: The `Temple.htm/1` macro is _not_ needed for Temple templates due to the engine taking care of that for you.
 
   ```
   # app.html.exs
@@ -76,7 +76,7 @@ defmodule Dsl.Engine do
       |> handle_assigns()
 
     quote do
-      use Dsl
+      use Temple
 
       htm do: unquote(template)
     end
@@ -93,7 +93,7 @@ defmodule Dsl.Engine do
 
             :error ->
               raise ArgumentError, """
-              assign @#{unquote(key)} not available in Dsl template.
+              assign @#{unquote(key)} not available in Temple template.
               Please make sure all proper assigns have been set. If this
               is a child template, ensure assigns are given explicitly by
               the parent template as they are not automatically forwarded.

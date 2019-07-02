@@ -1,6 +1,6 @@
-defmodule Dsl.Tags do
+defmodule Temple.Tags do
   @moduledoc """
-  The `Dsl.Tags` module defines macros for all HTML5 compliant elements.
+  The `Temple.Tags` module defines macros for all HTML5 compliant elements.
 
   ## Attributes
 
@@ -91,8 +91,8 @@ defmodule Dsl.Tags do
       el = unquote(el)
 
       quote do
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), [])
-        Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
+        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), [])
+        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
       end
     end
 
@@ -102,9 +102,9 @@ defmodule Dsl.Tags do
       el = unquote(el)
 
       quote do
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), [])
+        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), [])
         _ = unquote(inner)
-        Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
+        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
       end
     end
 
@@ -112,8 +112,8 @@ defmodule Dsl.Tags do
       el = unquote(el)
 
       quote do
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote(el), unquote(attrs_or_content))
-        Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
+        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), unquote(attrs_or_content))
+        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
       end
     end
 
@@ -123,9 +123,9 @@ defmodule Dsl.Tags do
       el = unquote(el)
 
       quote do
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote_splicing([el, attrs]))
+        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
         _ = unquote(inner)
-        Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
+        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
       end
     end
 
@@ -133,9 +133,9 @@ defmodule Dsl.Tags do
       el = unquote(el)
 
       quote do
-        Dsl.Utils.put_open_tag(var!(buff, Dsl.Tags), unquote_splicing([el, attrs]))
+        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
         text unquote(content)
-        Dsl.Utils.put_close_tag(var!(buff, Dsl.Tags), unquote(el))
+        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
       end
     end
   end
@@ -153,9 +153,9 @@ defmodule Dsl.Tags do
       quote do
         attrs = unquote(attrs)
 
-        Dsl.Utils.put_buffer(
-          var!(buff, Dsl.Tags),
-          "<#{unquote(el)}#{Dsl.Utils.compile_attrs(attrs)}>"
+        Temple.Utils.put_buffer(
+          var!(buff, Temple.Tags),
+          "<#{unquote(el)}#{Temple.Utils.compile_attrs(attrs)}>"
         )
       end
     end

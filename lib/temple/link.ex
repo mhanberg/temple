@@ -1,9 +1,9 @@
-defmodule Dsl.Link do
+defmodule Temple.Link do
   alias Phoenix.HTML
-  alias Dsl.Utils
+  alias Temple.Utils
 
   @moduledoc """
-  This modules wraps all of the functions from the `Phoenix.HTML.Link` module to make them compatible with with Dsl.
+  This modules wraps all of the functions from the `Phoenix.HTML.Link` module to make them compatible with with Temple.
   """
 
   @doc """
@@ -18,7 +18,7 @@ defmodule Dsl.Link do
 
       {:safe, link} = HTML.Link.link(content, unquote(opts))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Tags), link)
     end
   end
 
@@ -26,7 +26,7 @@ defmodule Dsl.Link do
     quote do
       {:safe, link} = HTML.Link.link(unquote_splicing([content, opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Tags), link)
     end
   end
 
@@ -42,7 +42,7 @@ defmodule Dsl.Link do
 
       {:safe, link} = HTML.Link.button(content, unquote(opts))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Tags), link)
     end
   end
 
@@ -50,7 +50,7 @@ defmodule Dsl.Link do
     quote do
       {:safe, link} = HTML.Link.button(unquote_splicing([content, opts]))
 
-      Utils.put_buffer(var!(buff, Dsl.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Tags), link)
     end
   end
 end

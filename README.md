@@ -1,20 +1,20 @@
-# Dsl
+# Temple
 
-[![Build Status](https://travis-ci.com/mhanberg/dsl.svg?branch=master)](https://travis-ci.com/mhanberg/dsl)
+[![Build Status](https://travis-ci.com/mhanberg/temple.svg?branch=master)](https://travis-ci.com/mhanberg/temple)
 
-Dsl is a DSL for writing HTML using Elixir.
+Temple is a DSL for writing HTML using Elixir.
 
-You're probably here because you want to use Dsl to write Phoenix templates, which is why Dsl includes a [Phoenix template engine](#phoenix-templates) and Dsl-compatible [Phoenix form helpers](#phoenixhtml).
+You're probably here because you want to use Temple to write Phoenix templates, which is why Temple includes a [Phoenix template engine](#phoenix-templates) and Temple-compatible [Phoenix form helpers](#phoenixhtml).
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `dsl` to your list of dependencies in `mix.exs`:
+by adding `temple` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:dsl, "~> 0.1.0"}
+    {:temple, "~> 0.1.0"}
   ]
 end
 ```
@@ -22,7 +22,7 @@ end
 ## Usage
 
 ```elixir
-use Dsl
+use Temple
 
 htm do
   h2 "todos"
@@ -53,7 +53,7 @@ end
 
 ### Components
 
-Dsl provides an API for creating custom components that act as custom HTML elements.
+Temple provides an API for creating custom components that act as custom HTML elements.
 
 These components can be given `props` that are available inside the component definition as module attributes. The contents of a components `do` block are available as a special `@children` attribute.
 
@@ -75,9 +75,9 @@ end
 
 ### Phoenix.HTML
 
-Dsl provides macros for working with the helpers provided by the [Phoenix.HTML](https://www.github.com/phoenixframework/phoenix_html) package.
+Temple provides macros for working with the helpers provided by the [Phoenix.HTML](https://www.github.com/phoenixframework/phoenix_html) package.
 
-Most of the macros are purely wrappers, while the semantics of some are changed to work with Dsl.
+Most of the macros are purely wrappers, while the semantics of some are changed to work with Temple.
 
 ```elixir
 htm do
@@ -93,13 +93,13 @@ Add the templating engine to your Phoenix configuration.
 
 ```elixir
 # config.exs
-config :phoenix, :template_engines, exs: Dsl.Engine
+config :phoenix, :template_engines, exs: Temple.Engine
 
 # your_app_web.ex
 def view do
   quote do
     # ...
-    use Dsl # Replaces the call to import Phoenix.HTML
+    use Temple # Replaces the call to import Phoenix.HTML
   end
 end
 ```

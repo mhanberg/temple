@@ -1,6 +1,6 @@
-defmodule DslTest do
+defmodule TempleTest do
   use ExUnit.Case, async: true
-  use Dsl
+  use Temple
 
   describe "custom component" do
     test "defines a basic component" do

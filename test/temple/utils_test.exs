@@ -1,4 +1,4 @@
-defmodule Dsl.UtilsTest do
+defmodule Temple.UtilsTest do
   use ExUnit.Case, async: true
 
   describe "from_safe/1" do
@@ -6,7 +6,7 @@ defmodule Dsl.UtilsTest do
       expected = "I am safe!"
       partial = {:safe, expected}
 
-      result = Dsl.Utils.from_safe(partial)
+      result = Temple.Utils.from_safe(partial)
 
       assert result == expected
     end
@@ -15,7 +15,7 @@ defmodule Dsl.UtilsTest do
       expected = "I am &lt;safe&gt;!"
       partial = "I am <safe>!"
 
-      result = Dsl.Utils.from_safe(partial)
+      result = Temple.Utils.from_safe(partial)
 
       assert result == expected
     end

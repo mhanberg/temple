@@ -1,5 +1,5 @@
 defmodule Component do
-  import Dsl
+  import Temple
 
   defcomponent :flex do
     div(class: "flex")

@@ -1,19 +1,19 @@
-defmodule Dsl.MixProject do
+defmodule Temple.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :dsl,
-      name: "Dsl",
+      app: :temple,
+      name: "Temple",
       version: "0.1.0",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
-      source_url: "https://github.com/mhanberg/dsl",
+      source_url: "https://github.com/mhanberg/temple",
       docs: [
-        main: "Dsl",
+        main: "Temple",
         extras: ["README.md"],
         deps: [
           phoenix_html: "https://hexdocs.pm/phoenix_html/"
@@ -33,7 +33,7 @@ defmodule Dsl.MixProject do
       extra_applications: [:logger]
     ]
   end
-  
+
   defp aliases do
     [
       docs: ["update_mdn_docs", "docs"]

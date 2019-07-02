@@ -1,6 +1,6 @@
-defmodule Dsl.LinkTest do
+defmodule Temple.LinkTest do
   use ExUnit.Case, async: true
-  use Dsl
+  use Temple
 
   describe "phx_link" do
     test "emits a link" do
