@@ -2,6 +2,8 @@ defmodule Temple.Tags do
   @moduledoc """
   The `Temple.Tags` module defines macros for all HTML5 compliant elements.
 
+  `Temple.Tags` macros must be called inside of a `Temple.htm/1` block.
+
   ## Attributes
 
   Tags accept a keyword list of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
