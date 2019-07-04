@@ -115,7 +115,7 @@ defmodule Temple do
 
   ## Assigns
 
-  Components accept a keyword list of assigns and can be referenced in the body of the component by a module attribute of the same name.
+  Components accept a keyword list or a map of assigns and can be referenced in the body of the component by a module attribute of the same name.
 
   This works exactly the same as EEx templates.
 
@@ -149,28 +149,41 @@ defmodule Temple do
   """
   defmacro defcomponent(name, [do: _] = block) do
     quote do
-      defmacro unquote(name)(props \\ []) do
+      defmacro unquote(name)() do
         outer = unquote(Macro.escape(block))
-        name = unquote(name)
-
-        {inner, props} = Keyword.pop(props, :do, nil)
 
         quote do
-          unquote(name)(unquote(props), unquote(inner))
+          _ = unquote(outer)
+        end
+      end
+
+      defmacro unquote(name)(props_or_block)
+
+      defmacro unquote(name)([{:do, inner}]) do
+        name = unquote(name)
+
+        quote do
+          unquote(name)([], unquote(inner))
+        end
+      end
+
+      defmacro unquote(name)(props) do
+        name = unquote(name)
+
+        quote do
+          unquote(name)(unquote(props), nil)
         end
       end
 
       defmacro unquote(name)(props, inner) do
-        import Kernel, except: [div: 2]
-
         outer =
           unquote(Macro.escape(block))
-          |> Macro.prewalk(&Temple.Utils.insert_props(&1, [{:children, inner} | props]))
+          |> Macro.prewalk(&Temple.Utils.insert_props(&1, props, inner))
 
         name = unquote(name)
 
         quote do
-          unquote(outer)
+          _ = unquote(outer)
         end
       end
     end

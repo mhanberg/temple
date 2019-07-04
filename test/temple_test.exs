@@ -104,8 +104,7 @@ defmodule TempleTest do
           variable_as_prop(bob: bob)
         end
 
-      assert result ==
-               ~s|<div id="hi"></div>|
+      assert result == ~s|<div id="hi"></div>|
     end
 
     test "can pass a variable as a prop to a component with a block" do
@@ -121,6 +120,52 @@ defmodule TempleTest do
         end
 
       assert result == ~s|<div id="hi"><div></div></div>|
+    end
+
+    test "can pass all of the props as a variable" do
+      import Component
+
+      props = [bob: "hi"]
+
+      {:safe, result} =
+        htm do
+          variable_as_prop(props)
+        end
+
+      assert result == ~s|<div id="hi"></div>|
+    end
+
+    test "can pass all of the props as a variable with a block" do
+      import Component
+
+      props = [bob: "hi"]
+
+      {:safe, result} =
+        htm do
+          variable_as_prop_with_block props do
+            div()
+          end
+        end
+
+      assert result == ~s|<div id="hi"><div></div></div>|
+    end
+
+    test "can pass a map as props with a block" do
+      import Component
+
+      props = %{bob: "hi"}
+
+      {:safe, result} =
+        htm do
+          variable_as_prop_with_block props do
+            div()
+          end
+          variable_as_prop_with_block %{bob: "hi"} do
+            div()
+          end
+        end
+
+      assert result == ~s|<div id="hi"><div></div></div><div id="hi"><div></div></div>|
     end
   end
 end

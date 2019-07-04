@@ -1,4 +1,4 @@
-defmodule Temple.HtmlTest do
+defmodule Temple.TagsTest do
   use ExUnit.Case, async: true
   use Temple
 
@@ -95,6 +95,17 @@ defmodule Temple.HtmlTest do
         htm do
           div class: "hello" do
             div class: "hi"
+          end
+        end
+
+      assert result == ~s{<div class="hello"><div class="hi"></div></div>}
+    end
+
+    test "renders an attribute passed in as a map on a div" do
+      {:safe, result} =
+        htm do
+          div %{class: "hello"} do
+            div %{"class" => "hi"}
           end
         end
 

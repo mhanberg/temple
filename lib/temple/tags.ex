@@ -6,7 +6,7 @@ defmodule Temple.Tags do
 
   ## Attributes
 
-  Tags accept a keyword list of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
+  Tags accept a keyword list or a map of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
 
   ## Children
 
@@ -21,8 +21,11 @@ defmodule Temple.Tags do
     # empty non-void element
     div()
 
-    # non-void element with attributes
+    # non-void element with keyword list attributes
     div class: "text-red", id: "my-el"
+  #
+    # non-void element with map attributes
+    div %{:class => "text-red", "id" => "my-el"}
 
     # non-void element with children
     div do

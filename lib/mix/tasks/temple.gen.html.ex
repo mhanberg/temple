@@ -2,7 +2,7 @@ defmodule Mix.Tasks.Temple.Gen.Html do
   @shortdoc "Generates controller, views, and context for an HTML resource in Temple"
 
   @moduledoc """
-  Generates controller, views, and context for an HTML resource Temple.
+  Generates controller, views, and context for an HTML resource in Temple.
 
       mix temple.gen.html Accounts User users name:string age:integer
 

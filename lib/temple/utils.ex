@@ -1,7 +1,7 @@
 defmodule Temple.Utils do
   @moduledoc false
 
-  def put_open_tag(buff, el, attrs) when is_list(attrs) do
+  def put_open_tag(buff, el, attrs) when is_list(attrs) or is_map(attrs) do
     put_buffer(buff, "<#{el}#{compile_attrs(attrs)}>")
   end
 
@@ -23,17 +23,23 @@ defmodule Temple.Utils do
     partial |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
   end
 
-  def insert_props({:@, _, [{name, _, _}]}, props) when is_atom(name) do
-    props[name]
+  def insert_props({:@, _, [{:children, _, _}]}, _, inner) do
+    inner
   end
 
-  def insert_props(ast, _inner), do: ast
+  def insert_props({:@, _, [{name, _, _}]}, props, _) when is_atom(name) do
+    quote do
+      Access.get(unquote_splicing([props, name]))
+    end
+  end
+
+  def insert_props(ast, _, _), do: ast
 
   def compile_attrs([]), do: ""
 
   def compile_attrs(attrs) do
     for {name, value} <- attrs, into: "" do
-      name = name |> Atom.to_string() |> String.replace("_", "-")
+      name = name |> to_string() |> String.replace("_", "-")
 
       " " <> name <> "=\"" <> to_string(value) <> "\""
     end
