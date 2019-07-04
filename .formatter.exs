@@ -1,4 +1,4 @@
-elements = ~w[
+temple_funcs = ~w[
   html htm
   head title style script
   noscript template
@@ -16,10 +16,16 @@ elements = ~w[
   details summary menuitem menu
   meta link base
   area br col embed hr img input keygen param source track wbr
-  text partial javascript
-]a
+  text partial
+
+  form_for inputs_for
+  checkbox color_input checkbox color_input date_input date_select datetime_local_input
+  datetime_select email_input file_input hidden_input number_input password_input range_input
+  search_input telephone_input textarea text_input time_input time_select url_input
+  reset submit phx_label multiple_select select phx_link phx_button
+]a |> Enum.map(fn e -> {e, :*} end)
 
 [
   inputs: ["*.{ex,exs}", "{config,lib,test}/**/*.{ex,exs}"],
-  locals_without_parens: Enum.map(elements, fn e -> {e, :*} end)
+  locals_without_parens: temple_funcs
 ]

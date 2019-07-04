@@ -7,6 +7,7 @@ defmodule Temple.MixProject do
       name: "Temple",
       description: "An HTML DSL for Elixir and Phoenix",
       version: "0.1.0",
+      package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
@@ -32,6 +33,15 @@ defmodule Temple.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Mitchell Hanberg"],
+      licenses: ["MIT"],
+      links: %{github: "https://github.com/mhanberg/temple"},
+      files: ~w(lib priv CHANGELOG.md LICENSE mix.exs README.md .formatter.exs)
     ]
   end
 
