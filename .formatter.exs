@@ -1,4 +1,4 @@
-temple_funcs = ~w[
+locals_without_parens = ~w[
   html htm
   head title style script
   noscript template
@@ -27,5 +27,6 @@ temple_funcs = ~w[
 
 [
   inputs: ["*.{ex,exs}", "{config,lib,test}/**/*.{ex,exs}"],
-  locals_without_parens: temple_funcs
+  locals_without_parens: locals_without_parens,
+  export: [locals_without_parens: locals_without_parens]
 ]
