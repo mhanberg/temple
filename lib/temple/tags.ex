@@ -82,11 +82,7 @@ defmodule Temple.Tags do
   def void_elements, do: @void_elements
 
   for el <- @nonvoid_elements do
-    @doc (if File.exists?("./tmp/docs/#{el}.txt") do
-            """
-            #{File.read!("./tmp/docs/#{el}.txt")}
-            """
-          end)
+    @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
     defmacro unquote(el)() do
       el = unquote(el)
 
@@ -141,12 +137,7 @@ defmodule Temple.Tags do
   end
 
   for el <- @void_elements do
-    @doc (if File.exists?("./tmp/docs/#{el}.txt") do
-            """
-            #{File.read!("./tmp/docs/#{el}.txt")}
-            """
-          end)
-
+    @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
     defmacro unquote(el)(attrs \\ []) do
       el = unquote(el)
 

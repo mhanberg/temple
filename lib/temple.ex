@@ -1,8 +1,4 @@
 defmodule Temple do
-  @moduledoc """
-  Documentation for Temple.
-  """
-
   defmacro __using__(_) do
     quote do
       import unquote(__MODULE__)
