@@ -66,7 +66,6 @@ defmodule Temple.Form do
     :range_input,
     :search_input,
     :telephone_input,
-    :textarea,
     :text_input,
     :time_input,
     :time_select,
@@ -86,6 +85,19 @@ defmodule Temple.Form do
 
         Utils.put_buffer(var!(buff, Temple.Tags), input)
       end
+    end
+  end
+
+  @doc """
+  Please see `Phoenix.HTML.Form.textarea/3` for details.
+
+  Note: Temple defines this function as `text_area` with an underscore, whereas Phoenix.HTML defines it as `textarea` without an underscore.
+  """
+  defmacro text_area(form, field, opts \\ []) do
+    quote do
+      {:safe, input} = Phoenix.HTML.Form.textarea(unquote_splicing([form, field, opts]))
+
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
   end
 

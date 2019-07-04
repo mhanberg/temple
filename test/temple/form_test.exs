@@ -384,7 +384,7 @@ defmodule Temple.FormTest do
       assert result =~ ~s{name="bob"}
     end
 
-    test "generates a textarea" do
+    test "generates a text_area/2" do
       conn = %Plug.Conn{}
       action = "/"
       opts = []
@@ -392,7 +392,23 @@ defmodule Temple.FormTest do
       {:safe, result} =
         htm do
           form_for conn, action, opts do
-            textarea(form, :bob, class: "textarea-styles")
+            text_area(form, :bob)
+          end
+        end
+
+      assert result =~ ~s{<textarea}
+      assert result =~ ~s{name="bob"}
+    end
+
+    test "generates a text_area/3" do
+      conn = %Plug.Conn{}
+      action = "/"
+      opts = []
+
+      {:safe, result} =
+        htm do
+          form_for conn, action, opts do
+            text_area(form, :bob, class: "textarea-styles")
           end
         end
 

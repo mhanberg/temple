@@ -2,6 +2,86 @@ defmodule Temple.TagsTest do
   use ExUnit.Case, async: true
   use Temple
 
+  for tag <- Temple.Tags.nonvoid_elements() do
+    test "renders a #{tag}" do
+      {:safe, result} =
+        htm do
+          unquote(tag)()
+        end
+
+      assert result == ~s{<#{unquote(tag)}></#{unquote(tag)}>}
+    end
+
+    test "renders a #{tag} with attrs" do
+      {:safe, result} =
+        htm do
+          unquote(tag)(class: "hello")
+        end
+
+      assert result == ~s{<#{unquote(tag)} class="hello"></#{unquote(tag)}>}
+    end
+
+    test "renders a #{tag} with content" do
+      {:safe, result} =
+        htm do
+          unquote(tag)("Hi")
+        end
+
+      assert result == "<#{unquote(tag)}>Hi</#{unquote(tag)}>"
+    end
+
+    test "renders a #{tag} with attrs and content" do
+      {:safe, result} =
+        htm do
+          unquote(tag)("Hi", class: "hello")
+        end
+
+      assert result == ~s{<#{unquote(tag)} class="hello">Hi</#{unquote(tag)}>}
+    end
+
+    test "renders a #{tag} with a block" do
+      {:safe, result} =
+        htm do
+          unquote(tag)() do
+            unquote(tag)()
+          end
+        end
+
+      assert result == ~s{<#{unquote(tag)}><#{unquote(tag)}></#{unquote(tag)}></#{unquote(tag)}>}
+    end
+
+    test "renders a #{tag} with attrs and a block" do
+      {:safe, result} =
+        htm do
+          unquote(tag)(class: "hello") do
+            unquote(tag)()
+          end
+        end
+
+      assert result == ~s{<#{unquote(tag)} class="hello"><#{unquote(tag)}></#{unquote(tag)}></#{unquote(tag)}>}
+    end
+  end
+
+  for tag <- Temple.Tags.void_elements() do
+    test "renders a #{tag}" do
+      {:safe, result} =
+        htm do
+          unquote(tag)()
+        end
+
+      assert result == ~s{<#{unquote(tag)}>}
+    end
+
+    test "renders a #{tag} with attrs" do
+      {:safe, result} =
+        htm do
+          unquote(tag)(class: "hello")
+        end
+
+      assert result == ~s{<#{unquote(tag)} class="hello">}
+    end
+  end
+
   describe "non-void elements" do
     test "renders two divs" do
       {:safe, result} =

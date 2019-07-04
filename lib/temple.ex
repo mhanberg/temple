@@ -34,8 +34,6 @@ defmodule Temple do
   defmacro htm([do: block] = _block) do
     quote do
       import Kernel, except: [div: 2]
-      import Phoenix.HTML.Link, except: [link: 1, link: 2]
-      import Phoenix.HTML.Form, only: []
 
       Temple.Utils.lexical_scope(fn ->
         {:ok, var!(buff, Temple.Tags)} = Temple.Utils.start_buffer([])
