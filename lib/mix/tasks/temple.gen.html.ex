@@ -162,7 +162,6 @@ defmodule Mix.Tasks.Temple.Gen.Html do
   @doc false
   def copy_new_files(%Context{} = context, paths, binding) do
     files = files_to_be_generated(context)
-    IO.inspect(files, label: "files")
 
     Mix.Phoenix.copy_from(paths, "priv/templates/temple.gen.html", binding, files)
 
