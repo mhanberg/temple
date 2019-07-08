@@ -160,6 +160,7 @@ defmodule TempleTest do
           variable_as_prop_with_block props do
             div()
           end
+
           variable_as_prop_with_block %{bob: "hi"} do
             div()
           end

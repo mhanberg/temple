@@ -42,9 +42,7 @@ defmodule Temple.TagsTest do
     test "renders a #{tag} with a block" do
       {:safe, result} =
         htm do
-          unquote(tag)() do
-            unquote(tag)()
-          end
+          unquote(tag)(do: unquote(tag)())
         end
 
       assert result == ~s{<#{unquote(tag)}><#{unquote(tag)}></#{unquote(tag)}></#{unquote(tag)}>}
@@ -58,7 +56,10 @@ defmodule Temple.TagsTest do
           end
         end
 
-      assert result == ~s{<#{unquote(tag)} class="hello"><#{unquote(tag)}></#{unquote(tag)}></#{unquote(tag)}>}
+      assert result ==
+               ~s{<#{unquote(tag)} class="hello"><#{unquote(tag)}></#{unquote(tag)}></#{
+                 unquote(tag)
+               }>}
     end
   end
 

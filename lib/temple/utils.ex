@@ -45,8 +45,8 @@ defmodule Temple.Utils do
     end
   end
 
-  def lexical_scope(work) do
-    work.()
+  def join_and_escape(markup) do
+    markup |> Enum.reverse() |> Enum.join("") |> Phoenix.HTML.raw()
   end
 
   def start_buffer(initial_buffer), do: Agent.start(fn -> initial_buffer end)

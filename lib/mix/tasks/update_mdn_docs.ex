@@ -6,7 +6,8 @@ defmodule Mix.Tasks.UpdateMdnDocs do
 
   @shortdoc "Update the MDN documentation"
   def run(_) do
-    IO.puts "Downloading MDN documentation"
+    IO.puts("Downloading MDN documentation")
+
     (Temple.Tags.nonvoid_elements() ++ Temple.Tags.void_elements())
     |> Enum.map(fn el ->
       Task.async(fn ->

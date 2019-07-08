@@ -35,17 +35,15 @@ defmodule Temple do
     quote do
       import Kernel, except: [div: 2]
 
-      Temple.Utils.lexical_scope(fn ->
-        {:ok, var!(buff, Temple.Tags)} = Temple.Utils.start_buffer([])
-
+      with {:ok, var!(buff, Temple.Tags)} <- Temple.Utils.start_buffer([]) do
         unquote(block)
 
         markup = Temple.Utils.get_buffer(var!(buff, Temple.Tags))
 
         :ok = Temple.Utils.stop_buffer(var!(buff, Temple.Tags))
 
-        markup |> Enum.reverse() |> Enum.join("") |> Phoenix.HTML.raw()
-      end)
+        Temple.Utils.join_and_escape(markup)
+      end
     end
   end
 

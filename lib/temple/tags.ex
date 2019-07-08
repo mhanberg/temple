@@ -43,7 +43,7 @@ defmodule Temple.Tags do
     input name: "comments", placeholder: "Enter a comment..."
   end
 
-  # {:save,
+  # {:safe,
   #  "<div></div>
   #   <div class=\"text-red\" id=\"my-el\"></div>
   #   <div>

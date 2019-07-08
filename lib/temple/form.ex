@@ -293,7 +293,9 @@ defmodule Temple.Form do
       form.impl.to_form(form.source, form, field, options)
       |> Enum.each(fn form ->
         Enum.map(form.hidden, fn {k, v} ->
-          Phoenix.HTML.Form.hidden_input(form, k, value: v)
+          {:safe, hidden_input} = Phoenix.HTML.Form.hidden_input(form, k, value: v)
+
+          hidden_input
         end)
         |> Enum.each(&Utils.put_buffer(var!(buff, Temple.Tags), &1))
 

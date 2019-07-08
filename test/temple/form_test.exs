@@ -56,7 +56,7 @@ defmodule Temple.FormTest do
   defmodule Person do
     use Ecto.Schema
 
-    embedded_schema do
+    schema "persons" do
       field(:name)
       belongs_to(:company, Company)
       has_many(:responsibilities, Reponsibility)
@@ -66,7 +66,7 @@ defmodule Temple.FormTest do
   defmodule Company do
     use Ecto.Schema
 
-    embedded_schema do
+    schema "companies" do
       field(:name)
       field(:field)
     end
@@ -75,8 +75,10 @@ defmodule Temple.FormTest do
   defmodule Responsibility do
     use Ecto.Schema
 
-    embedded_schema do
+    schema "responsibilities" do
       field(:description)
+
+      belongs_to(:person, Person)
     end
   end
 
@@ -110,7 +112,14 @@ defmodule Temple.FormTest do
     end
 
     test "generates inputs for has_many" do
-      person = %Person{responsibilities: [%Responsibility{}, %Responsibility{}]}
+      person = %Person{
+        id: 1,
+        responsibilities: [
+          %Responsibility{id: 1, person_id: 1},
+          %Responsibility{id: 2, person_id: 1}
+        ]
+      }
+
       changeset = Ecto.Changeset.change(person)
       action = "/"
       opts = []
@@ -121,7 +130,8 @@ defmodule Temple.FormTest do
             text_input(form, :name)
 
             inputs_for form, :responsibilities do
-              text_input(inner_form, :description)
+              phx_label(inner_form, :description)
+              text_area(inner_form, :description)
               _ = "Bob"
             end
           end
