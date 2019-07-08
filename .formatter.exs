@@ -12,7 +12,7 @@ locals_without_parens = ~w[
   map svg math
   table caption colgroup tbody thead tfoot tr td th
   form fieldset legend label button select datalist optgroup
-  option textarea output progress meter
+  option text_area output progress meter
   details summary menuitem menu
   meta link base
   area br col embed hr img input keygen param source track wbr
