@@ -151,3 +151,14 @@ html lang: "en" do
   end
 end
 ```
+
+### Formatter
+
+To include Temple's formatter configuration, add `:temple` to your `.formatter.exs`.
+
+```elixir
+[
+  import_deps: [:temple],
+  inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs}"],
+]
+```
