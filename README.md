@@ -19,14 +19,14 @@ end
 
 ## Usage
 
-Using Temple is a as simple as using the DSL inside of an `htm/1` block. This returns a safe result of the form `{:safe, html_string}`.
+Using Temple is a as simple as using the DSL inside of an `temple/1` block. This returns a safe result of the form `{:safe, html_string}`.
 
 See the [documentation](https://hexdocs.pm/temple/0.1.0/Temple.Tags.html) for more details.
 
 ```elixir
 use Temple
 
-htm do
+temple do
   h2 "todos"
 
   ul class: "list" do
@@ -68,7 +68,7 @@ defcomponent :flex do
   end
 end
 
-htm do
+temple do
   flex id: "my-flex" do
     div "Item 1"
     div "Item 2"
@@ -86,7 +86,7 @@ Most of the macros are purely wrappers, while the semantics of some are changed 
 See the [documentation](https://hexdocs.pm/temple/0.1.0/Temple.Form.html#content) for more details.
 
 ```elixir
-htm do
+temple do
   form_for @conn, Routes.some_path(@conn, :create) do
     text_input form, :name
   end

@@ -5,7 +5,7 @@ defmodule Temple.TagsTest do
   for tag <- Temple.Tags.nonvoid_elements() do
     test "renders a #{tag}" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)()
         end
 
@@ -14,7 +14,7 @@ defmodule Temple.TagsTest do
 
     test "renders a #{tag} with attrs" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)(class: "hello")
         end
 
@@ -23,7 +23,7 @@ defmodule Temple.TagsTest do
 
     test "renders a #{tag} with content" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)("Hi")
         end
 
@@ -32,7 +32,7 @@ defmodule Temple.TagsTest do
 
     test "renders a #{tag} with attrs and content" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)("Hi", class: "hello")
         end
 
@@ -41,7 +41,7 @@ defmodule Temple.TagsTest do
 
     test "renders a #{tag} with a block" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)(do: unquote(tag)())
         end
 
@@ -50,7 +50,7 @@ defmodule Temple.TagsTest do
 
     test "renders a #{tag} with attrs and a block" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)(class: "hello") do
             unquote(tag)()
           end
@@ -66,7 +66,7 @@ defmodule Temple.TagsTest do
   for tag <- Temple.Tags.void_elements() do
     test "renders a #{tag}" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)()
         end
 
@@ -75,7 +75,7 @@ defmodule Temple.TagsTest do
 
     test "renders a #{tag} with attrs" do
       {:safe, result} =
-        htm do
+        temple do
           unquote(tag)(class: "hello")
         end
 
@@ -86,7 +86,7 @@ defmodule Temple.TagsTest do
   describe "non-void elements" do
     test "renders two divs" do
       {:safe, result} =
-        htm do
+        temple do
           div()
           div()
         end
@@ -96,7 +96,7 @@ defmodule Temple.TagsTest do
 
     test "renders two els in the right order" do
       {:safe, result} =
-        htm do
+        temple do
           div()
           span()
         end
@@ -106,7 +106,7 @@ defmodule Temple.TagsTest do
 
     test "renders an el that taks attrs and a block" do
       {:safe, result} =
-        htm do
+        temple do
           div class: "bob" do
             span()
             span()
@@ -118,7 +118,7 @@ defmodule Temple.TagsTest do
 
     test "renders one els nested inside an el" do
       {:safe, result} =
-        htm do
+        temple do
           div do
             span()
           end
@@ -129,7 +129,7 @@ defmodule Temple.TagsTest do
 
     test "renders two els nested inside an el" do
       {:safe, result} =
-        htm do
+        temple do
           div do
             span()
             span()
@@ -141,7 +141,7 @@ defmodule Temple.TagsTest do
 
     test "renders two divs that are rendered by a loop" do
       {:safe, result} =
-        htm do
+        temple do
           for _ <- 1..2 do
             div()
           end
@@ -152,7 +152,7 @@ defmodule Temple.TagsTest do
 
     test "renders two spans" do
       {:safe, result} =
-        htm do
+        temple do
           span()
           span()
         end
@@ -162,7 +162,7 @@ defmodule Temple.TagsTest do
 
     test "renders a div within a div" do
       {:safe, result} =
-        htm do
+        temple do
           div do
             div()
           end
@@ -173,7 +173,7 @@ defmodule Temple.TagsTest do
 
     test "renders an attribute on a div" do
       {:safe, result} =
-        htm do
+        temple do
           div class: "hello" do
             div class: "hi"
           end
@@ -184,7 +184,7 @@ defmodule Temple.TagsTest do
 
     test "renders an attribute passed in as a map on a div" do
       {:safe, result} =
-        htm do
+        temple do
           div %{class: "hello"} do
             div %{"class" => "hi"}
           end
@@ -198,7 +198,7 @@ defmodule Temple.TagsTest do
       attrs2 = [class: "hi"]
 
       {:safe, result} =
-        htm do
+        temple do
           div attrs1 do
             div attrs2
           end
@@ -209,7 +209,7 @@ defmodule Temple.TagsTest do
 
     test "renders multiple attributes on a div without block" do
       {:safe, result} =
-        htm do
+        temple do
           div class: "hello", id: "12"
         end
 
@@ -218,7 +218,7 @@ defmodule Temple.TagsTest do
 
     test "can accept content as the first argument" do
       {:safe, result} =
-        htm do
+        temple do
           div "CONTENT"
           div "MORE", class: "hi"
         end
@@ -231,7 +231,7 @@ defmodule Temple.TagsTest do
       more = "MORE"
 
       {:safe, result} =
-        htm do
+        temple do
           div content
           div more, class: "hi"
         end
@@ -243,7 +243,7 @@ defmodule Temple.TagsTest do
   describe "void elements" do
     test "renders an input" do
       {:safe, result} =
-        htm do
+        temple do
           input()
         end
 
@@ -252,7 +252,7 @@ defmodule Temple.TagsTest do
 
     test "renders an input with an attribute" do
       {:safe, result} =
-        htm do
+        temple do
           input type: "number"
         end
 
@@ -263,7 +263,7 @@ defmodule Temple.TagsTest do
       interop = "hi"
 
       {:safe, result} =
-        htm do
+        temple do
           div class: "#{interop} world"
         end
 
@@ -274,7 +274,7 @@ defmodule Temple.TagsTest do
   describe "escaping" do
     test "text is excaped" do
       {:safe, result} =
-        htm do
+        temple do
           text "<div>Text</div>"
         end
 
@@ -285,7 +285,7 @@ defmodule Temple.TagsTest do
   describe "data attributes" do
     test "can have one data attributes" do
       {:safe, result} =
-        htm do
+        temple do
           div data_controller: "stimulus-controller"
         end
 
@@ -294,7 +294,7 @@ defmodule Temple.TagsTest do
 
     test "can have multiple data attributes" do
       {:safe, result} =
-        htm do
+        temple do
           div data_controller: "stimulus-controller", data_target: "stimulus-target"
         end
 

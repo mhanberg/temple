@@ -25,7 +25,7 @@ defmodule Temple.Engine do
 
   `assigns` (@conn, etc) are handled the same as normal `Phoenix.HTML.Engine` templates.
 
-  Note: The `Temple.htm/1` macro is _not_ needed for Temple templates due to the engine taking care of that for you.
+  Note: The `Temple.temple/1` macro is _not_ needed for Temple templates due to the engine taking care of that for you.
 
   ```
   # app.html.exs
@@ -78,7 +78,7 @@ defmodule Temple.Engine do
     quote do
       use Temple
 
-      htm do: unquote(template)
+      temple do: unquote(template)
     end
   end
 

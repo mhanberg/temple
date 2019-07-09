@@ -8,7 +8,7 @@ defmodule Temple.FormTest do
       action = "/"
 
       {:safe, result} =
-        htm do
+        temple do
           form_for(conn, action, [])
         end
 
@@ -22,7 +22,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             div()
           end
@@ -39,7 +39,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             text_input(form, :bob)
           end
@@ -90,7 +90,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for changeset, action, opts do
             text_input(form, :name)
 
@@ -125,7 +125,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for changeset, action, opts do
             text_input(form, :name)
 
@@ -154,7 +154,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             checkbox(form, :bob, class: "styles")
           end
@@ -172,7 +172,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             color_input(form, :bob, class: "styles")
           end
@@ -190,7 +190,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             date_input(form, :bob, class: "date-styles")
           end
@@ -208,7 +208,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             date_select(form, :bob, class: "date-styles")
           end
@@ -223,7 +223,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             datetime_local_input(form, :bob, class: "date-styles")
           end
@@ -241,7 +241,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             datetime_select(form, :bob, class: "datetime-select-styles")
           end
@@ -256,7 +256,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             email_input(form, :bob, class: "email-styles")
           end
@@ -274,7 +274,7 @@ defmodule Temple.FormTest do
       opts = [multipart: true]
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             file_input(form, :bob, class: "file-styles")
           end
@@ -292,7 +292,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             hidden_input(form, :bob, class: "hidden-styles")
           end
@@ -310,7 +310,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             number_input(form, :bob, class: "number-styles")
           end
@@ -328,7 +328,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             password_input(form, :bob, class: "password-styles")
           end
@@ -346,7 +346,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             range_input(form, :bob, class: "range-styles")
           end
@@ -364,7 +364,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             search_input(form, :bob, class: "search-styles")
           end
@@ -382,7 +382,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             telephone_input(form, :bob, class: "telephone-styles")
           end
@@ -400,7 +400,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             text_area(form, :bob)
           end
@@ -416,7 +416,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             text_area(form, :bob, class: "textarea-styles")
           end
@@ -433,7 +433,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             time_input(form, :bob, class: "time-styles")
           end
@@ -451,7 +451,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             time_select(form, :bob)
           end
@@ -466,7 +466,7 @@ defmodule Temple.FormTest do
       opts = []
 
       {:safe, result} =
-        htm do
+        temple do
           form_for conn, action, opts do
             url_input(form, :bob, class: "url-styles")
           end
@@ -480,7 +480,7 @@ defmodule Temple.FormTest do
 
     test "generates a reset input" do
       {:safe, result} =
-        htm do
+        temple do
           reset("Reset", class: "reset-styles")
         end
 
@@ -491,7 +491,7 @@ defmodule Temple.FormTest do
 
     test "generates a submit/1 input" do
       {:safe, result} =
-        htm do
+        temple do
           submit("Submit")
         end
 
@@ -503,7 +503,7 @@ defmodule Temple.FormTest do
 
     test "generates a submit/1 input that takes a block" do
       {:safe, result} =
-        htm do
+        temple do
           submit do
             text "Submit"
           end
@@ -517,7 +517,7 @@ defmodule Temple.FormTest do
 
     test "generates a submit/2 input that takes text and opts" do
       {:safe, result} =
-        htm do
+        temple do
           submit("Submit", class: "btn")
         end
 
@@ -530,7 +530,7 @@ defmodule Temple.FormTest do
 
     test "generates a submit/2 input that takes opts and a block" do
       {:safe, result} =
-        htm do
+        temple do
           submit class: "btn" do
             text "Submit"
           end
@@ -545,7 +545,7 @@ defmodule Temple.FormTest do
 
     test "generates a phx_label/2 tag" do
       {:safe, result} =
-        htm do
+        temple do
           phx_label(:user, :name)
         end
 
@@ -557,7 +557,7 @@ defmodule Temple.FormTest do
 
     test "generates a phx_label/3 with attrs" do
       {:safe, result} =
-        htm do
+        temple do
           phx_label(:user, :name, class: "label-style")
         end
 
@@ -570,7 +570,7 @@ defmodule Temple.FormTest do
 
     test "generates a phx_label/3 with text" do
       {:safe, result} =
-        htm do
+        temple do
           phx_label(:user, :name, "Name")
         end
 
@@ -582,7 +582,7 @@ defmodule Temple.FormTest do
 
     test "generates a phx_label/3 with block" do
       {:safe, result} =
-        htm do
+        temple do
           phx_label :user, :name do
             div do
               text "Name"
@@ -598,7 +598,7 @@ defmodule Temple.FormTest do
 
     test "generates a phx_label/4 with text and opts" do
       {:safe, result} =
-        htm do
+        temple do
           phx_label(:user, :name, "Name", class: "label-style")
         end
 
@@ -611,7 +611,7 @@ defmodule Temple.FormTest do
 
     test "generates a phx_label/4 with block" do
       {:safe, result} =
-        htm do
+        temple do
           phx_label :user, :name, class: "label-style" do
             div do
               text "Name"
@@ -634,7 +634,7 @@ defmodule Temple.FormTest do
       ]
 
       {:safe, result} =
-        htm do
+        temple do
           multiple_select(:user, :name, options, class: "label-style")
         end
 
@@ -660,7 +660,7 @@ defmodule Temple.FormTest do
       ]
 
       {:safe, result} =
-        htm do
+        temple do
           select :user, :name, options, class: "label-style"
         end
 

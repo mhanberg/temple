@@ -12,7 +12,7 @@ defmodule Temple.Link do
   defmacro phx_link(opts, do: block) do
     quote do
       {:safe, content} =
-        htm do
+        temple do
           unquote(block)
         end
 
@@ -36,7 +36,7 @@ defmodule Temple.Link do
   defmacro phx_button(opts, do: block) do
     quote do
       {:safe, content} =
-        htm do
+        temple do
           unquote(block)
         end
 

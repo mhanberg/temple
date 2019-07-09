@@ -11,7 +11,7 @@ defmodule Temple do
   @doc """
   Creates a markup context.
 
-  All tags must be called inside of a `Temple.htm/1` block.
+  All tags must be called inside of a `Temple.temple/1` block.
 
   Returns a safe result of the form `{:safe, result}`
 
@@ -20,7 +20,7 @@ defmodule Temple do
   ```
   team = ["Alice", "Bob", "Carol"]
 
-  htm do
+  temple do
     for name <- team do
       div class: "text-bold" do
         text name
@@ -31,7 +31,7 @@ defmodule Temple do
   # {:safe, "<div class=\"text-bold\">Alice</div><div class=\"text-bold\">Bob</div><div class=\"text-bold\">Carol</div>"}
   ```
   """
-  defmacro htm([do: block] = _block) do
+  defmacro temple([do: block] = _block) do
     quote do
       import Kernel, except: [div: 2]
 
@@ -51,7 +51,7 @@ defmodule Temple do
   Emits a text node into the markup.
 
   ```
-  htm do
+  temple do
     div do
       text "Hello, world!"
     end
@@ -73,7 +73,7 @@ defmodule Temple do
   Emits a Phoenix partial into the markup.
 
   ```
-  htm do
+  temple do
     html lang: "en" do
       head do
         title "MyApp"
@@ -128,7 +128,7 @@ defmodule Temple do
     end
   end
 
-  htm do
+  temple do
     flex id: "my-flex" do
       div "Item 1"
       div "Item 2"

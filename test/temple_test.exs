@@ -7,7 +7,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           flex()
         end
 
@@ -18,7 +18,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           takes_children do
             div id: "dynamic-child"
           end
@@ -32,7 +32,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           takes_children do
             div id: "dynamic-child-1"
             div id: "dynamic-child-2"
@@ -47,7 +47,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           takes_children name: "mitch" do
             text @name
           end
@@ -61,7 +61,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           arbitrary_code()
         end
 
@@ -72,7 +72,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           uses_conditionals(condition: true)
           uses_conditionals(condition: false)
         end
@@ -84,7 +84,7 @@ defmodule TempleTest do
       import Component
 
       {:safe, result} =
-        htm do
+        temple do
           arbitrary_data(
             lists: [:atom, %{key: "value"}, {:status, :tuple}, "string", 1, [1, 2, 3]]
           )
@@ -100,7 +100,7 @@ defmodule TempleTest do
       bob = "hi"
 
       {:safe, result} =
-        htm do
+        temple do
           variable_as_prop(bob: bob)
         end
 
@@ -113,7 +113,7 @@ defmodule TempleTest do
       bob = "hi"
 
       {:safe, result} =
-        htm do
+        temple do
           variable_as_prop_with_block bob: bob do
             div()
           end
@@ -128,7 +128,7 @@ defmodule TempleTest do
       props = [bob: "hi"]
 
       {:safe, result} =
-        htm do
+        temple do
           variable_as_prop(props)
         end
 
@@ -141,7 +141,7 @@ defmodule TempleTest do
       props = [bob: "hi"]
 
       {:safe, result} =
-        htm do
+        temple do
           variable_as_prop_with_block props do
             div()
           end
@@ -156,7 +156,7 @@ defmodule TempleTest do
       props = %{bob: "hi"}
 
       {:safe, result} =
-        htm do
+        temple do
           variable_as_prop_with_block props do
             div()
           end

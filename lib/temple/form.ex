@@ -27,7 +27,7 @@ defmodule Temple.Form do
   ## Example
 
   ```
-  htm do
+  temple do
     form_for @conn, Routes.some_path(@conn, :create) do
       text_input form, :name
     end
@@ -118,7 +118,7 @@ defmodule Temple.Form do
   defmacro submit(do: block) do
     quote do
       {:safe, content} =
-        htm do
+        temple do
           unquote(block)
         end
 
@@ -142,7 +142,7 @@ defmodule Temple.Form do
   defmacro submit(opts, do: block) do
     quote do
       {:safe, content} =
-        htm do
+        temple do
           unquote(block)
         end
 
@@ -177,7 +177,7 @@ defmodule Temple.Form do
   defmacro phx_label(form, field, do: block) do
     quote do
       {:safe, content} =
-        htm do
+        temple do
           unquote(block)
         end
 
@@ -201,7 +201,7 @@ defmodule Temple.Form do
   defmacro phx_label(form, field, opts, do: block) do
     quote do
       {:safe, content} =
-        htm do
+        temple do
           unquote(block)
         end
 
@@ -252,7 +252,7 @@ defmodule Temple.Form do
   ## Example
 
   ```
-  htm do
+  temple do
     form_for @parent, Routes.some_path(@conn, :create) do
       text_input form, :name
 

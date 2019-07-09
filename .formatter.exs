@@ -1,6 +1,6 @@
 locals_without_parens = ~w[
-  html htm
-  head title style script
+  temple
+  html head title style script
   noscript template
   body section nav article aside h1 h2 h3 h4 h5 h6
   header footer address main

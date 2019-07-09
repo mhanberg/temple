@@ -5,7 +5,7 @@ defmodule Temple.LinkTest do
   describe "phx_link" do
     test "emits a link" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_link("hi", to: "/hello")
         end
 
@@ -16,7 +16,7 @@ defmodule Temple.LinkTest do
 
     test "emits a link when passed block that has text" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_link to: "/hello" do
             text "hi"
           end
@@ -30,7 +30,7 @@ defmodule Temple.LinkTest do
 
     test "emits a link when passed block that has more markup" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_link to: "/hello" do
             div do
               div "hi"
@@ -48,7 +48,7 @@ defmodule Temple.LinkTest do
 
     test "emits a link with additional html attributes" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_link("hi",
             to: "/hello",
             class: "phoenix",
@@ -68,7 +68,7 @@ defmodule Temple.LinkTest do
 
     test "emits a link with a non GET method" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_link("hi",
             to: "/hello",
             method: :delete
@@ -86,7 +86,7 @@ defmodule Temple.LinkTest do
   describe "phx_button" do
     test "emits a button" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_button("hi", to: "/hello")
         end
 
@@ -98,7 +98,7 @@ defmodule Temple.LinkTest do
 
     test "emits a button when passed block that has text" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_button to: "/hello" do
             text "hi"
           end
@@ -113,7 +113,7 @@ defmodule Temple.LinkTest do
 
     test "emits a button when passed block that has more markup" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_button to: "/hello" do
             div do
               div "hi"
@@ -132,7 +132,7 @@ defmodule Temple.LinkTest do
 
     test "emits a button with additional html attributes" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_button("hi",
             to: "/hello",
             class: "phoenix",
@@ -152,7 +152,7 @@ defmodule Temple.LinkTest do
 
     test "emits a button with a non GET method" do
       {:safe, actual} =
-        htm do
+        temple do
           phx_button("hi",
             to: "/hello",
             method: :delete

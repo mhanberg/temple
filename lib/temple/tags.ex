@@ -2,7 +2,7 @@ defmodule Temple.Tags do
   @moduledoc """
   The `Temple.Tags` module defines macros for all HTML5 compliant elements.
 
-  `Temple.Tags` macros must be called inside of a `Temple.htm/1` block.
+  `Temple.Tags` macros must be called inside of a `Temple.temple/1` block.
 
   ## Attributes
 
@@ -17,7 +17,7 @@ defmodule Temple.Tags do
   ## Example
 
   ```
-  htm do
+  temple do
     # empty non-void element
     div()
 
