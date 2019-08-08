@@ -30,6 +30,15 @@ defmodule Temple.TagsTest do
       assert result == "<#{unquote(tag)}>Hi</#{unquote(tag)}>"
     end
 
+    test "renders a #{tag} with escaped content" do
+      {:safe, result} =
+        temple do
+          unquote(tag)("<div>1</div>")
+        end
+
+      assert result == "<#{unquote(tag)}>&lt;div&gt;1&lt;/div&gt;</#{unquote(tag)}>"
+    end
+
     test "renders a #{tag} with attrs and content" do
       {:safe, result} =
         temple do
