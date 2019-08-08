@@ -8,7 +8,7 @@ defmodule Temple.Utils do
   def put_open_tag(buff, el, content)
       when is_binary(content) or is_number(content) or is_atom(content) do
     put_buffer(buff, "<#{el}>")
-    put_buffer(buff, content)
+    put_buffer(buff, escape_content(content))
   end
 
   def put_close_tag(buff, el) do
@@ -53,4 +53,11 @@ defmodule Temple.Utils do
   def put_buffer(buff, content), do: Agent.update(buff, &[content | &1])
   def get_buffer(buff), do: Agent.get(buff, & &1)
   def stop_buffer(buff), do: Agent.stop(buff)
+
+  def escape_content(content) do
+    content
+    |> to_string
+    |> Phoenix.HTML.html_escape()
+    |> Phoenix.HTML.safe_to_string()
+  end
 end

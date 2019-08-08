@@ -64,7 +64,7 @@ defmodule Temple do
     quote do
       Temple.Utils.put_buffer(
         var!(buff, Temple.Tags),
-        unquote(text) |> to_string |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
+        unquote(text) |> Temple.Utils.escape_content()
       )
     end
   end
