@@ -3,6 +3,25 @@ defmodule TempleTest do
   use Temple
 
   describe "custom component" do
+    test "defcomponent works when requiring the module" do
+      require Component, as: C
+
+      {:safe, result} =
+        temple do
+          C.flex()
+
+          C.flex([])
+          C.flex([], [])
+
+          C.flex do
+            text "hi"
+          end
+        end
+
+      assert result ==
+               ~s{<div class="flex"></div><div class="flex"></div><div class="flex"></div><div class="flex"></div>}
+    end
+
     test "defines a basic component" do
       import Component
 
