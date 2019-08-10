@@ -2,6 +2,8 @@
 
 ## Master
 
+## 0.1.2
+
 ### Bugfixes
 
 - Allow components to be used correctly when their module was `require`d instead of `import`ed
