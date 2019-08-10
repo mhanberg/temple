@@ -148,39 +148,33 @@ defmodule Temple do
       defmacro unquote(name)() do
         outer = unquote(Macro.escape(block))
 
-        quote do
-          _ = unquote(outer)
-        end
+        Temple.Utils.__quote__(outer)
       end
 
       defmacro unquote(name)(props_or_block)
 
       defmacro unquote(name)([{:do, inner}]) do
-        name = unquote(name)
+        outer =
+          unquote(Macro.escape(block))
+          |> Temple.Utils.__insert_props__([], inner)
 
-        quote do
-          unquote(name)([], unquote(inner))
-        end
+        Temple.Utils.__quote__(outer)
       end
 
       defmacro unquote(name)(props) do
-        name = unquote(name)
+        outer =
+          unquote(Macro.escape(block))
+          |> Temple.Utils.__insert_props__(props, nil)
 
-        quote do
-          unquote(name)(unquote(props), nil)
-        end
+        Temple.Utils.__quote__(outer)
       end
 
       defmacro unquote(name)(props, inner) do
         outer =
           unquote(Macro.escape(block))
-          |> Macro.prewalk(&Temple.Utils.insert_props(&1, props, inner))
+          |> Temple.Utils.__insert_props__(props, inner)
 
-        name = unquote(name)
-
-        quote do
-          _ = unquote(outer)
-        end
+        Temple.Utils.__quote__(outer)
       end
     end
   end

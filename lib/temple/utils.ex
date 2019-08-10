@@ -60,4 +60,13 @@ defmodule Temple.Utils do
     |> Phoenix.HTML.html_escape()
     |> Phoenix.HTML.safe_to_string()
   end
+
+  def __quote__(outer) do
+    quote do: unquote(outer)
+  end
+
+  def __insert_props__(block, props, inner) do
+    block
+    |> Macro.prewalk(&Temple.Utils.insert_props(&1, props, inner))
+  end
 end
