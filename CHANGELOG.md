@@ -1,5 +1,11 @@
 # Changelog
 
+## Master
+
+### Bugfixes
+
+- Allow components to be used correctly when their module was `require`d instead of `import`ed
+
 ## 0.1.1
 
 ### Bugfixes
