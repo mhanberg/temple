@@ -22,7 +22,7 @@ locals_without_parens = ~w[
   checkbox color_input checkbox color_input date_input date_select datetime_local_input
   datetime_select email_input file_input hidden_input number_input password_input range_input
   search_input telephone_input textarea text_input time_input time_select url_input
-  reset submit phx_label multiple_select select phx_link phx_button
+  reset submit phx_label radio_button multiple_select select phx_link phx_button
 ]a |> Enum.map(fn e -> {e, :*} end)
 
 [
