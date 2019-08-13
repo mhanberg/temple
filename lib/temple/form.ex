@@ -220,6 +220,18 @@ defmodule Temple.Form do
   end
 
   @doc """
+  Please see `Phoenix.HTML.Form.radio_button/4` for details.
+  """
+  defmacro radio_button(form, field, value, attrs \\ []) do
+    quote do
+      {:safe, input} =
+        Phoenix.HTML.Form.radio_button(unquote_splicing([form, field, value, attrs]))
+
+      Utils.put_buffer(var!(buff, Temple.Tags), input)
+    end
+  end
+
+  @doc """
   Please see `Phoenix.HTML.Form.multiple_select/4` for details.
   """
   defmacro multiple_select(form, field, options, attrs \\ []) do

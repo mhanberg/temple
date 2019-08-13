@@ -394,6 +394,25 @@ defmodule Temple.FormTest do
       assert result =~ ~s{name="bob"}
     end
 
+    test "generates a radio button" do
+      conn = %Plug.Conn{}
+      action = "/"
+      opts = []
+
+      {:safe, result} =
+        temple do
+          form_for conn, action, opts do
+            radio_button(form, :bob, "1", class: "radio-styles")
+          end
+        end
+
+      assert result =~ ~s{<input}
+      assert result =~ ~s{type="radio"}
+      assert result =~ ~s{class="radio-styles"}
+      assert result =~ ~s{name="bob"}
+      assert result =~ ~s{value="1"}
+    end
+
     test "generates a text_area/2" do
       conn = %Plug.Conn{}
       action = "/"
