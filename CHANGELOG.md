@@ -2,7 +2,9 @@
 
 ## Master
 
-- Import `radio_buttton/4`
+## 0.2.0
+
+- Wrap `radio_buttton/4` from Phoenix.HTML.Form
 
 ## 0.1.2
 
