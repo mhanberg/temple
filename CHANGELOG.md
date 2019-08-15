@@ -2,6 +2,8 @@
 
 ## Master
 
+- Support for defining additional HTML elements
+
 ## 0.2.0
 
 - Wrap `radio_buttton/4` from Phoenix.HTML.Form

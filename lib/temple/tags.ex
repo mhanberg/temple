@@ -58,7 +58,7 @@ defmodule Temple.Tags do
   ```
   """
 
-  @nonvoid_elements ~w[
+  @default_nonvoid_elements ~w[
     html
     head title style script
     noscript template
@@ -76,10 +76,16 @@ defmodule Temple.Tags do
     details summary menuitem menu
   ]a
 
-  @void_elements ~w[
+  @default_void_elements ~w[
     meta link base
     area br col embed hr img input keygen param source track wbr
   ]a
+
+  @additional_nonvoid_elements Application.get_env(:temple, :nonvoid_elements, [])
+  @additional_void_elements Application.get_env(:temple, :void_elements, [])
+
+  @nonvoid_elements @default_nonvoid_elements ++ @additional_nonvoid_elements
+  @void_elements @default_void_elements ++ @additional_void_elements
 
   @doc false
   def nonvoid_elements, do: @nonvoid_elements

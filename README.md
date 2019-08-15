@@ -77,6 +77,22 @@ temple do
 end
 ```
 
+### Custom elements
+
+Temple can be extended with custom HTML elements.
+
+In config.exs:
+
+```elixir
+config :temple,
+  nonvoid_elements: ~w[
+    svg path
+  ]a,
+  void_elements: ~w[
+    somethingcustom
+  ]a
+```
+
 ### Phoenix.HTML
 
 Temple provides macros for working with the helpers provided by the [Phoenix.HTML](https://www.github.com/phoenixframework/phoenix_html) package.
