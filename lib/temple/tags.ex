@@ -59,7 +59,6 @@ defmodule Temple.Tags do
   """
 
   @nonvoid_elements ~w[
-    html
     head title style script
     noscript template
     body section nav article aside h1 h2 h3 h4 h5 h6
@@ -154,6 +153,60 @@ defmodule Temple.Tags do
           "<#{unquote(el)}#{Temple.Utils.compile_attrs(attrs)}>"
         )
       end
+    end
+  end
+
+  @doc if File.exists?("./tmp/docs/html.txt"), do: File.read!("./tmp/docs/html.txt")
+  defmacro unquote(:html)() do
+    quote do
+      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(:html), [])
+      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
+    end
+  end
+
+  defmacro unquote(:html)(attrs_or_content_or_block)
+
+  defmacro unquote(:html)([{:do, inner}]) do
+    quote do
+      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(:html), [])
+      _ = unquote(inner)
+      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
+    end
+  end
+
+  defmacro unquote(:html)(attrs_or_content) do
+    quote do
+      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+
+      Temple.Utils.put_open_tag(
+        var!(buff, Temple.Tags),
+        unquote(:html),
+        unquote(attrs_or_content)
+      )
+
+      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
+    end
+  end
+
+  defmacro unquote(:html)(attrs_or_content, block_or_attrs)
+
+  defmacro unquote(:html)(attrs, [{:do, inner}] = _block) do
+    quote do
+      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([:html, attrs]))
+      _ = unquote(inner)
+      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
+    end
+  end
+
+  defmacro unquote(:html)(content, attrs) do
+    quote do
+      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([:html, attrs]))
+      text unquote(content)
+      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
     end
   end
 end

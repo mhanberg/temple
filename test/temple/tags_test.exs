@@ -2,6 +2,73 @@ defmodule Temple.TagsTest do
   use ExUnit.Case, async: true
   use Temple
 
+  # Seperate tests for the html tag
+
+  test "renders a html" do
+    {:safe, result} =
+      temple do
+        html()
+      end
+
+    assert result == ~s{<!DOCTYPE html><html></html>}
+  end
+
+  test "renders a html with attrs" do
+    {:safe, result} =
+      temple do
+        html(class: "hello")
+      end
+
+    assert result == ~s{<!DOCTYPE html><html class="hello"></html>}
+  end
+
+  test "renders a html with content" do
+    {:safe, result} =
+      temple do
+        html "Hi"
+      end
+
+    assert result == "<!DOCTYPE html><html>Hi</html>"
+  end
+
+  test "renders a html with escaped content" do
+    {:safe, result} =
+      temple do
+        html("<div>1</div>")
+      end
+
+    assert result == "<!DOCTYPE html><html>&lt;div&gt;1&lt;/div&gt;</html>"
+  end
+
+  test "renders a html with attrs and content" do
+    {:safe, result} =
+      temple do
+        html("Hi", class: "hello")
+      end
+
+    assert result == ~s{<!DOCTYPE html><html class="hello">Hi</html>}
+  end
+
+  test "renders a html with a block" do
+    {:safe, result} =
+      temple do
+        html(do: div())
+      end
+
+    assert result == ~s{<!DOCTYPE html><html><div></div></html>}
+  end
+
+  test "renders a html with attrs and a block" do
+    {:safe, result} =
+      temple do
+        html(class: "hello") do
+          div()
+        end
+      end
+
+    assert result == ~s{<!DOCTYPE html><html class="hello"><div></div></html>}
+  end
+
   for tag <- Temple.Tags.nonvoid_elements() do
     test "renders a #{tag}" do
       {:safe, result} =
