@@ -2,6 +2,8 @@
 
 ## Master
 
+## v0.3.0
+
 - `Temple.Tags.html` now prepends the doctype, making it valid HTML
 - `Temple.Elements` module
 
