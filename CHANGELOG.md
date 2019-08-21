@@ -2,6 +2,13 @@
 
 ## Master
 
+- `Temple.Tags.html` now prepends the doctype, making it valid HTML
+- `Temple.Elements` module
+
+### Breaking
+
+- `Temple.Tags.html` no longer accepts content as the first argument. A legal `html` tag must contain only a single `head` and a single `body`.
+
 ## 0.2.0
 
 - Wrap `radio_buttton/4` from Phoenix.HTML.Form
