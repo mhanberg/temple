@@ -8,7 +8,7 @@ defmodule Mix.Tasks.UpdateMdnDocs do
   def run(_) do
     IO.puts("Downloading MDN documentation")
 
-    (Temple.Tags.nonvoid_elements() ++ Temple.Tags.void_elements())
+    (Temple.Tags.nonvoid_elements() ++ Temple.Tags.void_elements() ++ ["html"])
     |> Enum.map(fn el ->
       Task.async(fn ->
         el = to_string(el)

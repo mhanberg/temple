@@ -88,125 +88,44 @@ defmodule Temple.Tags do
   for el <- @nonvoid_elements do
     @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
     defmacro unquote(el)() do
-      el = unquote(el)
-
-      quote do
-        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), [])
-        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
-      end
+      Temple.Elements.nonvoid_element(unquote(el))
     end
 
     defmacro unquote(el)(attrs_or_content_or_block)
 
-    defmacro unquote(el)([{:do, inner}]) do
-      el = unquote(el)
-
-      quote do
-        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), [])
-        _ = unquote(inner)
-        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
-      end
+    defmacro unquote(el)([{:do, _inner}] = block) do
+      Temple.Elements.nonvoid_element(unquote(el), block)
     end
 
     defmacro unquote(el)(attrs_or_content) do
-      el = unquote(el)
-
-      quote do
-        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), unquote(attrs_or_content))
-        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
-      end
+      Temple.Elements.nonvoid_element(unquote(el), attrs_or_content)
     end
 
     defmacro unquote(el)(attrs_or_content, block_or_attrs)
 
-    defmacro unquote(el)(attrs, [{:do, inner}] = _block) do
-      el = unquote(el)
-
-      quote do
-        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
-        _ = unquote(inner)
-        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
-      end
+    defmacro unquote(el)(attrs, [{:do, _inner}] = block) do
+      Temple.Elements.nonvoid_element(unquote(el), attrs, block)
     end
 
     defmacro unquote(el)(content, attrs) do
-      el = unquote(el)
-
-      quote do
-        Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
-        text unquote(content)
-        Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
-      end
+      Temple.Elements.nonvoid_element(unquote(el), content, attrs)
     end
   end
 
   for el <- @void_elements do
     @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
     defmacro unquote(el)(attrs \\ []) do
-      el = unquote(el)
-
-      quote do
-        attrs = unquote(attrs)
-
-        Temple.Utils.put_buffer(
-          var!(buff, Temple.Tags),
-          "<#{unquote(el)}#{Temple.Utils.compile_attrs(attrs)}>"
-        )
-      end
+      Temple.Elements.void_element(unquote(el), attrs)
     end
   end
 
   @doc if File.exists?("./tmp/docs/html.txt"), do: File.read!("./tmp/docs/html.txt")
-  defmacro unquote(:html)() do
-    quote do
-      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(:html), [])
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
-    end
-  end
+  defmacro html(attrs \\ [], [{:do, _inner}] = block) do
+    doc_type =
+      quote do
+        Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+      end
 
-  defmacro unquote(:html)(attrs_or_content_or_block)
-
-  defmacro unquote(:html)([{:do, inner}]) do
-    quote do
-      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(:html), [])
-      _ = unquote(inner)
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
-    end
-  end
-
-  defmacro unquote(:html)(attrs_or_content) do
-    quote do
-      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
-
-      Temple.Utils.put_open_tag(
-        var!(buff, Temple.Tags),
-        unquote(:html),
-        unquote(attrs_or_content)
-      )
-
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
-    end
-  end
-
-  defmacro unquote(:html)(attrs_or_content, block_or_attrs)
-
-  defmacro unquote(:html)(attrs, [{:do, inner}] = _block) do
-    quote do
-      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([:html, attrs]))
-      _ = unquote(inner)
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
-    end
-  end
-
-  defmacro unquote(:html)(content, attrs) do
-    quote do
-      Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([:html, attrs]))
-      text unquote(content)
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(:html))
-    end
+    [doc_type, Temple.Elements.nonvoid_element(:html, attrs, block)]
   end
 end
