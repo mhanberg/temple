@@ -10,7 +10,7 @@ defmodule Temple.Link do
   Please see `Phoenix.HTML.Link.link/2` for details.
   """
   defmacro phx_link(opts, do: block) do
-    quote do
+    quote location: :keep do
       {:safe, content} =
         temple do
           unquote(block)
@@ -23,7 +23,7 @@ defmodule Temple.Link do
   end
 
   defmacro phx_link(content, opts) do
-    quote do
+    quote location: :keep do
       {:safe, link} = HTML.Link.link(unquote_splicing([content, opts]))
 
       Utils.put_buffer(var!(buff, Temple.Tags), link)
@@ -34,7 +34,7 @@ defmodule Temple.Link do
   Please see `Phoenix.HTML.Link.button/2` for details.
   """
   defmacro phx_button(opts, do: block) do
-    quote do
+    quote location: :keep do
       {:safe, content} =
         temple do
           unquote(block)
@@ -47,7 +47,7 @@ defmodule Temple.Link do
   end
 
   defmacro phx_button(content, opts) do
-    quote do
+    quote location: :keep do
       {:safe, link} = HTML.Link.button(unquote_splicing([content, opts]))
 
       Utils.put_buffer(var!(buff, Temple.Tags), link)

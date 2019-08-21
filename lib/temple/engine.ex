@@ -12,7 +12,7 @@ defmodule Temple.Engine do
 
   # your_app_web.ex
   def view do
-    quote do
+    quote location: :keep do
       # ...
       use Temple # Replaces the call to import Phoenix.HTML
     end
@@ -75,7 +75,7 @@ defmodule Temple.Engine do
       |> Code.string_to_quoted!(file: path)
       |> handle_assigns()
 
-    quote do
+    quote location: :keep do
       use Temple
 
       temple do: unquote(template)
@@ -86,7 +86,7 @@ defmodule Temple.Engine do
     quoted
     |> Macro.prewalk(fn
       {:@, _, [{key, _, _}]} ->
-        quote do
+        quote location: :keep do
           case Access.fetch(var!(assigns), unquote(key)) do
             {:ok, val} ->
               val

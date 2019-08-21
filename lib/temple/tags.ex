@@ -1,4 +1,6 @@
 defmodule Temple.Tags do
+  require Temple.Elements
+
   @moduledoc """
   The `Temple.Tags` module defines macros for all HTML5 compliant elements.
 
@@ -23,7 +25,7 @@ defmodule Temple.Tags do
 
     # non-void element with keyword list attributes
     div class: "text-red", id: "my-el"
-  #
+
     # non-void element with map attributes
     div %{:class => "text-red", "id" => "my-el"}
 
@@ -87,42 +89,18 @@ defmodule Temple.Tags do
 
   for el <- @nonvoid_elements do
     @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
-    defmacro unquote(el)() do
-      Temple.Elements.nonvoid_element(unquote(el))
-    end
-
-    defmacro unquote(el)(attrs_or_content_or_block)
-
-    defmacro unquote(el)([{:do, _inner}] = block) do
-      Temple.Elements.nonvoid_element(unquote(el), block)
-    end
-
-    defmacro unquote(el)(attrs_or_content) do
-      Temple.Elements.nonvoid_element(unquote(el), attrs_or_content)
-    end
-
-    defmacro unquote(el)(attrs_or_content, block_or_attrs)
-
-    defmacro unquote(el)(attrs, [{:do, _inner}] = block) do
-      Temple.Elements.nonvoid_element(unquote(el), attrs, block)
-    end
-
-    defmacro unquote(el)(content, attrs) do
-      Temple.Elements.nonvoid_element(unquote(el), content, attrs)
-    end
+    Temple.Elements.defelement(unquote(el), :nonvoid)
   end
 
   for el <- @void_elements do
     @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
-    defmacro unquote(el)(attrs \\ []) do
-      Temple.Elements.void_element(unquote(el), attrs)
-    end
+    Temple.Elements.defelement(unquote(el), :void)
   end
 
   @doc if File.exists?("./tmp/docs/html.txt"), do: File.read!("./tmp/docs/html.txt")
   defmacro html(attrs \\ [], [{:do, _inner}] = block) do
     doc_type =
-      quote do
+      quote location: :keep do
         Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
       end
 

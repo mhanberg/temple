@@ -2,17 +2,29 @@ defmodule Temple.Utils do
   @moduledoc false
 
   def put_open_tag(buff, el, attrs) when is_list(attrs) or is_map(attrs) do
+    el = el |> snake_to_kebab
+
     put_buffer(buff, "<#{el}#{compile_attrs(attrs)}>")
   end
 
   def put_open_tag(buff, el, content)
       when is_binary(content) or is_number(content) or is_atom(content) do
+    el = el |> snake_to_kebab
+
     put_buffer(buff, "<#{el}>")
     put_buffer(buff, escape_content(content))
   end
 
   def put_close_tag(buff, el) do
+    el = el |> snake_to_kebab
+
     put_buffer(buff, "</#{el}>")
+  end
+
+  def put_void_tag(buff, el, attrs) do
+    el = el |> snake_to_kebab
+
+    put_buffer(buff, "<#{el}#{Temple.Utils.compile_attrs(attrs)}>")
   end
 
   def from_safe({:safe, partial}) do
@@ -28,7 +40,7 @@ defmodule Temple.Utils do
   end
 
   def insert_props({:@, _, [{name, _, _}]}, props, _) when is_atom(name) do
-    quote do
+    quote location: :keep do
       Access.get(unquote_splicing([props, name]))
     end
   end
@@ -39,7 +51,7 @@ defmodule Temple.Utils do
 
   def compile_attrs(attrs) do
     for {name, value} <- attrs, into: "" do
-      name = name |> to_string() |> String.replace("_", "-")
+      name = snake_to_kebab(name)
 
       " " <> name <> "=\"" <> to_string(value) <> "\""
     end
@@ -61,8 +73,11 @@ defmodule Temple.Utils do
     |> Phoenix.HTML.safe_to_string()
   end
 
+  defp snake_to_kebab(stringable),
+    do: stringable |> to_string() |> String.replace("_", "-")
+
   def __quote__(outer) do
-    quote do: unquote(outer)
+    quote [location: :keep], do: unquote(outer)
   end
 
   def __insert_props__(block, props, inner) do

@@ -1,6 +1,6 @@
 defmodule Temple do
   defmacro __using__(_) do
-    quote do
+    quote location: :keep do
       import Temple
       import Temple.Tags
       import Temple.Form
@@ -32,7 +32,7 @@ defmodule Temple do
   ```
   """
   defmacro temple([do: block] = _block) do
-    quote do
+    quote location: :keep do
       import Kernel, except: [div: 2]
 
       with {:ok, var!(buff, Temple.Tags)} <- Temple.Utils.start_buffer([]) do
@@ -61,7 +61,7 @@ defmodule Temple do
   ```
   """
   defmacro text(text) do
-    quote do
+    quote location: :keep do
       Temple.Utils.put_buffer(
         var!(buff, Temple.Tags),
         unquote(text) |> Temple.Utils.escape_content()
@@ -96,7 +96,7 @@ defmodule Temple do
   ```
   """
   defmacro partial(partial) do
-    quote do
+    quote location: :keep do
       Temple.Utils.put_buffer(
         var!(buff, Temple.Tags),
         unquote(partial) |> Temple.Utils.from_safe()
@@ -144,7 +144,7 @@ defmodule Temple do
   ```
   """
   defmacro defcomponent(name, [do: _] = block) do
-    quote do
+    quote location: :keep do
       defmacro unquote(name)() do
         outer = unquote(Macro.escape(block))
 
