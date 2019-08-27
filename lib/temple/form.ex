@@ -117,12 +117,7 @@ defmodule Temple.Form do
   """
   defmacro submit(do: block) do
     quote location: :keep do
-      {:safe, content} =
-        temple do
-          unquote(block)
-        end
-
-      {:safe, input} = Phoenix.HTML.Form.submit(do: content)
+      {:safe, input} = Phoenix.HTML.Form.submit(do: temple(do: unquote(block)))
 
       Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
@@ -141,12 +136,7 @@ defmodule Temple.Form do
   """
   defmacro submit(opts, do: block) do
     quote location: :keep do
-      {:safe, content} =
-        temple do
-          unquote(block)
-        end
-
-      {:safe, input} = Phoenix.HTML.Form.submit(unquote(opts), do: content)
+      {:safe, input} = Phoenix.HTML.Form.submit(unquote(opts), do: temple(do: unquote(block)))
 
       Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
@@ -176,12 +166,8 @@ defmodule Temple.Form do
   """
   defmacro phx_label(form, field, do: block) do
     quote location: :keep do
-      {:safe, content} =
-        temple do
-          unquote(block)
-        end
-
-      {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field]), do: content)
+      {:safe, input} =
+        Phoenix.HTML.Form.label(unquote_splicing([form, field]), do: temple(do: unquote(block)))
 
       Utils.put_buffer(var!(buff, Temple.Tags), input)
     end
@@ -200,12 +186,10 @@ defmodule Temple.Form do
   """
   defmacro phx_label(form, field, opts, do: block) do
     quote location: :keep do
-      {:safe, content} =
-        temple do
-          unquote(block)
-        end
-
-      {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, opts]), do: content)
+      {:safe, input} =
+        Phoenix.HTML.Form.label(unquote_splicing([form, field, opts]),
+          do: temple(do: unquote(block))
+        )
 
       Utils.put_buffer(var!(buff, Temple.Tags), input)
     end

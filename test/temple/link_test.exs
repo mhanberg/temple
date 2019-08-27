@@ -40,9 +40,9 @@ defmodule Temple.LinkTest do
 
       assert String.starts_with?(actual, ~s{<a})
       assert actual =~ ~s{href="/hello"}
-      assert actual =~ ~s{&lt;div&gt;&lt;div&gt;}
+      assert actual =~ ~s{<div><div>}
       assert actual =~ ~s{hi}
-      assert actual =~ ~s{&lt;/div&gt;&lt;/div&gt;}
+      assert actual =~ ~s{</div></div>}
       assert String.ends_with?(actual, ~s{</a>})
     end
 
@@ -124,9 +124,9 @@ defmodule Temple.LinkTest do
       assert String.starts_with?(actual, ~s{<button})
       assert actual =~ ~s{data-to="/hello"}
       assert actual =~ ~s{data-method="post"}
-      assert actual =~ ~s{&lt;div&gt;&lt;div&gt;}
+      assert actual =~ ~s{<div><div>}
       assert actual =~ ~s{hi}
-      assert actual =~ ~s{&lt;/div&gt;&lt;/div&gt;}
+      assert actual =~ ~s{</div></div>}
       assert String.ends_with?(actual, ~s{</button>})
     end
 
