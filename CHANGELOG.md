@@ -2,6 +2,10 @@
 
 ## Master
 
+## v0.3.1
+
+- `Temple.Form.phx_label`, `Temple.Form.submit`, `Temple.Link.phx_button`, `Temple.Link.phx_link` now correctly parse blocks. Before this, they would escape anything passed to the block instead of accepting it as raw HTML.
+
 ## v0.3.0
 
 - `Temple.Tags.html` now prepends the doctype, making it valid HTML
