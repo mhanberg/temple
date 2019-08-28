@@ -524,13 +524,17 @@ defmodule Temple.FormTest do
       {:safe, result} =
         temple do
           submit do
-            text "Submit"
+            div do
+              text "Submit"
+            end
           end
         end
 
       assert String.starts_with?(result, ~s{<button})
       assert result =~ ~s{type="submit}
+      assert result =~ ~s{<div>}
       assert result =~ ~s{Submit}
+      assert result =~ ~s{</div>}
       assert String.ends_with?(result, ~s{</button>})
     end
 
@@ -551,14 +555,18 @@ defmodule Temple.FormTest do
       {:safe, result} =
         temple do
           submit class: "btn" do
-            text "Submit"
+            div do
+              text "Submit"
+            end
           end
         end
 
       assert String.starts_with?(result, ~s{<button})
       assert result =~ ~s{type="submit}
       assert result =~ ~s{class="btn"}
+      assert result =~ ~s{<div>}
       assert result =~ ~s{Submit}
+      assert result =~ ~s{</div>}
       assert String.ends_with?(result, ~s{</button>})
     end
 
@@ -611,7 +619,9 @@ defmodule Temple.FormTest do
 
       assert String.starts_with?(result, ~s{<label})
       assert result =~ ~s{for="user_name"}
+      assert result =~ ~s{<div>}
       assert result =~ ~s{Name}
+      assert result =~ ~s{</div>}
       assert String.ends_with?(result, ~s{</label>})
     end
 
@@ -641,7 +651,9 @@ defmodule Temple.FormTest do
       assert String.starts_with?(result, ~s{<label})
       assert result =~ ~s{for="user_name"}
       assert result =~ ~s{class="label-style"}
+      assert result =~ ~s{<div>}
       assert result =~ ~s{Name}
+      assert result =~ ~s{</div>}
       assert String.ends_with?(result, ~s{</label>})
     end
 
