@@ -20,8 +20,7 @@ defmodule Temple.MixProject do
         deps: [
           phoenix_html: "https://hexdocs.pm/phoenix_html/"
         ]
-      ],
-      dialyzer: [plt_add_apps: [:mix, :phoenix, :html_sanitize_ex]]
+      ]
     ]
   end
 
@@ -59,8 +58,7 @@ defmodule Temple.MixProject do
       {:ex_doc, "~> 0.0", only: [:dev], runtime: false},
       {:html_sanitize_ex, "~> 1.3", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.4", optional: true},
-      {:plug, "~> 1.8", optional: true},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
+      {:plug, "~> 1.8", optional: true}
     ]
   end
 end
