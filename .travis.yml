@@ -13,5 +13,4 @@ cache:
     - _build
     - deps
 script:
-  - travis_wait mix dialyzer --plt
   - mix test
