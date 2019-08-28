@@ -11,12 +11,9 @@ defmodule Temple.Link do
   """
   defmacro phx_link(opts, do: block) do
     quote location: :keep do
-      {:safe, content} =
-        temple do
-          unquote(block)
-        end
-
-      {:safe, link} = HTML.Link.link(content, unquote(opts))
+      {:safe, link} =
+        temple(do: unquote(block))
+        |> HTML.Link.link(unquote(opts))
 
       Utils.put_buffer(var!(buff, Temple.Tags), link)
     end
@@ -35,12 +32,7 @@ defmodule Temple.Link do
   """
   defmacro phx_button(opts, do: block) do
     quote location: :keep do
-      {:safe, content} =
-        temple do
-          unquote(block)
-        end
-
-      {:safe, link} = HTML.Link.button(content, unquote(opts))
+      {:safe, link} = HTML.Link.button(temple(do: unquote(block)), unquote(opts))
 
       Utils.put_buffer(var!(buff, Temple.Tags), link)
     end
