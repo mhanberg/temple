@@ -22,7 +22,7 @@ end
 
 Using Temple is a as simple as using the DSL inside of an `temple/1` block. This returns a safe result of the form `{:safe, html_string}`.
 
-See the [documentation](https://hexdocs.pm/temple/0.1.0/Temple.Tags.html) for more details.
+See the [documentation](https://hexdocs.pm/temple/Temple.Tags.html) for more details.
 
 ```elixir
 use Temple
@@ -60,7 +60,7 @@ Temple provides an API for creating custom components that act as custom HTML el
 
 These components can be given `props` that are available inside the component definition as module attributes. The contents of a components `do` block are available as a special `@children` attribute.
 
-See the [documentation](https://hexdocs.pm/temple/0.1.0/Temple.html#defcomponent/2) for more details.
+See the [documentation](https://hexdocs.pm/temple/Temple.html#defcomponent/2) for more details.
 
 ```elixir
 defcomponent :flex do
@@ -84,7 +84,7 @@ Temple provides macros for working with the helpers provided by the [Phoenix.HTM
 
 Most of the macros are purely wrappers, while the semantics of some are changed to work with Temple.
 
-See the [documentation](https://hexdocs.pm/temple/0.1.0/Temple.Form.html#content) for more details.
+See the [documentation](https://hexdocs.pm/temple/Temple.Form.html#content) for more details.
 
 ```elixir
 temple do
@@ -98,7 +98,7 @@ end
 
 Add the templating engine to your Phoenix configuration.
 
-See the [documentation](https://hexdocs.pm/temple/0.1.0/Temple.Engine.html#content) for more details.
+See the [documentation](https://hexdocs.pm/temple/Temple.Engine.html#content) for more details.
 
 ```elixir
 # config.exs
