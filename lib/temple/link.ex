@@ -15,7 +15,7 @@ defmodule Temple.Link do
         temple(do: unquote(block))
         |> HTML.Link.link(unquote(opts))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Html), link)
     end
   end
 
@@ -23,7 +23,7 @@ defmodule Temple.Link do
     quote location: :keep do
       {:safe, link} = HTML.Link.link(unquote_splicing([content, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Html), link)
     end
   end
 
@@ -36,7 +36,7 @@ defmodule Temple.Link do
         temple(do: unquote(block))
         |> HTML.Link.button(unquote(opts))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Html), link)
     end
   end
 
@@ -44,7 +44,7 @@ defmodule Temple.Link do
     quote location: :keep do
       {:safe, link} = HTML.Link.button(unquote_splicing([content, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), link)
+      Utils.put_buffer(var!(buff, Temple.Html), link)
     end
   end
 end

@@ -9,7 +9,7 @@ defmodule Mix.Tasks.Temple.UpdateMdnDocs do
   def run(_) do
     IO.puts("Downloading HTML documentation")
 
-    (Temple.Tags.nonvoid_elements() ++ Temple.Tags.void_elements() ++ ["html"])
+    (Temple.Html.nonvoid_elements() ++ Temple.Html.void_elements() ++ ["html"])
     |> Enum.map(
       &to_doc(to_string(&1), "./tmp/docs/html/", fn el -> base_url(:html, html_page(el)) end)
     )

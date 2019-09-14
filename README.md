@@ -22,7 +22,7 @@ end
 
 Using Temple is a as simple as using the DSL inside of an `temple/1` block. This returns a safe result of the form `{:safe, html_string}`.
 
-See the [documentation](https://hexdocs.pm/temple/Temple.Tags.html) for more details.
+See the [documentation](https://hexdocs.pm/temple/Temple.Html.html) for more details.
 
 ```elixir
 use Temple

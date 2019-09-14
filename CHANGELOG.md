@@ -6,6 +6,10 @@
 - `mix temple.convert` Mix task
 - (dev) rename `mix update_mdn_docs` to `mix temple.update_mdn_docs` and don't ship it to hex
 
+### Breaking
+
+- Rename Temple.Tags to Temple.Html
+
 ## v0.3.1
 
 - `Temple.Form.phx_label`, `Temple.Form.submit`, `Temple.Link.phx_button`, `Temple.Link.phx_link` now correctly parse blocks. Before this, they would escape anything passed to the block instead of accepting it as raw HTML.

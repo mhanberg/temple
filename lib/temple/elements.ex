@@ -1,6 +1,6 @@
 defmodule Temple.Elements do
   @moduledoc """
-  This module contains the primitives used to generate the macros in the `Temple.Tags` and `Temple.Svg` modules. 
+  This module contains the primitives used to generate the macros in the `Temple.Html` and `Temple.Svg` modules. 
   """
 
   @doc """
@@ -61,8 +61,8 @@ defmodule Temple.Elements do
   @doc false
   def nonvoid_element(el) do
     quote location: :keep do
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), [])
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
+      Temple.Utils.put_open_tag(var!(buff, Temple.Html), unquote(el), [])
+      Temple.Utils.put_close_tag(var!(buff, Temple.Html), unquote(el))
     end
   end
 
@@ -71,16 +71,16 @@ defmodule Temple.Elements do
 
   def nonvoid_element(el, [{:do, inner}]) do
     quote location: :keep do
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), [])
+      Temple.Utils.put_open_tag(var!(buff, Temple.Html), unquote(el), [])
       _ = unquote(inner)
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
+      Temple.Utils.put_close_tag(var!(buff, Temple.Html), unquote(el))
     end
   end
 
   def nonvoid_element(el, attrs_or_content) do
     quote location: :keep do
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote(el), unquote(attrs_or_content))
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
+      Temple.Utils.put_open_tag(var!(buff, Temple.Html), unquote(el), unquote(attrs_or_content))
+      Temple.Utils.put_close_tag(var!(buff, Temple.Html), unquote(el))
     end
   end
 
@@ -89,24 +89,24 @@ defmodule Temple.Elements do
 
   def nonvoid_element(el, attrs, [{:do, inner}] = _block) do
     quote location: :keep do
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
+      Temple.Utils.put_open_tag(var!(buff, Temple.Html), unquote_splicing([el, attrs]))
       _ = unquote(inner)
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
+      Temple.Utils.put_close_tag(var!(buff, Temple.Html), unquote(el))
     end
   end
 
   def nonvoid_element(el, content, attrs) do
     quote location: :keep do
-      Temple.Utils.put_open_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
+      Temple.Utils.put_open_tag(var!(buff, Temple.Html), unquote_splicing([el, attrs]))
       text unquote(content)
-      Temple.Utils.put_close_tag(var!(buff, Temple.Tags), unquote(el))
+      Temple.Utils.put_close_tag(var!(buff, Temple.Html), unquote(el))
     end
   end
 
   @doc false
   def void_element(el, attrs \\ []) do
     quote location: :keep do
-      Temple.Utils.put_void_tag(var!(buff, Temple.Tags), unquote_splicing([el, attrs]))
+      Temple.Utils.put_void_tag(var!(buff, Temple.Html), unquote_splicing([el, attrs]))
     end
   end
 end

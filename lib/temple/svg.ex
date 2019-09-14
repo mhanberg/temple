@@ -4,7 +4,7 @@ defmodule Temple.Svg do
   @moduledoc """
   The `Temple.Svg` module defines macros for all SVG elements.
 
-  Usage is the same as `Temple.Tags`.
+  Usage is the same as `Temple.Html`.
   """
 
   @elements ~w[

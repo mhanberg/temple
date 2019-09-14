@@ -1,8 +1,8 @@
 defmodule Temple.HtmlToTemple do
   @moduledoc false
 
-  @tags Temple.Tags.void_elements() ++
-          Temple.Tags.nonvoid_elements() ++ Temple.Svg.elements() ++ [:html]
+  @tags Temple.Html.void_elements() ++
+          Temple.Html.nonvoid_elements() ++ Temple.Svg.elements() ++ [:html]
 
   def parse(doc) do
     result =

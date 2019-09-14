@@ -1,16 +1,16 @@
-defmodule Temple.Tags do
+defmodule Temple.Html do
   require Temple.Elements
 
   @moduledoc """
-  The `Temple.Tags` module defines macros for all HTML5 compliant elements.
+  The `Temple.Html` module defines macros for all HTML5 compliant elements.
 
-  `Temple.Tags` macros must be called inside of a `Temple.temple/1` block.
+  `Temple.Html` macros must be called inside of a `Temple.temple/1` block.
 
   *Note*: Only the lowest arity macros are documented. Void elements are defined as a 1-arity macro and non-void elements are defined as 0, 1, and 2-arity macros.
 
   ## Attributes
 
-  Tags accept a keyword list or a map of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
+  Html accept a keyword list or a map of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
 
   ## Children
 
@@ -103,7 +103,7 @@ defmodule Temple.Tags do
   defmacro html(attrs \\ [], [{:do, _inner}] = block) do
     doc_type =
       quote location: :keep do
-        Temple.Utils.put_buffer(var!(buff, Temple.Tags), "<!DOCTYPE html>")
+        Temple.Utils.put_buffer(var!(buff, Temple.Html), "<!DOCTYPE html>")
       end
 
     [doc_type, Temple.Elements.nonvoid_element(:html, attrs, block)]
