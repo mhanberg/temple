@@ -2,13 +2,15 @@
 
 ## Master
 
+## 0.4.0
+
 - `Temple.Svg` module
 - `mix temple.convert` Mix task
 - (dev) rename `mix update_mdn_docs` to `mix temple.update_mdn_docs` and don't ship it to hex
 
 ### Breaking
 
-- Rename Temple.Tags to Temple.Html
+- Rename `Temple.Tags` to `Temple.Html`
 
 ## v0.3.1
 
