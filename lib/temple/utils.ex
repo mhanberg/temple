@@ -74,7 +74,10 @@ defmodule Temple.Utils do
   end
 
   defp snake_to_kebab(stringable),
-    do: stringable |> to_string() |> String.replace("_", "-")
+    do: stringable |> to_string() |> String.replace_trailing("_", "") |> String.replace("_", "-")
+
+  def kebab_to_snake(stringable),
+    do: stringable |> to_string() |> String.replace("-", "_")
 
   def __quote__(outer) do
     quote [location: :keep], do: unquote(outer)
@@ -84,4 +87,10 @@ defmodule Temple.Utils do
     block
     |> Macro.prewalk(&Temple.Utils.insert_props(&1, props, inner))
   end
+
+  def doc_path(:html, el), do: "./tmp/docs/html/#{el}.txt"
+  def doc_path(:svg, el), do: "./tmp/docs/svg/#{el}.txt"
+
+  def to_valid_tag(tag),
+    do: tag |> to_string |> String.replace_trailing("_", "") |> String.replace("_", "-")
 end

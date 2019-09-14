@@ -40,13 +40,14 @@ defmodule Temple.MixProject do
       maintainers: ["Mitchell Hanberg"],
       licenses: ["MIT"],
       links: %{github: "https://github.com/mhanberg/temple"},
+      exclude_patterns: ["temple.update_mdn_docs.ex"],
       files: ~w(lib priv CHANGELOG.md LICENSE mix.exs README.md .formatter.exs)
     ]
   end
 
   defp aliases do
     [
-      docs: ["update_mdn_docs", "docs"]
+      docs: ["temple.update_mdn_docs", "docs"]
     ]
   end
 
@@ -58,7 +59,8 @@ defmodule Temple.MixProject do
       {:ex_doc, "~> 0.0", only: [:dev], runtime: false},
       {:html_sanitize_ex, "~> 1.3", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.4", optional: true},
-      {:plug, "~> 1.8", optional: true}
+      {:plug, "~> 1.8", optional: true},
+      {:floki, "~> 0.23.0"}
     ]
   end
 end

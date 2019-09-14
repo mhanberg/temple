@@ -2,9 +2,6 @@ defmodule Temple do
   defmacro __using__(_) do
     quote location: :keep do
       import Temple
-      import Temple.Tags
-      import Temple.Form
-      import Temple.Link
     end
   end
 
@@ -33,14 +30,18 @@ defmodule Temple do
   """
   defmacro temple([do: block] = _block) do
     quote location: :keep do
-      import Kernel, except: [div: 2]
+      import Kernel, except: [div: 2, use: 1, use: 2]
+      import Temple.Html
+      import Temple.Svg
+      import Temple.Form
+      import Temple.Link
 
-      with {:ok, var!(buff, Temple.Tags)} <- Temple.Utils.start_buffer([]) do
+      with {:ok, var!(buff, Temple.Html)} <- Temple.Utils.start_buffer([]) do
         unquote(block)
 
-        markup = Temple.Utils.get_buffer(var!(buff, Temple.Tags))
+        markup = Temple.Utils.get_buffer(var!(buff, Temple.Html))
 
-        :ok = Temple.Utils.stop_buffer(var!(buff, Temple.Tags))
+        :ok = Temple.Utils.stop_buffer(var!(buff, Temple.Html))
 
         Temple.Utils.join_and_escape(markup)
       end
@@ -63,7 +64,7 @@ defmodule Temple do
   defmacro text(text) do
     quote location: :keep do
       Temple.Utils.put_buffer(
-        var!(buff, Temple.Tags),
+        var!(buff, Temple.Html),
         unquote(text) |> Temple.Utils.escape_content()
       )
     end
@@ -98,7 +99,7 @@ defmodule Temple do
   defmacro partial(partial) do
     quote location: :keep do
       Temple.Utils.put_buffer(
-        var!(buff, Temple.Tags),
+        var!(buff, Temple.Html),
         unquote(partial) |> Temple.Utils.from_safe()
       )
     end

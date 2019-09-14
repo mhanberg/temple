@@ -2,7 +2,7 @@ defmodule Temple.ElementsTest do
   use ExUnit.Case, async: true
   import Temple.Elements, only: [defelement: 2]
   import Temple, only: [temple: 1, text: 1]
-  import Temple.Tags, only: [option: 2]
+  import Temple.Html, only: [option: 2]
 
   defelement(:my_select, :nonvoid)
   defelement(:my_input, :void)

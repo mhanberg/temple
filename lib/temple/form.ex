@@ -45,9 +45,9 @@ defmodule Temple.Form do
     quote location: :keep do
       var!(form) = HTML.Form.form_for(unquote_splicing([form_data, action, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), var!(form) |> HTML.Safe.to_iodata())
+      Utils.put_buffer(var!(buff, Temple.Html), var!(form) |> HTML.Safe.to_iodata())
       _ = unquote(block)
-      Utils.put_buffer(var!(buff, Temple.Tags), "</form>")
+      Utils.put_buffer(var!(buff, Temple.Html), "</form>")
     end
   end
 
@@ -83,7 +83,7 @@ defmodule Temple.Form do
         {:safe, input} =
           apply(Phoenix.HTML.Form, unquote(helper), [unquote_splicing([form, field, opts])])
 
-        Utils.put_buffer(var!(buff, Temple.Tags), input)
+        Utils.put_buffer(var!(buff, Temple.Html), input)
       end
     end
   end
@@ -97,7 +97,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.textarea(unquote_splicing([form, field, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -108,7 +108,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.reset(unquote_splicing([value, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -119,7 +119,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.submit(do: temple(do: unquote(block)))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -127,7 +127,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.submit(unquote(value))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -138,7 +138,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.submit(unquote(opts), do: temple(do: unquote(block)))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -146,7 +146,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.submit(unquote_splicing([value, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -157,7 +157,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -169,7 +169,7 @@ defmodule Temple.Form do
       {:safe, input} =
         Phoenix.HTML.Form.label(unquote_splicing([form, field]), do: temple(do: unquote(block)))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -177,7 +177,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, text_or_opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -191,7 +191,7 @@ defmodule Temple.Form do
           do: temple(do: unquote(block))
         )
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -199,7 +199,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.label(unquote_splicing([form, field, text, opts]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -211,7 +211,7 @@ defmodule Temple.Form do
       {:safe, input} =
         Phoenix.HTML.Form.radio_button(unquote_splicing([form, field, value, attrs]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -223,7 +223,7 @@ defmodule Temple.Form do
       {:safe, input} =
         Phoenix.HTML.Form.multiple_select(unquote_splicing([form, field, options, attrs]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -234,7 +234,7 @@ defmodule Temple.Form do
     quote location: :keep do
       {:safe, input} = Phoenix.HTML.Form.select(unquote_splicing([form, field, options, attrs]))
 
-      Utils.put_buffer(var!(buff, Temple.Tags), input)
+      Utils.put_buffer(var!(buff, Temple.Html), input)
     end
   end
 
@@ -293,7 +293,7 @@ defmodule Temple.Form do
 
           hidden_input
         end)
-        |> Enum.each(&Utils.put_buffer(var!(buff, Temple.Tags), &1))
+        |> Enum.each(&Utils.put_buffer(var!(buff, Temple.Html), &1))
 
         var!(inner_form) = form
 

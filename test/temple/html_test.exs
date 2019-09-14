@@ -1,4 +1,4 @@
-defmodule Temple.TagsTest do
+defmodule Temple.HtmlTest do
   use ExUnit.Case, async: true
   use Temple
 
@@ -22,7 +22,7 @@ defmodule Temple.TagsTest do
     assert result == ~s{<!DOCTYPE html><html class="hello"><div></div></html>}
   end
 
-  for tag <- Temple.Tags.nonvoid_elements() do
+  for tag <- Temple.Html.nonvoid_elements() do
     test "renders a #{tag}" do
       {:safe, result} =
         temple do
@@ -92,7 +92,7 @@ defmodule Temple.TagsTest do
     end
   end
 
-  for tag <- Temple.Tags.void_elements() do
+  for tag <- Temple.Html.void_elements() do
     test "renders a #{tag}" do
       {:safe, result} =
         temple do
