@@ -153,6 +153,14 @@ html lang: "en" do
 end
 ```
 
+### Tasks
+
+#### temple.convert
+
+This task can be used to convert plain HTML and SVG into Temple syntax. Input is taken from stdin or from a file and the output is sent to stdout.
+
+`cat index.html | mix temple.convert > index.html.exs`
+
 ### Formatter
 
 To include Temple's formatter configuration, add `:temple` to your `.formatter.exs`.
