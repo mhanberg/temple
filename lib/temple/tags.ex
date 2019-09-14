@@ -6,6 +6,8 @@ defmodule Temple.Tags do
 
   `Temple.Tags` macros must be called inside of a `Temple.temple/1` block.
 
+  *Note*: Only the lowest arity macros are documented. Void elements are defined as a 1-arity macro and non-void elements are defined as 0, 1, and 2-arity macros.
+
   ## Attributes
 
   Tags accept a keyword list or a map of attributes to be emitted into the element's opening tag. Multi-word attribute keys written in snake_case (`data_url`) will be transformed into kebab-case (`data-url`).
@@ -88,16 +90,16 @@ defmodule Temple.Tags do
   def void_elements, do: @void_elements
 
   for el <- @nonvoid_elements do
-    @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
+    @doc if File.exists?("./tmp/docs/html/#{el}.txt"), do: File.read!("./tmp/docs/html/#{el}.txt")
     Temple.Elements.defelement(unquote(el), :nonvoid)
   end
 
   for el <- @void_elements do
-    @doc if File.exists?("./tmp/docs/#{el}.txt"), do: File.read!("./tmp/docs/#{el}.txt")
+    @doc if File.exists?("./tmp/docs/html/#{el}.txt"), do: File.read!("./tmp/docs/html/#{el}.txt")
     Temple.Elements.defelement(unquote(el), :void)
   end
 
-  @doc if File.exists?("./tmp/docs/html.txt"), do: File.read!("./tmp/docs/html.txt")
+  @doc if File.exists?("./tmp/docs/html/html.txt"), do: File.read!("./tmp/docs/html/html.txt")
   defmacro html(attrs \\ [], [{:do, _inner}] = block) do
     doc_type =
       quote location: :keep do

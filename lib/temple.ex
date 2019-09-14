@@ -2,9 +2,6 @@ defmodule Temple do
   defmacro __using__(_) do
     quote location: :keep do
       import Temple
-      import Temple.Tags
-      import Temple.Form
-      import Temple.Link
     end
   end
 
@@ -33,7 +30,11 @@ defmodule Temple do
   """
   defmacro temple([do: block] = _block) do
     quote location: :keep do
-      import Kernel, except: [div: 2]
+      import Kernel, except: [div: 2, use: 1, use: 2]
+      import Temple.Tags
+      import Temple.Svg
+      import Temple.Form
+      import Temple.Link
 
       with {:ok, var!(buff, Temple.Tags)} <- Temple.Utils.start_buffer([]) do
         unquote(block)

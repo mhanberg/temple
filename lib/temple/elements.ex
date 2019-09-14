@@ -1,12 +1,12 @@
 defmodule Temple.Elements do
   @moduledoc """
-  This module contains the primitives used to generate the macros in the `Temple.Tags` module. 
+  This module contains the primitives used to generate the macros in the `Temple.Tags` and `Temple.Svg` modules. 
   """
 
   @doc """
   Defines an element.
 
-  *Note*: Underscores are converted to hypens.
+  *Note*: Underscores are converted to dashes.
 
   ```elixir
   defmodule MyElements do
@@ -26,6 +26,7 @@ defmodule Temple.Elements do
         Temple.Elements.nonvoid_element(unquote(name))
       end
 
+      @doc false
       defmacro unquote(name)(attrs_or_content_or_block)
 
       defmacro unquote(name)([{:do, _inner}] = block) do
@@ -36,6 +37,7 @@ defmodule Temple.Elements do
         Temple.Elements.nonvoid_element(unquote(name), attrs_or_content)
       end
 
+      @doc false
       defmacro unquote(name)(attrs_or_content, block_or_attrs)
 
       defmacro unquote(name)(attrs, [{:do, _inner}] = block) do
