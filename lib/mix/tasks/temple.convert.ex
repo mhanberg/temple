@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Temple.Convert do
   use Mix.Task
+  @preferred_cli_env :dev
   @shortdoc "Converts HTML to Temple syntax"
   @moduledoc """
   Converts HTML to Temple syntax
