@@ -6,7 +6,7 @@ defmodule Temple.MixProject do
       app: :temple,
       name: "Temple",
       description: "An HTML DSL for Elixir and Phoenix",
-      version: "0.4.0",
+      version: "0.4.1",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.7",

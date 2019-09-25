@@ -2,6 +2,10 @@
 
 ## Master
 
+## 0.4.1
+
+- Only use Floki in dev and test environments
+
 ## 0.4.0
 
 - `Temple.Svg` module
