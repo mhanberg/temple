@@ -2,6 +2,10 @@
 
 ## Master
 
+## 0.4.2
+
+- temple.convert task no longer fails when parsing HTML fragments.
+
 ## 0.4.1
 
 - Only use Floki in dev and test environments
