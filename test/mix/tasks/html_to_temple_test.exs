@@ -86,4 +86,59 @@ defmodule Mix.Tasks.HtmlToTempleTest do
            end
            """
   end
+
+  test "parses HTML fragments" do
+    html = """
+    <section class="phx-hero">
+      <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
+      <p>A productive web framework that<br/>
+        does not compromise speed or maintainability.</p>
+    </section>
+    <section class="row">
+      <article class="column">
+        <h2>Resources</h2>
+        <ul>
+          <li>
+            <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
+          </li>
+        </ul>
+      </article>
+    </section>
+    """
+
+    {:ok, result} = Temple.HtmlToTemple.parse(html)
+
+    assert result === """
+           section class: "phx-hero" do
+             h1 do
+               text "<%= gettext \"Welcome to %{name}!\", name: \"Phoenix\" %>"
+             end
+
+             p do
+               text "A productive web framework that"
+
+               br()
+
+               text "
+               does not compromise speed or maintainability."
+             end
+           end
+
+           section class: "row" do
+             article class: "column" do
+               h2 do
+                 text "Resources"
+               end
+
+               ul do
+                 li do
+                   a href: "https://hexdocs.pm/phoenix/overview.html" do
+                     text "Guides & Docs"
+                   end
+                 end
+               end
+             end
+           end
+           """
+  end
 end
