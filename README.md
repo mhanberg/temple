@@ -1,6 +1,6 @@
 # ![](temple.png)
 
-[![Build Status](https://travis-ci.com/mhanberg/temple.svg?branch=master)](https://travis-ci.com/mhanberg/temple)
+[![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 [![Slack](https://img.shields.io/badge/chat-Slack-blue)](https://elixir-lang.slack.com/messages/CMH6MA4UD)
 
