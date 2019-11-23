@@ -1,0 +1,35 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    name: Linting (${{matrix.elixir}}/${{matrix.otp}})
+
+    strategy:
+      matrix:
+        otp: [21.x]
+        elixir: [1.7.x, 1.8.x, 1.9.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-elixir@v1.0.0
+      with:
+        otp-version: ${{matrix.otp}}
+        elixir-version: ${{matrix.elixir}}
+    - uses: actions/cache@v1
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
+
+    - name: Install Dependencies
+      run: mix deps.get
+
+    - name: Run Formatter
+      run: mix format --check-formatted
+
+    - name: Run Tests
+      run: mix test
+
