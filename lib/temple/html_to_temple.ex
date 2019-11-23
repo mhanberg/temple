@@ -8,7 +8,9 @@ defmodule Temple.HtmlToTemple do
     result =
       doc
       |> Floki.parse()
-      |> do_parse(0)
+      |> List.wrap()
+      |> Enum.map(&do_parse(&1, 0))
+      |> Enum.join("\n")
 
     {:ok, result}
   end
