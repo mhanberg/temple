@@ -1,10 +1,13 @@
 name: CI
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches: master
 
 jobs:
-  verify:
+  tests:
     runs-on: ubuntu-latest
-    name: Linting (${{matrix.elixir}}/${{matrix.otp}})
+    name: Test (${{matrix.elixir}}/${{matrix.otp}})
 
     strategy:
       matrix:
@@ -29,9 +32,31 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: mix deps.get
 
-    - name: Run Formatter
-      run: mix format --check-formatted
-
     - name: Run Tests
       run: mix test
+
+  formatter:
+    runs-on: ubuntu-latest
+    name: Formatter (${{matrix.elixir}}/${{matrix.otp}})
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-elixir@v1.0.0
+      with:
+        otp-version: 21.x
+        elixir-version: 1.9.x
+    - uses: actions/cache@v1
+      id: cache
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
+
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: mix deps.get
+
+    - name: Run Formatter
+      run: mix format --check-formatted
 
