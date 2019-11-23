@@ -18,6 +18,7 @@ jobs:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
     - uses: actions/cache@v1
+      id: cache
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
@@ -25,6 +26,7 @@ jobs:
           ${{ runner.os }}-mix-
 
     - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: mix deps.get
 
     - name: Run Formatter
