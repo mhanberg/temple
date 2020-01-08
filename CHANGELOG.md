@@ -2,6 +2,10 @@
 
 ## Master
 
+## 0.4.3
+
+- Compiles when Phoenix is not included in the host application.
+
 ## 0.4.2
 
 - temple.convert task no longer fails when parsing HTML fragments.
