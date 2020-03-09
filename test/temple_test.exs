@@ -99,6 +99,47 @@ defmodule TempleTest do
       assert result == ~s{<div></div><span></span>}
     end
 
+    test "can pass arbitrary data as params" do
+      import Component
+
+      {:safe, result} =
+        temple do
+          takes_params("foo", :bar, 1)
+        end
+
+      assert result ==
+               ~s{<p>foo</p><p>bar</p><p>1</p>}
+    end
+
+    test "can pass a variable as a param" do
+      import Component
+
+      num = 3
+
+      {:safe, result} =
+        temple do
+          takes_params("foo", :bar, num)
+        end
+
+      assert result ==
+               ~s{<p>foo</p><p>bar</p><p>3</p>}
+    end
+
+    test "can pass a variable as a param to a component with a block" do
+      import Component
+
+      bob = "hi"
+
+      {:safe, result} =
+        temple do
+          variable_as_param_with_block bob do
+            div()
+          end
+        end
+
+      assert result == ~s{<div id="hi"><div></div></div>}
+    end
+
     test "can pass arbitrary data as props" do
       import Component
 
@@ -186,6 +227,32 @@ defmodule TempleTest do
         end
 
       assert result == ~s|<div id="hi"><div></div></div><div id="hi"><div></div></div>|
+    end
+
+    test "cann pass params and props with a block" do
+      import Component
+
+      {:safe, result} =
+        temple do
+          params_with_props_and_block :bar, prop: :bar do
+            span "foo"
+          end
+        end
+
+      assert result == ~s|<div id="bar"><span>foo</span></div>|
+    end
+
+    test "cann pass params and a map as props with a block" do
+      import Component
+
+      {:safe, result} =
+        temple do
+          params_with_props_and_block :baz, %{prop: :baz} do
+            span "foo"
+          end
+        end
+
+      assert result == ~s|<div id="baz"><span>foo</span></div>|
     end
   end
 end

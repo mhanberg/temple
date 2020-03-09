@@ -88,6 +88,25 @@ defmodule Temple.Utils do
     |> Macro.prewalk(&Temple.Utils.insert_props(&1, props, inner))
   end
 
+  def __insert_params__(block, params) do
+    param_names =
+      Enum.map(params, fn {param_name, _} ->
+        param_name
+      end)
+
+    Macro.prewalk(block, fn
+      {var, _, _} = node ->
+        if var in param_names do
+          Keyword.get(params, var)
+        else
+          node
+        end
+
+      node ->
+        node
+    end)
+  end
+
   def doc_path(:html, el), do: "./tmp/docs/html/#{el}.txt"
   def doc_path(:svg, el), do: "./tmp/docs/svg/#{el}.txt"
 

@@ -13,6 +13,18 @@ defmodule Component do
     end
   end
 
+  defcomponent :takes_params, [foo, bar_baz, num] do
+    p do: text(foo)
+
+    case bar_baz do
+      :bar -> p do: text("bar")
+      :baz -> p do: text("baz")
+      _ -> nil
+    end
+
+    p do: text(num)
+  end
+
   defcomponent :arbitrary_code do
     num = 1..10 |> Enum.reduce(0, fn x, sum -> x + sum end)
 
@@ -55,12 +67,26 @@ defmodule Component do
     end
   end
 
+  defcomponent :params_with_props_and_block, [param] do
+    div id: param do
+      if param == @prop do
+        @children
+      end
+    end
+  end
+
   defcomponent :variable_as_prop do
     div id: @bob
   end
 
   defcomponent :variable_as_prop_with_block do
     div id: @bob do
+      @children
+    end
+  end
+
+  defcomponent :variable_as_param_with_block, [bob] do
+    div id: bob do
       @children
     end
   end

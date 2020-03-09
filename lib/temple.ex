@@ -144,36 +144,73 @@ defmodule Temple do
   #          </div>"}
   ```
   """
-  defmacro defcomponent(name, [do: _] = block) do
+  defmacro defcomponent(name, params \\ [], [do: _] = block) do
+    param = fn name ->
+      Macro.var(name, __MODULE__)
+    end
+
     quote location: :keep do
-      defmacro unquote(name)() do
-        outer = unquote(Macro.escape(block))
+      defmacro unquote(name)(unquote_splicing(params)) do
+        params =
+          unquote(
+            Enum.map(params, fn {param_name, _, _} = param ->
+              {param_name, param}
+            end)
+          )
+
+        outer =
+          unquote(Macro.escape(block))
+          |> Temple.Utils.__insert_params__(params)
 
         Temple.Utils.__quote__(outer)
       end
 
       defmacro unquote(name)(props_or_block)
 
-      defmacro unquote(name)([{:do, inner}]) do
+      defmacro unquote(name)(unquote_splicing(params ++ [[{:do, param.(:inner)}]])) do
+        params =
+          unquote(
+            Enum.map(params, fn {param_name, _, _} = param ->
+              {param_name, param}
+            end)
+          )
+
         outer =
           unquote(Macro.escape(block))
           |> Temple.Utils.__insert_props__([], inner)
+          |> Temple.Utils.__insert_params__(params)
 
         Temple.Utils.__quote__(outer)
       end
 
-      defmacro unquote(name)(props) do
+      defmacro unquote(name)(unquote_splicing(params ++ [param.(:props)])) do
+        params =
+          unquote(
+            Enum.map(params, fn {param_name, _, _} = param ->
+              {param_name, param}
+            end)
+          )
+
         outer =
           unquote(Macro.escape(block))
           |> Temple.Utils.__insert_props__(props, nil)
+          |> Temple.Utils.__insert_params__(params)
 
         Temple.Utils.__quote__(outer)
       end
 
-      defmacro unquote(name)(props, inner) do
+      defmacro unquote(name)(unquote_splicing(params ++ [param.(:props), param.(:inner)])) do
+        params =
+          unquote(
+            Enum.map(params, fn {param_name, _, _} = param ->
+              {param_name, param}
+            end)
+          )
+
         outer =
           unquote(Macro.escape(block))
           |> Temple.Utils.__insert_props__(props, inner)
+          |> Temple.Utils.__insert_params__(params)
 
         Temple.Utils.__quote__(outer)
       end
