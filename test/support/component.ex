@@ -13,7 +13,7 @@ defmodule Component do
     end
   end
 
-  defcomponent :takes_params, [foo, bar_baz, num] do
+  defcomponent takes_params(foo, bar_baz, num) do
     p do: text(foo)
 
     case bar_baz do
@@ -67,7 +67,7 @@ defmodule Component do
     end
   end
 
-  defcomponent :params_with_props_and_block, [param] do
+  defcomponent params_with_props_and_block(param) do
     div id: param do
       if param == @prop do
         @children
@@ -85,7 +85,7 @@ defmodule Component do
     end
   end
 
-  defcomponent :variable_as_param_with_block, [bob] do
+  defcomponent variable_as_param_with_block(bob) do
     div id: bob do
       @children
     end

@@ -144,7 +144,13 @@ defmodule Temple do
   #          </div>"}
   ```
   """
-  defmacro defcomponent(name, params \\ [], [do: _] = block) do
+  defmacro defcomponent(component, [do: _] = block) do
+    {name, params} =
+      case component do
+        {name, _, params} -> {name, params}
+        name -> {name, []}
+      end
+
     param = fn name ->
       Macro.var(name, __MODULE__)
     end
