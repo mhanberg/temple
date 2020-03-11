@@ -89,18 +89,9 @@ defmodule Temple.Utils do
   end
 
   def __insert_params__(block, params) do
-    param_names =
-      Enum.map(params, fn {param_name, _} ->
-        param_name
-      end)
-
     Macro.prewalk(block, fn
-      {var, _, _} = node ->
-        if var in param_names do
-          Keyword.get(params, var)
-        else
-          node
-        end
+      {var, _, _} = node when is_atom(var) ->
+        Keyword.get(params, var, node)
 
       node ->
         node
