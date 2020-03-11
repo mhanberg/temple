@@ -104,6 +104,14 @@ See the [documentation](https://hexdocs.pm/temple/Temple.Engine.html#content) fo
 # config.exs
 config :phoenix, :template_engines, exs: Temple.Engine
 
+# config/dev.exs
+config :your_app, YourAppWeb.Endpoint,
+  live_reload: [
+    patterns: [
+      ~r"lib/your_app_web/templates/.*(exs)$"
+    ]
+  ]
+
 # your_app_web.ex
 def view do
   quote do
@@ -151,20 +159,6 @@ html lang: "en" do
     script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
   end
 end
-```
-
-Update your config to live-reload the template files.
-```elixir
-# config/dev.exs
-...
-config :your_app, YourAppWeb.Endpoint,
-  live_reload: [
-    patterns: [
-      # ...
-      ~r"lib/your_app_web/templates/.*(exs)$"
-    ]
-  ]
-...
 ```
 
 ### Tasks
