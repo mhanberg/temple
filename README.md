@@ -161,7 +161,6 @@ config :your_app, YourAppWeb.Endpoint,
   live_reload: [
     patterns: [
       # ...
-      # replaces ~r"lib/you_app_web/templates/.*(eex)$"
       ~r"lib/your_app_web/templates/.*(exs)$"
     ]
   ]
