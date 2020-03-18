@@ -104,6 +104,14 @@ See the [documentation](https://hexdocs.pm/temple/Temple.Engine.html#content) fo
 # config.exs
 config :phoenix, :template_engines, exs: Temple.Engine
 
+# config/dev.exs
+config :your_app, YourAppWeb.Endpoint,
+  live_reload: [
+    patterns: [
+      ~r"lib/your_app_web/templates/.*(exs)$"
+    ]
+  ]
+
 # your_app_web.ex
 def view do
   quote do

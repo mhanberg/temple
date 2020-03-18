@@ -10,6 +10,14 @@ defmodule Temple.Engine do
   # config.exs
   config :phoenix, :template_engines, exs: Temple.Engine
 
+  # config/dev.exs
+  config :your_app, YourAppWeb.Endpoint,
+    live_reload: [
+      patterns: [
+        ~r"lib/your_app_web/templates/.*(exs)$"
+      ]
+    ]
+
   # your_app_web.ex
   def view do
     quote location: :keep do
@@ -21,7 +29,7 @@ defmodule Temple.Engine do
 
   ## Usage
 
-  Temple templates use the `.exs` extension, because they are written with pure Elixir! 
+  Temple templates use the `.exs` extension, because they are written with pure Elixir!
 
   `assigns` (@conn, etc) are handled the same as normal `Phoenix.HTML.Engine` templates.
 
