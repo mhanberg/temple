@@ -22,8 +22,6 @@ defmodule Temple.Svg do
   def elements(), do: @elements
 
   for el <- @elements do
-    @doc if File.exists?("./tmp/docs/svg/#{Temple.Utils.to_valid_tag(el)}.txt"),
-           do: File.read!("./tmp/docs/svg/#{Temple.Utils.to_valid_tag(el)}.txt")
     Temple.Elements.defelement(unquote(el), :nonvoid)
   end
 end

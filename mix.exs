@@ -12,7 +12,6 @@ defmodule Temple.MixProject do
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases(),
       source_url: "https://github.com/mhanberg/temple",
       docs: [
         main: "Temple",
@@ -42,12 +41,6 @@ defmodule Temple.MixProject do
       links: %{github: "https://github.com/mhanberg/temple"},
       exclude_patterns: ["temple.update_mdn_docs.ex"],
       files: ~w(lib priv CHANGELOG.md LICENSE mix.exs README.md .formatter.exs)
-    ]
-  end
-
-  defp aliases do
-    [
-      docs: ["temple.update_mdn_docs", "docs"]
     ]
   end
 
