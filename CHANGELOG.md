@@ -2,6 +2,11 @@
 
 ## Master
 
+## 0.4.4
+
+- Removes unnecessary plug dependency.
+- Bumps some other dependencies.
+
 ## 0.4.3
 
 - Compiles when Phoenix is not included in the host application.
