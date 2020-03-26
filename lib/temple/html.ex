@@ -90,16 +90,13 @@ defmodule Temple.Html do
   def void_elements, do: @void_elements
 
   for el <- @nonvoid_elements do
-    @doc if File.exists?("./tmp/docs/html/#{el}.txt"), do: File.read!("./tmp/docs/html/#{el}.txt")
     Temple.Elements.defelement(unquote(el), :nonvoid)
   end
 
   for el <- @void_elements do
-    @doc if File.exists?("./tmp/docs/html/#{el}.txt"), do: File.read!("./tmp/docs/html/#{el}.txt")
     Temple.Elements.defelement(unquote(el), :void)
   end
 
-  @doc if File.exists?("./tmp/docs/html/html.txt"), do: File.read!("./tmp/docs/html/html.txt")
   defmacro html(attrs \\ [], [{:do, _inner}] = block) do
     doc_type =
       quote location: :keep do
