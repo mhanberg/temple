@@ -114,7 +114,7 @@ defmodule Temple do
 
   Components accept a keyword list or a map of assigns and can be referenced in the body of the component by a module attribute of the same name.
 
-  This works exactly the same as EEx templates.
+  This works exactly the same as EEx templates. The whole list or map of assigns can be accessed by the special `@props` assign.
 
   ## Children
 
