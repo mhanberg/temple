@@ -2,6 +2,11 @@
 
 ## Master
 
+## 0.5.0
+
+- Introduce `@assigns` assign
+- Join markup with a newline instead of empty string
+
 ## 0.4.4
 
 - Removes unnecessary plug dependency.
