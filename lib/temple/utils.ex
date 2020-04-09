@@ -62,7 +62,7 @@ defmodule Temple.Utils do
   end
 
   def join_and_escape(markup) do
-    markup |> Enum.reverse() |> Enum.join("") |> Phoenix.HTML.raw()
+    markup |> Enum.reverse() |> Enum.join("\n") |> Phoenix.HTML.raw()
   end
 
   def start_buffer(initial_buffer), do: Agent.start(fn -> initial_buffer end)

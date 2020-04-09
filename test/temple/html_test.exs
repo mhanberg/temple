@@ -1,6 +1,7 @@
 defmodule Temple.HtmlTest do
   use ExUnit.Case, async: true
   use Temple
+  use Temple.Support.Utils
 
   test "renders a html with a block" do
     {:safe, result} =

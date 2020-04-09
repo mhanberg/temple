@@ -1,6 +1,7 @@
 defmodule Temple.LinkTest do
   use ExUnit.Case, async: true
   use Temple
+  use Temple.Support.Utils
 
   describe "phx_link" do
     test "emits a link" do
