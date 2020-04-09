@@ -76,6 +76,32 @@ defmodule TempleTest do
                ~s{<div><div id="static-child-1"></div>mitch<div id="static-child-2"></div></div>}
     end
 
+    test "can access props list" do
+      import Component
+
+      props = [foo: "bar", hello: "world"]
+
+      {:safe, result} =
+        temple do
+          lists_props(props)
+        end
+
+      assert result == inspect(props)
+    end
+
+    test "can access props map" do
+      import Component
+
+      props = %{foo: "bar", hello: "world"}
+
+      {:safe, result} =
+        temple do
+          lists_props(props)
+        end
+
+      assert result == inspect(props)
+    end
+
     test "can have arbitrary code inside the definition" do
       import Component
 
