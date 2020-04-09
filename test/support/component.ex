@@ -13,6 +13,10 @@ defmodule Component do
     end
   end
 
+  defcomponent :lists_props do
+    partial inspect(@props) |> Phoenix.HTML.raw()
+  end
+
   defcomponent :arbitrary_code do
     num = 1..10 |> Enum.reduce(0, fn x, sum -> x + sum end)
 

@@ -39,6 +39,10 @@ defmodule Temple.Utils do
     inner
   end
 
+  def insert_props({:@, _, [{:props, _, _}]}, props, _) do
+    props
+  end
+
   def insert_props({:@, _, [{name, _, _}]}, props, _) when is_atom(name) do
     quote location: :keep do
       Access.get(unquote_splicing([props, name]))
