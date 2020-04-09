@@ -58,7 +58,7 @@ end
 
 Temple provides an API for creating custom components that act as custom HTML elements.
 
-These components can be given `props` that are available inside the component definition as module attributes. The contents of a components `do` block are available as a special `@children` attribute.
+These components can be given `assigns` that are available inside the component definition as module attributes. The contents of a components `do` block are available as a special `@children` assign.
 
 See the [documentation](https://hexdocs.pm/temple/Temple.html#defcomponent/2) for more details.
 

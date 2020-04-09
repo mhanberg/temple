@@ -13,8 +13,8 @@ defmodule Component do
     end
   end
 
-  defcomponent :lists_props do
-    partial inspect(@props) |> Phoenix.HTML.raw()
+  defcomponent :lists_assigns do
+    partial inspect(@assigns) |> Phoenix.HTML.raw()
   end
 
   defcomponent :arbitrary_code do

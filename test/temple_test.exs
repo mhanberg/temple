@@ -76,30 +76,30 @@ defmodule TempleTest do
                ~s{<div><div id="static-child-1"></div>mitch<div id="static-child-2"></div></div>}
     end
 
-    test "can access props list" do
+    test "can access assigns list" do
       import Component
 
-      props = [foo: "bar", hello: "world"]
+      assigns = [foo: "bar", hello: "world"]
 
       {:safe, result} =
         temple do
-          lists_props(props)
+          lists_assigns(assigns)
         end
 
-      assert result == inspect(props)
+      assert result == inspect(assigns)
     end
 
-    test "can access props map" do
+    test "can access assigns map" do
       import Component
 
-      props = %{foo: "bar", hello: "world"}
+      assigns = %{foo: "bar", hello: "world"}
 
       {:safe, result} =
         temple do
-          lists_props(props)
+          lists_assigns(assigns)
         end
 
-      assert result == inspect(props)
+      assert result == inspect(assigns)
     end
 
     test "can have arbitrary code inside the definition" do
@@ -125,7 +125,7 @@ defmodule TempleTest do
       assert result == ~s{<div></div><span></span>}
     end
 
-    test "can pass arbitrary data as props" do
+    test "can pass arbitrary data as assigns" do
       import Component
 
       {:safe, result} =
@@ -167,27 +167,27 @@ defmodule TempleTest do
       assert result == ~s|<div id="hi"><div></div></div>|
     end
 
-    test "can pass all of the props as a variable" do
+    test "can pass all of the assigns as a variable" do
       import Component
 
-      props = [bob: "hi"]
+      assigns = [bob: "hi"]
 
       {:safe, result} =
         temple do
-          variable_as_prop(props)
+          variable_as_prop(assigns)
         end
 
       assert result == ~s|<div id="hi"></div>|
     end
 
-    test "can pass all of the props as a variable with a block" do
+    test "can pass all of the assigns as a variable with a block" do
       import Component
 
-      props = [bob: "hi"]
+      assigns = [bob: "hi"]
 
       {:safe, result} =
         temple do
-          variable_as_prop_with_block props do
+          variable_as_prop_with_block assigns do
             div()
           end
         end
@@ -195,14 +195,14 @@ defmodule TempleTest do
       assert result == ~s|<div id="hi"><div></div></div>|
     end
 
-    test "can pass a map as props with a block" do
+    test "can pass a map as assigns with a block" do
       import Component
 
-      props = %{bob: "hi"}
+      assigns = %{bob: "hi"}
 
       {:safe, result} =
         temple do
-          variable_as_prop_with_block props do
+          variable_as_prop_with_block assigns do
             div()
           end
 
