@@ -52,7 +52,7 @@ defmodule Temple.MixProject do
       {:ex_doc, "~> 0.0", only: [:dev], runtime: false},
       {:html_sanitize_ex, "~> 1.3", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.4", optional: true},
-      {:floki, "~> 0.23.0", only: [:dev, :test], runtime: false}
+      {:floki, "~> 0.26.0", only: [:dev, :test], runtime: false}
     ]
   end
 end
