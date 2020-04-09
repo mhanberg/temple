@@ -35,21 +35,21 @@ defmodule Temple.Utils do
     partial |> Phoenix.HTML.html_escape() |> Phoenix.HTML.safe_to_string()
   end
 
-  def insert_props({:@, _, [{:children, _, _}]}, _, inner) do
+  def insert_assigns({:@, _, [{:children, _, _}]}, _, inner) do
     inner
   end
 
-  def insert_props({:@, _, [{:props, _, _}]}, props, _) do
-    props
+  def insert_assigns({:@, _, [{:assigns, _, _}]}, assigns, _) do
+    assigns
   end
 
-  def insert_props({:@, _, [{name, _, _}]}, props, _) when is_atom(name) do
+  def insert_assigns({:@, _, [{name, _, _}]}, assigns, _) when is_atom(name) do
     quote location: :keep do
-      Access.get(unquote_splicing([props, name]))
+      Access.get(unquote_splicing([assigns, name]))
     end
   end
 
-  def insert_props(ast, _, _), do: ast
+  def insert_assigns(ast, _, _), do: ast
 
   def compile_attrs([]), do: ""
 
@@ -87,9 +87,9 @@ defmodule Temple.Utils do
     quote [location: :keep], do: unquote(outer)
   end
 
-  def __insert_props__(block, props, inner) do
+  def __insert_assigns__(block, assigns, inner) do
     block
-    |> Macro.prewalk(&Temple.Utils.insert_props(&1, props, inner))
+    |> Macro.prewalk(&Temple.Utils.insert_assigns(&1, assigns, inner))
   end
 
   def doc_path(:html, el), do: "./tmp/docs/html/#{el}.txt"

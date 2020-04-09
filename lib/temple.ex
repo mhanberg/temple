@@ -114,7 +114,7 @@ defmodule Temple do
 
   Components accept a keyword list or a map of assigns and can be referenced in the body of the component by a module attribute of the same name.
 
-  This works exactly the same as EEx templates. The whole list or map of assigns can be accessed by the special `@props` assign.
+  This works exactly the same as EEx templates. The whole list or map of assigns can be accessed by a special assign called `@assigns`.
 
   ## Children
 
@@ -152,28 +152,28 @@ defmodule Temple do
         Temple.Utils.__quote__(outer)
       end
 
-      defmacro unquote(name)(props_or_block)
+      defmacro unquote(name)(assigns_or_block)
 
       defmacro unquote(name)([{:do, inner}]) do
         outer =
           unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_props__([], inner)
+          |> Temple.Utils.__insert_assigns__([], inner)
 
         Temple.Utils.__quote__(outer)
       end
 
-      defmacro unquote(name)(props) do
+      defmacro unquote(name)(assigns) do
         outer =
           unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_props__(props, nil)
+          |> Temple.Utils.__insert_assigns__(assigns, nil)
 
         Temple.Utils.__quote__(outer)
       end
 
-      defmacro unquote(name)(props, inner) do
+      defmacro unquote(name)(assigns, inner) do
         outer =
           unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_props__(props, inner)
+          |> Temple.Utils.__insert_assigns__(assigns, inner)
 
         Temple.Utils.__quote__(outer)
       end
