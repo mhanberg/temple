@@ -1,6 +1,7 @@
 defmodule Temple.FormTest do
   use ExUnit.Case, async: true
   use Temple
+  use Temple.Support.Utils
 
   describe "form_for" do
     test "returns a form tag" do

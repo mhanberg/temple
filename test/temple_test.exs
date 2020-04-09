@@ -1,10 +1,11 @@
 defmodule TempleTest do
   use ExUnit.Case, async: true
   use Temple
+  use Temple.Support.Utils
 
   describe "custom component" do
     test "defcomponent works when requiring the module" do
-      require Component, as: C
+      require Temple.Support.Component, as: C
 
       {:safe, result} =
         temple do
@@ -23,7 +24,7 @@ defmodule TempleTest do
     end
 
     test "defines a basic component" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -34,7 +35,7 @@ defmodule TempleTest do
     end
 
     test "defines a component that takes 1 child" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -48,7 +49,7 @@ defmodule TempleTest do
     end
 
     test "defines a component that takes multiple children" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -63,7 +64,7 @@ defmodule TempleTest do
     end
 
     test "can access a prop" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -77,7 +78,7 @@ defmodule TempleTest do
     end
 
     test "can access assigns list" do
-      import Component
+      import Temple.Support.Component
 
       assigns = [foo: "bar", hello: "world"]
 
@@ -90,7 +91,7 @@ defmodule TempleTest do
     end
 
     test "can access assigns map" do
-      import Component
+      import Temple.Support.Component
 
       assigns = %{foo: "bar", hello: "world"}
 
@@ -103,7 +104,7 @@ defmodule TempleTest do
     end
 
     test "can have arbitrary code inside the definition" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -114,7 +115,7 @@ defmodule TempleTest do
     end
 
     test "can use conditionals to render different markup" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -126,7 +127,7 @@ defmodule TempleTest do
     end
 
     test "can pass arbitrary data as assigns" do
-      import Component
+      import Temple.Support.Component
 
       {:safe, result} =
         temple do
@@ -140,7 +141,7 @@ defmodule TempleTest do
     end
 
     test "can pass a variable as a prop" do
-      import Component
+      import Temple.Support.Component
 
       bob = "hi"
 
@@ -153,7 +154,7 @@ defmodule TempleTest do
     end
 
     test "can pass a variable as a prop to a component with a block" do
-      import Component
+      import Temple.Support.Component
 
       bob = "hi"
 
@@ -168,7 +169,7 @@ defmodule TempleTest do
     end
 
     test "can pass all of the assigns as a variable" do
-      import Component
+      import Temple.Support.Component
 
       assigns = [bob: "hi"]
 
@@ -181,7 +182,7 @@ defmodule TempleTest do
     end
 
     test "can pass all of the assigns as a variable with a block" do
-      import Component
+      import Temple.Support.Component
 
       assigns = [bob: "hi"]
 
@@ -196,7 +197,7 @@ defmodule TempleTest do
     end
 
     test "can pass a map as assigns with a block" do
-      import Component
+      import Temple.Support.Component
 
       assigns = %{bob: "hi"}
 

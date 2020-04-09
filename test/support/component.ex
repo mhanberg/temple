@@ -1,4 +1,4 @@
-defmodule Component do
+defmodule Temple.Support.Component do
   import Temple
 
   defcomponent :flex do

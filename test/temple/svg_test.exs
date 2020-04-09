@@ -1,8 +1,8 @@
 defmodule Temple.SvgTest do
   use ExUnit.Case, async: true
   import Temple
-  import Temple.Svg
   import Temple.Utils, only: [to_valid_tag: 1]
+  use Temple.Support.Utils
 
   for tag <- Temple.Svg.elements() -- [:text_] do
     test "renders a #{tag}" do

@@ -3,6 +3,7 @@ defmodule Temple.ElementsTest do
   import Temple.Elements, only: [defelement: 2]
   import Temple, only: [temple: 1, text: 1]
   import Temple.Html, only: [option: 2]
+  use Temple.Support.Utils
 
   defelement(:my_select, :nonvoid)
   defelement(:my_input, :void)
