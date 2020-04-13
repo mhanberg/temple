@@ -5,178 +5,80 @@ defmodule Temple do
     end
   end
 
-  @doc """
-  Creates a markup context.
+  def snake_to_kebab(stringable),
+    do: stringable |> to_string() |> String.replace_trailing("_", "") |> String.replace("_", "-")
 
-  All tags must be called inside of a `Temple.temple/1` block.
+  def kebab_to_snake(stringable),
+    do: stringable |> to_string() |> String.replace("-", "_")
 
-  Returns a safe result of the form `{:safe, result}`
+  def compile_attrs([]), do: ""
 
-  ## Example
+  def compile_attrs([attrs]) when is_list(attrs) do
+    compile_attrs(attrs)
+  end
 
-  ```
-  team = ["Alice", "Bob", "Carol"]
+  def compile_attrs(attrs) do
+    for {name, value} <- attrs, into: "" do
+      name = snake_to_kebab(name)
 
-  temple do
-    for name <- team do
-      div class: "text-bold" do
-        text name
-      end
+      " " <> name <> "=\"" <> to_string(value) <> "\""
     end
   end
 
-  # {:safe, "<div class=\"text-bold\">Alice</div><div class=\"text-bold\">Bob</div><div class=\"text-bold\">Carol</div>"}
-  ```
-  """
+  def traverse({name, _meta, args}) do
+    {block, args} =
+      args
+      |> Enum.sort(fn
+        {:do, _}, _ ->
+          true
+
+        _, _ ->
+          false
+      end)
+      |> case do
+        [[do: block] | args] ->
+          {block, args}
+
+        [args] ->
+          {nil, args}
+      end
+
+    case name do
+      name when name in [:div] ->
+        Agent.update(:buffer, fn buffer -> ["<#{name}#{compile_attrs(args)}>" | buffer] end)
+        traverse(block)
+        Agent.update(:buffer, fn buffer -> ["</#{name}>" | buffer] end)
+
+      name ->
+        Agent.update(:buffer, fn buffer -> ["<%= #{name}%>" | buffer] end)
+        traverse(block)
+    end
+  end
+
+  def traverse([first | rest]) do
+    traverse(first)
+
+    traverse(rest)
+  end
+
+  def traverse(arg) when arg in [nil, []] do
+    nil
+  end
+
   defmacro temple([do: block] = _block) do
+    {:ok, _} = Agent.start_link(fn -> [] end, name: :buffer)
+
+    block
+    |> traverse()
+
+    buf =
+      Agent.get(:buffer, & &1)
+      |> Enum.reverse()
+      |> Enum.join("")
+
     quote location: :keep do
       import Kernel, except: [div: 2, use: 1, use: 2]
-      import Temple.Html
-      import Temple.Svg
-      import Temple.Form
-      import Temple.Link
-
-      with {:ok, var!(buff, Temple.Html)} <- Temple.Utils.start_buffer([]) do
-        unquote(block)
-
-        markup = Temple.Utils.get_buffer(var!(buff, Temple.Html))
-
-        :ok = Temple.Utils.stop_buffer(var!(buff, Temple.Html))
-
-        Temple.Utils.join_and_escape(markup)
-      end
-    end
-  end
-
-  @doc """
-  Emits a text node into the markup.
-
-  ```
-  temple do
-    div do
-      text "Hello, world!"
-    end
-  end
-
-  # {:safe, "<div>Hello, world!</div>"}
-  ```
-  """
-  defmacro text(text) do
-    quote location: :keep do
-      Temple.Utils.put_buffer(
-        var!(buff, Temple.Html),
-        unquote(text) |> Temple.Utils.escape_content()
-      )
-    end
-  end
-
-  @doc """
-  Emits a Phoenix partial into the markup.
-
-  ```
-  temple do
-    html lang: "en" do
-      head do
-        title "MyApp"
-
-        link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
-      end
-
-      body do
-        main role: "main", class: "container" do
-          p get_flash(@conn, :info), class: "alert alert-info", role: "alert"
-          p get_flash(@conn, :error), class: "alert alert-danger", role: "alert"
-
-          partial render(@view_module, @view_template, assigns)
-        end
-
-        script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
-      end
-    end
-  end
-  ```
-  """
-  defmacro partial(partial) do
-    quote location: :keep do
-      Temple.Utils.put_buffer(
-        var!(buff, Temple.Html),
-        unquote(partial) |> Temple.Utils.from_safe()
-      )
-    end
-  end
-
-  @doc """
-  Defines a custom component.
-
-  Components are the primary way to extract partials and markup helpers.
-
-  ## Assigns
-
-  Components accept a keyword list or a map of assigns and can be referenced in the body of the component by a module attribute of the same name.
-
-  This works exactly the same as EEx templates. The whole list or map of assigns can be accessed by a special assign called `@assigns`.
-
-  ## Children
-
-  If a block is passed to the component, it can be referenced by a special assign called `@children`.
-
-  ## Example
-
-  ```
-  defcomponent :flex do
-    div id: @id, class: "flex" do
-      @children
-    end
-  end
-
-  temple do
-    flex id: "my-flex" do
-      div "Item 1"
-      div "Item 2"
-      div "Item 3"
-    end
-  end
-
-  # {:safe, "<div id=\"my-flex\" class=\"flex\">
-  #            <div>Item 1</div>
-  #            <div>Item 2</div>
-  #            <div>Item 3</div>
-  #          </div>"}
-  ```
-  """
-  defmacro defcomponent(name, [do: _] = block) do
-    quote location: :keep do
-      defmacro unquote(name)() do
-        outer = unquote(Macro.escape(block))
-
-        Temple.Utils.__quote__(outer)
-      end
-
-      defmacro unquote(name)(assigns_or_block)
-
-      defmacro unquote(name)([{:do, inner}]) do
-        outer =
-          unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_assigns__([], inner)
-
-        Temple.Utils.__quote__(outer)
-      end
-
-      defmacro unquote(name)(assigns) do
-        outer =
-          unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_assigns__(assigns, nil)
-
-        Temple.Utils.__quote__(outer)
-      end
-
-      defmacro unquote(name)(assigns, inner) do
-        outer =
-          unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_assigns__(assigns, inner)
-
-        Temple.Utils.__quote__(outer)
-      end
+      unquote(buf)
     end
   end
 end
