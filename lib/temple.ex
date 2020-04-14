@@ -1,4 +1,6 @@
 defmodule Temple do
+  alias Temple.Buffer
+
   @nonvoid_elements ~w[
     head title style script
     noscript template
@@ -40,16 +42,14 @@ defmodule Temple do
   end
 
   def compile_attrs(attrs) do
-    for attr <- attrs, into: "" do
-      case attr do
-        {name, {_, _, _} = macro} ->
-          name = snake_to_kebab(name)
+    for {name, value} <- attrs, into: "" do
+      name = snake_to_kebab(name)
 
+      case value do
+        {_, _, _} = macro ->
           " " <> name <> "=\"<%= " <> Macro.to_string(macro) <> " %>\""
 
-        {name, value} ->
-          name = snake_to_kebab(name)
-
+        value ->
           " " <> name <> "=\"" <> to_string(value) <> "\""
       end
     end
@@ -70,10 +70,6 @@ defmodule Temple do
 
   def traverse(buffer, {:__block__, _meta, block}) do
     traverse(buffer, block)
-  end
-
-  def traverse(buffer, {:@, _meta, [{name, _, _}]}) do
-    Agent.update(buffer, fn buf -> ["<%= @#{name} %>" | buf] end)
   end
 
   def traverse(buffer, {name, meta, args} = macro) do
@@ -97,29 +93,27 @@ defmodule Temple do
 
     case name do
       name when name in @nonvoid_elements ->
-        Agent.update(buffer, fn buf -> ["<#{name}#{compile_attrs(args)}>" | buf] end)
+        Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
         traverse(buffer, do_and_else[:do])
-        Agent.update(buffer, fn buf -> ["</#{name}>" | buf] end)
+        Buffer.put(buffer, "</#{name}>")
 
       name when name in @void_elements ->
-        Agent.update(buffer, fn buf -> ["<#{name}#{compile_attrs(args)}>" | buf] end)
+        Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
 
       name when name in [:for, :if, :unless] ->
-        Agent.update(buffer, fn buf ->
-          ["<%= " <> Macro.to_string({name, meta, args}) <> " do %>" | buf]
-        end)
+        Buffer.put(buffer, "<%= " <> Macro.to_string({name, meta, args}) <> " do %>")
 
         traverse(buffer, do_and_else[:do])
 
         if Keyword.has_key?(do_and_else, :else) do
-          Agent.update(buffer, fn buf -> ["<% else %>" | buf] end)
+          Buffer.put(buffer, "<% else %>")
           traverse(buffer, do_and_else[:else])
         end
 
-        Agent.update(buffer, fn buf -> ["<% end %>" | buf] end)
+        Buffer.put(buffer, "<% end %>")
 
       _ ->
-        Agent.update(buffer, fn buf -> ["<%= #{Macro.to_string(macro)} %>" | buf] end)
+        Buffer.put(buffer, "<%= #{Macro.to_string(macro)} %>")
         traverse(buffer, do_and_else[:do])
     end
   end
@@ -131,7 +125,7 @@ defmodule Temple do
   end
 
   def traverse(buffer, text) when is_binary(text) do
-    Agent.update(buffer, fn buf -> [text | buf] end)
+    Buffer.put(buffer, text)
   end
 
   def traverse(_buffer, arg) when arg in [nil, []] do
@@ -139,16 +133,14 @@ defmodule Temple do
   end
 
   defmacro temple([do: block] = _block) do
-    {:ok, buffer} = Agent.start_link(fn -> [] end)
+    {:ok, buffer} = Buffer.start_link()
 
     buffer
     |> traverse(block)
 
-    markup =
-      buffer
-      |> Agent.get(& &1)
-      |> Enum.reverse()
-      |> Enum.join("\n")
+    markup = Buffer.get(buffer)
+
+    Buffer.stop(buffer)
 
     quote location: :keep do
       unquote(markup)
@@ -159,16 +151,16 @@ defmodule Temple do
     quote location: :keep do
       import Temple
 
-      {:ok, buffer} = Agent.start_link(fn -> [] end)
+      {:ok, buffer} = Buffer.start_link()
 
       buffer
       |> traverse(unquote(block))
 
-      markup =
-        buffer
-        |> Agent.get(& &1)
-        |> Enum.reverse()
-        |> Enum.join("\n")
+      markup = Buffer.get(buffer)
+
+      Buffer.stop(buffer)
+
+      markup
     end
   end
 end
