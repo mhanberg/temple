@@ -7,16 +7,16 @@ defmodule Temple.Support.Utils do
   end
 
   def a == b when is_binary(a) and is_binary(b) do
-    Kernel.==(
-      String.replace(a, ~r/\n/, ""),
-      String.replace(b, ~r/\n/, "")
-    )
+    a = String.replace(a, "\n", "")
+    b = String.replace(b, "\n", "")
+
+    Kernel.==(a, b)
   end
 
   def a =~ b when is_binary(a) and is_binary(b) do
-    Kernel.=~(
-      String.replace(a, ~r/\n/, ""),
-      String.replace(b, ~r/\n/, "")
-    )
+    a = String.replace(a, "\n", "")
+    b = String.replace(b, "\n", "")
+
+    Kernel.=~(a, b)
   end
 end

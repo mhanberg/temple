@@ -77,41 +77,16 @@ defmodule Temple.Engine do
   """
 
   def compile(path, _name) do
-    template =
-      path
-      |> File.read!()
-      |> Code.string_to_quoted!(file: path)
-      |> handle_assigns()
+    require Temple
 
-    quote location: :keep do
-      use Temple
+    template = path |> File.read!() |> Code.string_to_quoted!(file: path)
 
-      temple do: unquote(template)
-    end
-  end
+    ast =
+      quote do
+        unquote(template)
+      end
 
-  defp handle_assigns(quoted) do
-    quoted
-    |> Macro.prewalk(fn
-      {:@, _, [{key, _, _}]} ->
-        quote location: :keep do
-          case Access.fetch(var!(assigns), unquote(key)) do
-            {:ok, val} ->
-              val
-
-            :error ->
-              raise ArgumentError, """
-              assign @#{unquote(key)} not available in Temple template.
-              Please make sure all proper assigns have been set. If this
-              is a child template, ensure assigns are given explicitly by
-              the parent template as they are not automatically forwarded.
-              Available assigns: #{inspect(Enum.map(var!(assigns), &elem(&1, 0)))}
-              """
-          end
-        end
-
-      ast ->
-        ast
-    end)
+    Temple.temple(ast)
+    |> EEx.compile_string(engine: Phoenix.HTML.Engine, file: path, line: 1)
   end
 end
