@@ -23,6 +23,12 @@ defmodule Temple do
     area br col embed hr img input keygen param source track wbr
   ]a
 
+  defmacro __using__(:live) do
+    quote location: :keep do
+      @before_compile Temple.Renderer
+    end
+  end
+
   defmacro __using__(_) do
     quote location: :keep do
       import Temple
