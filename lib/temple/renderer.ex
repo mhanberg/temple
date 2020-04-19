@@ -15,9 +15,6 @@ defmodule Temple.Renderer do
 
         :ok
 
-      {true, false} ->
-        :ok
-
       {false, true} ->
         ast = Temple.LiveViewEngine.compile(template, template_filename(env))
 
@@ -29,25 +26,8 @@ defmodule Temple.Renderer do
           end
         end
 
-      {false, false} ->
-        message = ~s'''
-        render/1 was not implemented for #{inspect(env.module)}.
-        Make sure to either explicitly define a render/1 clause with a LiveView template:
-            def render(assigns) do
-              ~L"""
-              ...
-              """
-            end
-        Or create a file at #{inspect(template)} with the LiveView template.
-        '''
-
-        IO.warn(message, Macro.Env.stacktrace(env))
-
-        quote do
-          def render(_assigns) do
-            raise unquote(message)
-          end
-        end
+      {_, _} ->
+        :ok
     end
   end
 
