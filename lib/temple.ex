@@ -169,4 +169,16 @@ defmodule Temple do
       markup
     end
   end
+
+  defmacro live_temple([do: block] = _block) do
+    {:ok, buffer} = Buffer.start_link()
+
+    buffer
+    |> traverse(block)
+
+    markup = Buffer.get(buffer)
+
+    Buffer.stop(buffer)
+    EEx.compile_string(markup, engine: Phoenix.LiveView.Engine)
+  end
 end
