@@ -35,6 +35,27 @@ defmodule TempleTest do
     assert result == ~s{<div class="hello">hifoo</div>}
   end
 
+  test "renders an eval do block as eex" do
+    result =
+      temple do
+        eval do
+          x = 1
+          y = 2
+          z = x + y
+          some_function(x, y, z)
+
+          if x == 1 do
+            :this
+          else
+            :that
+          end
+        end
+      end
+
+    assert result ==
+             ~s{<% (\n  x = 1\n  y = 2\n  z = x + y\n  some_function(x, y, z)\n  if(x == 1) do\n    :this\n  else\n    :that\n  end\n\n) %>}
+  end
+
   test "renders a variable text node as eex" do
     result =
       temple do

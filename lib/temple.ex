@@ -11,7 +11,7 @@ defmodule Temple do
     sub sup i b u mark ruby rt rp bdi bdo span
     ins del
     iframe object video audio canvas
-    map 
+    map
     table caption colgroup tbody thead tfoot tr td th
     form fieldset legend label button select datalist optgroup
     option textarea output progress meter
@@ -98,6 +98,9 @@ defmodule Temple do
     # |> IO.inspect(label: :args, pretty: true, limit: :infinity, printable_limit: :infinity)
 
     case name do
+      :eval ->
+        Buffer.put(buffer, "<% " <> Macro.to_string(do_and_else[:do]) <> " %>")
+
       name when name in @nonvoid_elements ->
         Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
         traverse(buffer, do_and_else[:do])
