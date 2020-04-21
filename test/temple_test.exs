@@ -27,8 +27,8 @@ defmodule TempleTest do
     result =
       temple do
         div class: "hello" do
-          txt "hi"
-          txt "foo"
+          "hi"
+          "foo"
         end
       end
 
@@ -39,7 +39,7 @@ defmodule TempleTest do
     result =
       temple do
         div class: "hello" do
-          txt foo
+          foo
         end
       end
 
@@ -50,7 +50,7 @@ defmodule TempleTest do
     result =
       temple do
         div class: "hello" do
-          txt @foo
+          @foo
         end
       end
 
@@ -63,7 +63,7 @@ defmodule TempleTest do
         x = 420
 
         div do
-          txt "blaze it"
+          "blaze it"
         end
       end
 
@@ -76,7 +76,7 @@ defmodule TempleTest do
         IO.inspect(:foo)
 
         div do
-          txt "bar"
+          "bar"
         end
       end
 
