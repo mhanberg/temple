@@ -23,12 +23,12 @@ defmodule TempleTest do
     assert result == ~s{<input name="password">}
   end
 
-  test "renders a text node from a literal with siblings" do
+  test "renders a text node from the text keyword with siblings" do
     result =
       temple do
         div class: "hello" do
-          "hi"
-          "foo"
+          txt "hi"
+          txt "foo"
         end
       end
 
@@ -39,7 +39,7 @@ defmodule TempleTest do
     result =
       temple do
         div class: "hello" do
-          foo
+          txt foo
         end
       end
 
@@ -50,14 +50,40 @@ defmodule TempleTest do
     result =
       temple do
         div class: "hello" do
-          @foo
+          txt @foo
         end
       end
 
     assert result == ~s{<div class="hello"><%= @foo %></div>}
   end
 
-  test "renders a an expression in attr as eex" do
+  test "renders a match expression" do
+    result =
+      temple do
+        x = 420
+
+        div do
+          txt "blaze it"
+        end
+      end
+
+    assert result == ~s{<% x = 420 %><div>blaze it</div>}
+  end
+
+  test "renders a non-match expression" do
+    result =
+      temple do
+        IO.inspect(:foo)
+
+        div do
+          txt "bar"
+        end
+      end
+
+    assert result == ~s{<%= IO.inspect(:foo) %><div>bar</div>}
+  end
+
+  test "renders an expression in attr as eex" do
     result =
       temple do
         div class: foo <> " bar"
@@ -124,29 +150,4 @@ defmodule TempleTest do
 
     assert result == ~s{<%= unless(true == false) do %><div class="hi"></div><% end %>}
   end
-
-  test "renders a function call in eex" do
-    result =
-      temple do
-        div do
-          live_render(@conn, Temple.DemoLive)
-        end
-      end
-
-    assert result == ~s{<div><%= live_render(@conn, Temple.DemoLive) %></div>}
-  end
-
-  # test "renders an case expression as eex" do
-  #   result =
-  #     temple do
-  #       case :boom do
-  #         :silence ->
-  #           div class: "silence"
-  #         _ ->
-  #           div class: "other"
-  #       end
-  #     end
-
-  #   assert result == ~s{<%= case(:boom) do %><%= :silence -> %><div class="silence"></div><% _ -> %><div class="other"></div><% end %>}
-  # end
 end

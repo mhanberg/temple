@@ -106,6 +106,15 @@ defmodule Temple do
       name when name in @void_elements ->
         Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
 
+      name when name in [:txt] ->
+        case args do
+          [binary] when is_binary(binary) ->
+            Buffer.put(buffer, binary)
+
+          [ast] ->
+            Buffer.put(buffer, "<%= " <> Macro.to_string(ast) <> " %>")
+        end
+
       name when name in [:for, :if, :unless] ->
         Buffer.put(buffer, "<%= " <> Macro.to_string({name, meta, args}) <> " do %>")
 
@@ -118,8 +127,12 @@ defmodule Temple do
 
         Buffer.put(buffer, "<% end %>")
 
+      name when name in [:=] ->
+        Buffer.put(buffer, "<% " <> Macro.to_string(macro) <> " %>")
+        traverse(buffer, do_and_else[:do])
+
       _ ->
-        Buffer.put(buffer, "<%= #{Macro.to_string(macro)} %>")
+        Buffer.put(buffer, "<%= " <> Macro.to_string(macro) <> " %>")
         traverse(buffer, do_and_else[:do])
     end
   end
