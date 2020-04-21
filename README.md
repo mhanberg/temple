@@ -1,5 +1,13 @@
 # ![](temple.png)
 
+> Temple is now undergoing a rewrite. The goal is to compile to EEx at compile time, so that it can then be fed straight into the Phoenix HTML and LiveView engines. This way, Temple becomes compatible with LiveView as well as gaining all the same optimizations as normal Phoenix templates.
+>
+> There is no guarantee that the rewrite will maintain the current feature set of Temple, mainly the Component API.
+>
+> To follow along, please checkout out the [rewrite](https://github.com/mhanberg/temple/tree/rewrite) branch. The code will likely be in a "spike" state until further notice, so don't let the WIP commits scare you off 😄
+
+---
+
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 [![Slack](https://img.shields.io/badge/chat-Slack-blue)](https://elixir-lang.slack.com/messages/CMH6MA4UD)
