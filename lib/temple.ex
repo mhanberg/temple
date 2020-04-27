@@ -11,7 +11,7 @@ defmodule Temple do
     sub sup i b u mark ruby rt rp bdi bdo span
     ins del
     iframe object video audio canvas
-    map 
+    map
     table caption colgroup tbody thead tfoot tr td th
     form fieldset legend label button select datalist optgroup
     option textarea output progress meter
@@ -22,12 +22,6 @@ defmodule Temple do
     meta link base
     area br col embed hr img input keygen param source track wbr
   ]a
-
-  defmacro __using__(:live) do
-    quote location: :keep do
-      @before_compile Temple.Renderer
-    end
-  end
 
   defmacro __using__(_) do
     quote location: :keep do
