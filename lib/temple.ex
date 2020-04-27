@@ -13,7 +13,7 @@ defmodule Temple do
     sub sup i b u mark ruby rt rp bdi bdo span
     ins del
     iframe object video audio canvas
-    map 
+    map
     table caption colgroup tbody thead tfoot tr td th
     form fieldset legend label button select datalist optgroup
     option textarea output progress meter
@@ -33,12 +33,6 @@ defmodule Temple do
 
   @void_elements_aliases Enum.map(@void_elements, fn el -> Keyword.get(@aliases, el, el) end)
   @void_elements_lookup Enum.map(@void_elements, fn el -> {Keyword.get(@aliases, el, el), el} end)
-
-  defmacro __using__(:live) do
-    quote location: :keep do
-      @before_compile Temple.Renderer
-    end
-  end
 
   defmacro __using__(_) do
     quote location: :keep do
