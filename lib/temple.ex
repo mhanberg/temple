@@ -64,14 +64,33 @@ defmodule Temple do
   def split_args(nil), do: {[], []}
 
   def split_args(args) do
-    args
-    |> Enum.split_with(fn
-      arg when is_list(arg) ->
-        Keyword.has_key?(arg, :do) || Keyword.has_key?(arg, :else)
+    {do_and_else, args} =
+      args
+      |> Enum.split_with(fn
+        arg when is_list(arg) ->
+          Keyword.has_key?(arg, :do) || Keyword.has_key?(arg, :else)
 
-      _ ->
-        false
-    end)
+        _ ->
+          false
+      end)
+
+    {List.flatten(do_and_else), args}
+  end
+
+  def split_on_fn([{:fn, _, _} = func | rest], {args, _, args2}) do
+    split_on_fn(rest, {args, func, args2})
+  end
+
+  def split_on_fn([arg | rest], {args, nil, args2}) do
+    split_on_fn(rest, {[arg | args], nil, args2})
+  end
+
+  def split_on_fn([arg | rest], {args, func, args2}) do
+    split_on_fn(rest, {args, func, [arg | args2]})
+  end
+
+  def split_on_fn([], {args, func, args2}) do
+    {Enum.reverse(args), func, Enum.reverse(args2)}
   end
 
   def traverse(buffer, {:__block__, _meta, block}) do
@@ -79,23 +98,11 @@ defmodule Temple do
   end
 
   def traverse(buffer, {name, meta, args} = macro) do
-    # macro
-    # |> IO.inspect(label: :macro, pretty: true, limit: :infinity, printable_limit: :infinity)
-
     {do_and_else, args} =
       args
       |> split_args()
 
-    do_and_else = do_and_else |> List.flatten()
-
-    # name
-    # |> IO.inspect(label: :name, pretty: true, limit: :infinity, printable_limit: :infinity)
-
-    # do_and_else
-    # |> IO.inspect(label: :do_and_else, pretty: true, limit: :infinity, printable_limit: :infinity)
-
-    # args
-    # |> IO.inspect(label: :args, pretty: true, limit: :infinity, printable_limit: :infinity)
+    includes_fn? = args |> Enum.any?(fn x -> match?({:fn, _, _}, x) end)
 
     case name do
       name when name in @nonvoid_elements ->
@@ -105,6 +112,42 @@ defmodule Temple do
 
       name when name in @void_elements ->
         Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+
+      name when includes_fn? ->
+        {args, func_arg, args2} = split_on_fn(args, {[], nil, []})
+
+        # fn_index = args |> Enum.find_index(fn x -> match?({:fn, _, _}, x) end)
+
+        {func, _, [{arrow, _, [[{arg, _, _}], {:__block__, [], block}]}]} = func_arg
+
+        Buffer.put(
+          buffer,
+          "<%= " <>
+            to_string(name) <>
+            " " <>
+            (Enum.map(args, &Macro.to_string(&1)) |> Enum.join(", ")) <>
+            ", " <>
+            to_string(func) <> " " <> to_string(arg) <> " " <> to_string(arrow) <> " %>"
+        )
+
+        Enum.each(block, fn
+          line when is_binary(line) ->
+            Buffer.put(buffer, line)
+
+          line ->
+            Buffer.put(buffer, "<%= " <> Macro.to_string(line) <> " %>")
+        end)
+
+        if Enum.any?(args2) do
+          Buffer.put(
+            buffer,
+            "<% end, " <>
+              (Enum.map(args2, fn arg -> Macro.to_string(arg) end)
+               |> Enum.join(", ")) <> " %>"
+          )
+        else
+          Buffer.put(buffer, "<% end %>")
+        end
 
       name when name in [:for, :if, :unless] ->
         Buffer.put(buffer, "<%= " <> Macro.to_string({name, meta, args}) <> " do %>")
