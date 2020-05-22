@@ -9,10 +9,14 @@ defmodule TempleDemoWeb.TempleFeatureTest do
     |> IO.inspect(label: "CHECKOUT REPO")
 
     unless tags[:async] do
+      IO.puts "NOT ASYNC"
       Ecto.Adapters.SQL.Sandbox.mode(TempleDemo.Repo, {:shared, self()})
+      |> IO.inspect(label: "MODE")
     end
 
     metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(TempleDemo.Repo, self())
+
+    :ok
   end
 
   feature "renders the homepage", %{session: session} do
