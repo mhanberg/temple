@@ -28,7 +28,7 @@ html lang: "en" do
       p get_flash(@conn, :info), class: "alert alert-info", role: "alert"
       p get_flash(@conn, :error), class: "alert alert-danger", role: "alert"
 
-      partial render(@view_module, @view_template, assigns)
+      @inner_content
     end
 
     script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
