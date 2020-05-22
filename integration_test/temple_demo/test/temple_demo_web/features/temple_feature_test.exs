@@ -1,5 +1,5 @@
 defmodule TempleDemoWeb.TempleFeatureTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   use Wallaby.Feature
   alias TempleDemoWeb.Router.Helpers, as: Routes
   alias TempleDemoWeb.Endpoint, as: E
