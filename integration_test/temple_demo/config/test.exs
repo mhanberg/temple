@@ -21,7 +21,9 @@ config :temple_demo, TempleDemoWeb.Endpoint,
 config :temple_demo, :sql_sandbox, true
 
 config :wallaby,
-  driver: Wallaby.Experimental.Chrome
+  otp_app: :temple_demo,
+  driver: Wallaby.Experimental.Chrome,
+  screenshot_on_failure: true
 
 
 # Print only warnings and errors during test

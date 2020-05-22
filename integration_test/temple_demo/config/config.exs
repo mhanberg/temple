@@ -31,7 +31,8 @@ config :phoenix, :json_library, Jason
 
 config :temple, :aliases,
   label: :_label,
-  link: :_link
+  link: :_link,
+  textarea: :_textarea
 
 
 # Import environment specific config. This must remain at the bottom

@@ -5,7 +5,7 @@ html lang: "en" do
     meta name: "viewport", content: "width=device-width, initial-scale=1.0"
     title "TempleDemo · Phoenix Framework"
 
-    _link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
+    _link(rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css"))
   end
 
   body do
@@ -13,7 +13,11 @@ html lang: "en" do
       section class: "container" do
         nav role: "navigation" do
           ul do
-            li do: a("Get Started", href: "https://hexdocs.pm/phoenix/overview.html")
+            li do
+              a href: "https://hexdocs.pm/phoenix/overview.html" do
+                "Get Started"
+              end
+            end
           end
         end
 
@@ -25,8 +29,17 @@ html lang: "en" do
     end
 
     main role: "main", class: "container" do
-      p get_flash(@conn, :info), class: "alert alert-info", role: "alert"
-      p get_flash(@conn, :error), class: "alert alert-danger", role: "alert"
+      if get_flash(@conn, :info) do
+        p class: "alert alert-info", role: "alert" do
+          get_flash(@conn, :info)
+        end
+      end
+
+      if get_flash(@conn, :error) do
+        p class: "alert alert-danger", role: "alert" do
+          get_flash(@conn, :error)
+        end
+      end
 
       @inner_content
     end
