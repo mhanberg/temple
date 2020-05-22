@@ -1,6 +1,8 @@
 defmodule Temple do
   alias Temple.Buffer
 
+  @aliases Application.get_env(:temple, :aliases, [])
+
   @nonvoid_elements ~w[
     head title style script
     noscript template
@@ -18,10 +20,17 @@ defmodule Temple do
     details summary menuitem menu
     html
   ]a
+
+  @nonvoid_elements_aliases Enum.map(@nonvoid_elements, fn el -> Keyword.get(@aliases, el, el) end)
+  @nonvoid_elements_lookup Enum.map(@nonvoid_elements, fn el -> {Keyword.get(@aliases, el, el), el} end)
+
   @void_elements ~w[
     meta link base
     area br col embed hr img input keygen param source track wbr
   ]a
+
+  @void_elements_aliases Enum.map(@void_elements, fn el -> Keyword.get(@aliases, el, el) end)
+  @void_elements_lookup Enum.map(@void_elements, fn el -> {Keyword.get(@aliases, el, el), el} end)
 
   defmacro __using__(:live) do
     quote location: :keep do
@@ -105,20 +114,34 @@ defmodule Temple do
     includes_fn? = args |> Enum.any?(fn x -> match?({:fn, _, _}, x) end)
 
     case name do
-      name when name in @nonvoid_elements ->
+      {:., _, [{:__aliases__, _, [:Temple]}, name]} when name in @nonvoid_elements_aliases ->
+        name = @nonvoid_elements_lookup[name]
+
         Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
         traverse(buffer, do_and_else[:do])
         Buffer.put(buffer, "</#{name}>")
 
-      name when name in @void_elements ->
+      {:., _, [{:__aliases__, _, [:Temple]}, name]} when name in @void_elements_aliases ->
+        name = @void_elements_lookup[name]
+
+        Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+
+      name when name in @nonvoid_elements_aliases ->
+        name = @nonvoid_elements_lookup[name]
+
+        Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+        traverse(buffer, do_and_else[:do])
+        Buffer.put(buffer, "</#{name}>")
+
+      name when name in @void_elements_aliases ->
+        name = @void_elements_lookup[name]
+
         Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
 
       name when includes_fn? ->
         {args, func_arg, args2} = split_on_fn(args, {[], nil, []})
 
-        # fn_index = args |> Enum.find_index(fn x -> match?({:fn, _, _}, x) end)
-
-        {func, _, [{arrow, _, [[{arg, _, _}], {:__block__, [], block}]}]} = func_arg
+        {func, _, [{arrow, _, [[{arg, _, _}], block]}]} = func_arg
 
         Buffer.put(
           buffer,
@@ -130,13 +153,7 @@ defmodule Temple do
             to_string(func) <> " " <> to_string(arg) <> " " <> to_string(arrow) <> " %>"
         )
 
-        Enum.each(block, fn
-          line when is_binary(line) ->
-            Buffer.put(buffer, line)
-
-          line ->
-            Buffer.put(buffer, "<%= " <> Macro.to_string(line) <> " %>")
-        end)
+        traverse(buffer, block)
 
         if Enum.any?(args2) do
           Buffer.put(

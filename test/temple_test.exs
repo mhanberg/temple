@@ -177,6 +177,21 @@ defmodule TempleTest do
              ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
   end
 
+  test "renders multiline anonymous functions with complex nested children" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+          div do
+            "Name: "
+            text_input f, :name
+          end
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %><div>Name: <%= text_input(f, :name) %></div><% end %>}
+  end
+
   test "renders multiline anonymous function with 3 arg before the function" do
     result =
       temple do
@@ -203,5 +218,18 @@ defmodule TempleTest do
 
     assert result ==
              ~s{<%= form_for @changeset, fn f -> %>Name: <%= text_input(f, :name) %><% end, [foo: :bar] %>}
+  end
+
+  test "tags prefixed with Temple. should be interpreted as temple tags" do
+    result =
+      temple do
+        div do
+          Temple.span do
+            "bob"
+          end
+        end
+      end
+
+    assert result == ~s{<div><span>bob</span></div>}
   end
 end
