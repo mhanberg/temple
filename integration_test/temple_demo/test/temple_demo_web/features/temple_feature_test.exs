@@ -5,6 +5,9 @@ defmodule TempleDemoWeb.TempleFeatureTest do
   alias TempleDemoWeb.Endpoint, as: E
 
   setup tags do
+    Application.get_env(:wallaby, :otp_app)
+    |> IO.inspect(label: "WALLABY CONFIGURED OTP APP")
+
     Ecto.Adapters.SQL.Sandbox.checkout(TempleDemo.Repo)
     |> IO.inspect(label: "CHECKOUT REPO")
 
