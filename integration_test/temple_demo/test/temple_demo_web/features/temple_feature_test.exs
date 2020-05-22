@@ -4,6 +4,16 @@ defmodule TempleDemoWeb.TempleFeatureTest do
   alias TempleDemoWeb.Router.Helpers, as: Routes
   alias TempleDemoWeb.Endpoint, as: E
 
+  setup tags do
+    Ecto.Adapters.SQL.Sandbox.checkout(TempleDemo.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(TempleDemo.Repo, {:shared, self()})
+    end
+
+    metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(TempleDemo.Repo, self())
+  end
+
   feature "renders the homepage", %{session: session} do
     session
     |> visit("/")
