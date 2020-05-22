@@ -6,6 +6,7 @@ defmodule TempleDemoWeb.TempleFeatureTest do
 
   setup tags do
     Ecto.Adapters.SQL.Sandbox.checkout(TempleDemo.Repo)
+    |> IO.inspect(label: "CHECKOUT REPO")
 
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(TempleDemo.Repo, {:shared, self()})
