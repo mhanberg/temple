@@ -22,7 +22,9 @@ defmodule Temple do
   ]a
 
   @nonvoid_elements_aliases Enum.map(@nonvoid_elements, fn el -> Keyword.get(@aliases, el, el) end)
-  @nonvoid_elements_lookup Enum.map(@nonvoid_elements, fn el -> {Keyword.get(@aliases, el, el), el} end)
+  @nonvoid_elements_lookup Enum.map(@nonvoid_elements, fn el ->
+                             {Keyword.get(@aliases, el, el), el}
+                           end)
 
   @void_elements ~w[
     meta link base
