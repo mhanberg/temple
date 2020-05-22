@@ -261,4 +261,3 @@ if Code.ensure_loaded?(Mix.Phoenix) do
     end
   end
 end
-
