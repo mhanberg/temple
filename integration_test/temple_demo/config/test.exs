@@ -22,7 +22,6 @@ config :temple_demo, :sql_sandbox, true
 
 config :wallaby,
   otp_app: :temple_demo,
-  driver: Wallaby.Experimental.Chrome,
   screenshot_on_failure: true
 
 

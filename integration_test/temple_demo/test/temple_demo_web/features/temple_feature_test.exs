@@ -4,22 +4,6 @@ defmodule TempleDemoWeb.TempleFeatureTest do
   alias TempleDemoWeb.Router.Helpers, as: Routes
   alias TempleDemoWeb.Endpoint, as: E
 
-  setup tags do
-    Application.get_env(:wallaby, :otp_app)
-    |> IO.inspect(label: "WALLABY CONFIGURED OTP APP")
-
-    Ecto.Adapters.SQL.Sandbox.checkout(TempleDemo.Repo)
-    |> IO.inspect(label: "CHECKOUT REPO")
-
-    unless tags[:async] do
-      IO.puts "NOT ASYNC"
-      Ecto.Adapters.SQL.Sandbox.mode(TempleDemo.Repo, {:shared, self()})
-      |> IO.inspect(label: "MODE")
-    end
-
-    :ok
-  end
-
   feature "renders the homepage", %{session: session} do
     session
     |> visit("/")
