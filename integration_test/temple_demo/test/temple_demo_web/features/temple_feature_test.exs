@@ -1,16 +1,23 @@
 defmodule TempleDemoWeb.TempleFeatureTest do
+  @includes_ecto Code.ensure_loaded?(Ecto.Adapters.SQL.Sandbox) &&
+                 Code.ensure_loaded?(Phoenix.Ecto.SQL.Sandbox)
+
   use ExUnit.Case, async: false
   use Wallaby.Feature
   alias TempleDemoWeb.Router.Helpers, as: Routes
   alias TempleDemoWeb.Endpoint, as: E
 
   feature "renders the homepage", %{session: session} do
+    IO.inspect @includes_ecto
+
     session
     |> visit("/")
     |> assert_text("Welcome to Phoenix!")
   end
 
   feature "can create a new post", %{session: session} do
+    IO.inspect @includes_ecto
+
     session
     |> visit(Routes.post_path(E, :index))
     |> click(Query.link("New Post"))
