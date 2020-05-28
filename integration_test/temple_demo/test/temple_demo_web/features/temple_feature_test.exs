@@ -17,6 +17,7 @@ defmodule TempleDemoWeb.TempleFeatureTest do
 
   feature "can create a new post", %{session: session} do
     IO.inspect @includes_ecto
+    IO.inspect Application.get_env(:temple_demo, TempleDemo.Repo)
 
     session
     |> visit(Routes.post_path(E, :index))
