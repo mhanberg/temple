@@ -150,4 +150,86 @@ defmodule TempleTest do
 
     assert result == ~s{<%= unless(true == false) do %><div class="hi"></div><% end %>}
   end
+
+  test "renders multiline anonymous function with 1 arg before the function" do
+    result =
+      temple do
+        form_for Routes.user_path(@conn, :create), fn f ->
+          "Name: "
+          text_input f, :name
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+  end
+
+  test "renders multiline anonymous functions with 2 args before the function" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+          "Name: "
+          text_input f, :name
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+  end
+
+  test "renders multiline anonymous functions with complex nested children" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+          div do
+            "Name: "
+            text_input f, :name
+          end
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %><div>Name: <%= text_input(f, :name) %></div><% end %>}
+  end
+
+  test "renders multiline anonymous function with 3 arg before the function" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f ->
+          "Name: "
+          text_input f, :name
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+  end
+
+  test "renders multiline anonymous function with 1 arg before the function and 1 arg after" do
+    result =
+      temple do
+        form_for @changeset,
+                 fn f ->
+                   "Name: "
+                   text_input f, :name
+                 end,
+                 foo: :bar
+      end
+
+    assert result ==
+             ~s{<%= form_for @changeset, fn f -> %>Name: <%= text_input(f, :name) %><% end, [foo: :bar] %>}
+  end
+
+  test "tags prefixed with Temple. should be interpreted as temple tags" do
+    result =
+      temple do
+        div do
+          Temple.span do
+            "bob"
+          end
+        end
+      end
+
+    assert result == ~s{<div><span>bob</span></div>}
+  end
 end

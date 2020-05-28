@@ -24,9 +24,49 @@ jobs:
       id: cache
       with:
         path: deps
-        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-        restore-keys: |
-          ${{ runner.os }}-mix-
+        key: ${{ runner.os }}-test-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: 
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: mix deps.get
+
+    - name: Run Tests
+      run: mix test
+
+  integration_tests:
+    runs-on: ubuntu-latest
+    name: Integration Test (${{matrix.elixir}}/${{matrix.otp}})
+    defaults:
+      run:
+        working-directory: "./integration_test/temple_demo"
+
+    strategy:
+      matrix:
+        otp: [21.x]
+        elixir: [1.7.x, 1.8.x, 1.9.x, 1.10.x]
+
+    services:
+      db:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: temple_demo_test
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-elixir@v1.2.0
+      with:
+        otp-version: ${{matrix.otp}}
+        elixir-version: ${{matrix.elixir}}
+    - uses: actions/cache@v1
+      id: cache
+      with:
+        path: deps
+        key: ${{ runner.os }}-integration-test-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'

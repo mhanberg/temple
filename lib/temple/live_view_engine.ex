@@ -1,6 +1,8 @@
 defmodule Temple.LiveViewEngine do
   @behaviour Phoenix.Template.Engine
 
+  @moduledoc false
+
   def compile(path, _name) do
     require Temple
 

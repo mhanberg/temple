@@ -1,12 +1,14 @@
-form_for @changeset, @action do 
+form_for @changeset, @action, fn f ->
   if @changeset.action do
     div class: "alert alert-danger" do
-      p "Oops, something went wrong! Please check the errors below." 
+      p do: "Oops, something went wrong! Please check the errors below." 
     end
   end <%= for {label, input, error} <- inputs, input do %>
   <%= label %>
   <%= input %>
-  <%= error %> <% end %>
+  <%= error %>
+  <% end %>
+
   div do
     submit "Save"
   end
