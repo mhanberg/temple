@@ -17,8 +17,6 @@ defmodule TempleDemoWeb.TempleFeatureTest do
       |> IO.inspect(label: "MODE")
     end
 
-    metadata = Phoenix.Ecto.SQL.Sandbox.metadata_for(TempleDemo.Repo, self())
-
     :ok
   end
 
