@@ -25,7 +25,7 @@ jobs:
       with:
         path: deps
         key: ${{ runner.os }}-test-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-        restore-keys: 
+        restore-keys:
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: mix deps.get
@@ -74,6 +74,8 @@ jobs:
 
     - name: Run Tests
       run: mix test
+      env:
+        MIX_ENV: test
 
     - uses: actions/upload-artifact@v2
       if: failure()
