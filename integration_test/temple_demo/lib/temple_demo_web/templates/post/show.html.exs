@@ -1,20 +1,17 @@
 h1 do: "Show Post"
 
 ul do 
+  li do: [strong(do: "Title"), @post.title]
   li do
-    strong "Title"
-    @post.title
+    strong do: "Body"
+    Phoenix.HTML.Format.text_to_html @post.body, attributes: [class: "whitespace-pre"]
   end 
   li do
-    strong "Body"
-    @post.body
-  end 
-  li do
-    strong "Published at"
+    strong do: "Published at"
     @post.published_at
   end 
   li do
-    strong "Author"
+    strong do: "Author"
     @post.author
   end 
 

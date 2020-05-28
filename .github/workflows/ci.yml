@@ -75,6 +75,12 @@ jobs:
     - name: Run Tests
       run: mix test
 
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: screenshots
+        path: ${{ github.workspace }}/integration_test/temple_demo/screenshots/
+
   formatter:
     runs-on: ubuntu-latest
     name: Formatter (1.10.x/21.x)

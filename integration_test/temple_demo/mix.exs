@@ -46,6 +46,7 @@ defmodule TempleDemo.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:wallaby, "~> 0.25.0", runtime: false, only: :test},
+      {:tzdata, "~> 1.0.3"},
       {:temple, path: "../../"}
     ]
   end
