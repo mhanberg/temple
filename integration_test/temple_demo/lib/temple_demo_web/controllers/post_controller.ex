@@ -10,14 +10,7 @@ defmodule TempleDemoWeb.PostController do
   end
 
   def new(conn, _params) do
-    changeset =
-      Blog.change_post(%Post{
-        published_at: %DateTime{
-          DateTime.now!("America/Indiana/Indianapolis")
-          | hour: 9,
-            minute: 0
-        }
-      })
+    changeset = Blog.change_post(%Post{})
 
     render(conn, "new.html", changeset: changeset)
   end
