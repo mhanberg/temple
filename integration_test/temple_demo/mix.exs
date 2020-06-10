@@ -45,8 +45,7 @@ defmodule TempleDemo.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:wallaby, github: "mhanberg/wallaby", runtime: false, only: :test},
-      # {:wallaby, path: "../../../wallaby_fork", runtime: false, only: :test},
+      {:wallaby, github: "elixir-wallaby/wallaby", runtime: false, only: :test},
       {:tzdata, "~> 1.0.3"},
       {:temple, path: "../../"}
     ]
