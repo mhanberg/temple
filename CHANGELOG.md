@@ -9,6 +9,7 @@
 This version is the start of a complete rewrite of Temple.
 
 - Compiles to EEx at build time.
+- Compatible with `Phoenix.LiveView`
 - All modules other than `Temple` are removed
 - `mix temple.convert` Mix task removed
 
