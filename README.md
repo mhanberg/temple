@@ -64,7 +64,8 @@ Add the templating engine to your Phoenix configuration.
 # config.exs
 config :phoenix, :template_engines,
   exs: Temple.Engine
-  exs: Temple.LiveEngine
+  # or for LiveView support
+  exs: Temple.LiveViewEngine
 
 # config/dev.exs
 config :your_app, YourAppWeb.Endpoint,
