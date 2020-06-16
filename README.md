@@ -1,12 +1,6 @@
 # ![](temple.png)
 
-> Temple is now undergoing a rewrite. The goal is to compile to EEx at compile time, so that it can then be fed straight into the Phoenix HTML and LiveView engines. This way, Temple becomes compatible with LiveView as well as gaining all the same optimizations as normal Phoenix templates.
->
-> There is no guarantee that the rewrite will maintain the current feature set of Temple, mainly the Component API.
->
-> To follow along, please checkout out the [rewrite](https://github.com/mhanberg/temple/tree/rewrite) branch. The code will likely be in a "spike" state until further notice, so don't let the WIP commits scare you off 😄
-
----
+> You are looking at the README for the master branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.5.0).
 
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
@@ -14,7 +8,7 @@
 
 Temple is a DSL for writing HTML using Elixir.
 
-You're probably here because you want to use Temple to write Phoenix templates, which is why Temple includes a [Phoenix template engine](#phoenix-templates) and Temple-compatible [Phoenix form helpers](#phoenixhtml).
+You're probably here because you want to use Temple to write Phoenix templates, which is why Temple includes a [Phoenix template engine](#phoenix-templates).
 
 ## Installation
 
@@ -22,13 +16,13 @@ Add `temple` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:temple, "~> 0.4.0"}]
+  [{:temple, "~> 0.6.0-alpha.0"}]
 end
 ```
 
 ## Usage
 
-Using Temple is a as simple as using the DSL inside of an `temple/1` block. This returns a safe result of the form `{:safe, html_string}`.
+Using Temple is a as simple as using the DSL inside of an `temple/1` block. This returns an EEx string at compile time.
 
 See the [documentation](https://hexdocs.pm/temple/Temple.Html.html) for more details.
 
@@ -36,7 +30,7 @@ See the [documentation](https://hexdocs.pm/temple/Temple.Html.html) for more det
 use Temple
 
 temple do
-  h2 "todos"
+  h2 do: "todos"
 
   ul class: "list" do
     for item <- @items do
@@ -45,12 +39,12 @@ temple do
           div class: "bullet hidden"
         end
 
-        div item
+        div do: item
       end
     end
   end
 
-  script """
+  script do: """
   function toggleCheck({currentTarget}) {
     currentTarget.children[0].children[0].classList.toggle("hidden");
   }
@@ -62,81 +56,37 @@ temple do
 end
 ```
 
-### Components
-
-Temple provides an API for creating custom components that act as custom HTML elements.
-
-These components can be given `assigns` that are available inside the component definition as module attributes. The contents of a components `do` block are available as a special `@children` assign.
-
-See the [documentation](https://hexdocs.pm/temple/Temple.html#defcomponent/2) for more details.
-
-```elixir
-defcomponent :flex do
-  div id: @id, class: "flex" do
-    @children
-  end
-end
-
-temple do
-  flex id: "my-flex" do
-    div "Item 1"
-    div "Item 2"
-    div "Item 3"
-  end
-end
-```
-
-### Phoenix.HTML
-
-Temple provides macros for working with the helpers provided by the [Phoenix.HTML](https://www.github.com/phoenixframework/phoenix_html) package.
-
-Most of the macros are purely wrappers, while the semantics of some are changed to work with Temple.
-
-See the [documentation](https://hexdocs.pm/temple/Temple.Form.html#content) for more details.
-
-```elixir
-temple do
-  form_for @conn, Routes.some_path(@conn, :create) do
-    text_input form, :name
-  end
-end
-```
-
 ### Phoenix templates
 
 Add the templating engine to your Phoenix configuration.
 
-See the [documentation](https://hexdocs.pm/temple/Temple.Engine.html#content) for more details.
+See the [Temple.Engine](https://hexdocs.pm/temple/Temple.Engine.html#content) and [Temple.LiveEngine](https://hexdocs.pm/temple/Temple.LiveEngine.html#content) for more details.
 
 ```elixir
 # config.exs
-config :phoenix, :template_engines, exs: Temple.Engine
+config :phoenix, :template_engines,
+  exs: Temple.Engine
+  exs: Temple.LiveEngine
 
 # config/dev.exs
 config :your_app, YourAppWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"lib/your_app_web/templates/.*(exs)$"
+      ~r"lib/myapp_web/(live|views)/.*(ex|exs)$",
+      ~r"lib/myapp_web/templates/.*(eex|exs)$"
     ]
   ]
-
-# your_app_web.ex
-def view do
-  quote do
-    # ...
-    use Temple # Replaces the call to import Phoenix.HTML
-  end
-end
 ```
 
 ```elixir
 # app.html.exs
+
 html lang: "en" do
   head do
     meta charset: "utf-8"
     meta http_equiv: "X-UA-Compatible", content: "IE=edge"
     meta name: "viewport", content: "width=device-width, initial-scale=1.0"
-    title "YourApp · Phoenix Framework"
+    title do: "YourApp · Phoenix Framework"
 
     link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
   end
@@ -158,10 +108,15 @@ html lang: "en" do
     end
 
     main role: "main", class: "container" do
-      p get_flash(@conn, :info), class: "alert alert-info", role: "alert"
-      p get_flash(@conn, :error), class: "alert alert-danger", role: "alert"
+      p class: "alert alert-info", role: "alert" do
+        get_flash(@conn, :info)
+      end
 
-      partial render(@view_module, @view_template, assigns)
+      p class: "alert alert-danger", role: "alert" do
+        get_flash(@conn, :error)
+      end
+
+      render @view_module, @view_template, assigns
     end
 
     script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
@@ -171,11 +126,13 @@ end
 
 ### Tasks
 
-#### temple.convert
+#### temple.gen.layout
 
-This task can be used to convert plain HTML and SVG into Temple syntax. Input is taken from stdin or from a file and the output is sent to stdout.
+Generates the app layout.
 
-`cat index.html | mix temple.convert > index.html.exs`
+#### temple.gen.html
+
+Generates the templates for a resource.
 
 ### Formatter
 

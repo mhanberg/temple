@@ -232,4 +232,37 @@ defmodule TempleTest do
 
     assert result == ~s{<div><span>bob</span></div>}
   end
+
+  test "can pass do as an arg instead of a block" do
+    result =
+      temple do
+        div class: "font-bold" do
+          "Hello, world"
+        end
+
+        div class: "font-bold", do: "Hello, world"
+        div do: "Hello, world"
+      end
+
+    assert result ==
+             ~s{<div class="font-bold">Hello, world</div><div class="font-bold">Hello, world</div><div>Hello, world</div>}
+  end
+
+  test "passing 'compact: true' will not insert new lines" do
+    import Temple.Support.Utils, only: []
+    import Kernel
+
+    result =
+      temple do
+        p compact: true do
+          "Bob"
+        end
+
+        p compact: true do
+          foo
+        end
+      end
+
+    assert result == ~s{<p>Bob</p>\n<p><%= foo %></p>}
+  end
 end
