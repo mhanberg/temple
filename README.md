@@ -1,10 +1,10 @@
 # ![](temple.png)
 
-> You are looking at the README for the master branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.5.0).
-
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 [![Slack](https://img.shields.io/badge/chat-Slack-blue)](https://elixir-lang.slack.com/messages/CMH6MA4UD)
+
+> You are looking at the README for the master branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.5.0).
 
 Temple is a DSL for writing HTML using Elixir.
 
@@ -60,8 +60,6 @@ end
 
 Add the templating engine to your Phoenix configuration.
 
-See the [Temple.Engine](https://hexdocs.pm/temple/Temple.Engine.html#content) and [Temple.LiveEngine](https://hexdocs.pm/temple/Temple.LiveEngine.html#content) for more details.
-
 ```elixir
 # config.exs
 config :phoenix, :template_engines,
@@ -108,13 +106,8 @@ html lang: "en" do
     end
 
     main role: "main", class: "container" do
-      p class: "alert alert-info", role: "alert" do
-        get_flash(@conn, :info)
-      end
-
-      p class: "alert alert-danger", role: "alert" do
-        get_flash(@conn, :error)
-      end
+      p class: "alert alert-info", role: "alert", compact: true, do: get_flash(@conn, :info)
+      p class: "alert alert-danger", role: "alert", compact: true, do: get_flash(@conn, :error)
 
       render @view_module, @view_template, assigns
     end
