@@ -7,7 +7,7 @@ defmodule Temple do
   Temple syntax is available inside the `temple` and `live_temple` macros, and is compiled into EEx at build time.
 
   ### Usage
-  
+
   ```elixir
   temple do
     # You can define attributes by passing a keyword list to the element, the values can be literals or variables.
