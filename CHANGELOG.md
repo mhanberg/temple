@@ -2,6 +2,17 @@
 
 ## Master
 
+## 0.6.0-alpha.0
+
+### Breaking!
+
+This version is the start of a complete rewrite of Temple.
+
+- Compiles to EEx at build time.
+- Compatible with `Phoenix.LiveView`
+- All modules other than `Temple` are removed
+- `mix temple.convert` Mix task removed
+
 ## 0.5.0
 
 - Introduce `@assigns` assign

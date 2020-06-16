@@ -3,216 +3,266 @@ defmodule TempleTest do
   use Temple
   use Temple.Support.Utils
 
-  describe "custom component" do
-    test "defcomponent works when requiring the module" do
-      require Temple.Support.Component, as: C
+  test "renders an attribute on a div passed as a variable" do
+    result =
+      temple do
+        div class: "hello" do
+          div class: "hi"
+        end
+      end
 
-      {:safe, result} =
-        temple do
-          C.flex()
+    assert result == ~s{<div class="hello"><div class="hi"></div></div>}
+  end
 
-          C.flex([])
-          C.flex([], [])
+  test "renders void element" do
+    result =
+      temple do
+        input name: "password"
+      end
 
-          C.flex do
-            text "hi"
+    assert result == ~s{<input name="password">}
+  end
+
+  test "renders a text node from the text keyword with siblings" do
+    result =
+      temple do
+        div class: "hello" do
+          "hi"
+          "foo"
+        end
+      end
+
+    assert result == ~s{<div class="hello">hifoo</div>}
+  end
+
+  test "renders a variable text node as eex" do
+    result =
+      temple do
+        div class: "hello" do
+          foo
+        end
+      end
+
+    assert result == ~s{<div class="hello"><%= foo %></div>}
+  end
+
+  test "renders an assign text node as eex" do
+    result =
+      temple do
+        div class: "hello" do
+          @foo
+        end
+      end
+
+    assert result == ~s{<div class="hello"><%= @foo %></div>}
+  end
+
+  test "renders a match expression" do
+    result =
+      temple do
+        x = 420
+
+        div do
+          "blaze it"
+        end
+      end
+
+    assert result == ~s{<% x = 420 %><div>blaze it</div>}
+  end
+
+  test "renders a non-match expression" do
+    result =
+      temple do
+        IO.inspect(:foo)
+
+        div do
+          "bar"
+        end
+      end
+
+    assert result == ~s{<%= IO.inspect(:foo) %><div>bar</div>}
+  end
+
+  test "renders an expression in attr as eex" do
+    result =
+      temple do
+        div class: foo <> " bar"
+      end
+
+    assert result == ~s{<div class="<%= foo <> " bar" %>"></div>}
+  end
+
+  test "renders an attribute on a div passed as a variable as eex" do
+    result =
+      temple do
+        div class: Enum.map([:one, :two], fn x -> x end) do
+          div class: "hi"
+        end
+      end
+
+    assert result ==
+             ~s{<div class="<%= Enum.map([:one, :two], fn x -> x end) %>"><div class="hi"></div></div>}
+  end
+
+  test "renders a for comprehension as eex" do
+    result =
+      temple do
+        for x <- 1..5 do
+          div class: "hi"
+        end
+      end
+
+    assert result == ~s{<%= for(x <- 1..5) do %><div class="hi"></div><% end %>}
+  end
+
+  test "renders an if expression as eex" do
+    result =
+      temple do
+        if true == false do
+          div class: "hi"
+        end
+      end
+
+    assert result == ~s{<%= if(true == false) do %><div class="hi"></div><% end %>}
+  end
+
+  test "renders an if/else expression as eex" do
+    result =
+      temple do
+        if true == false do
+          div class: "hi"
+        else
+          div class: "haha"
+        end
+      end
+
+    assert result ==
+             ~s{<%= if(true == false) do %><div class="hi"></div><% else %><div class="haha"></div><% end %>}
+  end
+
+  test "renders an unless expression as eex" do
+    result =
+      temple do
+        unless true == false do
+          div class: "hi"
+        end
+      end
+
+    assert result == ~s{<%= unless(true == false) do %><div class="hi"></div><% end %>}
+  end
+
+  test "renders multiline anonymous function with 1 arg before the function" do
+    result =
+      temple do
+        form_for Routes.user_path(@conn, :create), fn f ->
+          "Name: "
+          text_input f, :name
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+  end
+
+  test "renders multiline anonymous functions with 2 args before the function" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+          "Name: "
+          text_input f, :name
+        end
+      end
+
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+  end
+
+  test "renders multiline anonymous functions with complex nested children" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+          div do
+            "Name: "
+            text_input f, :name
           end
         end
+      end
 
-      assert result ==
-               ~s{<div class="flex"></div><div class="flex"></div><div class="flex"></div><div class="flex"></div>}
-    end
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %><div>Name: <%= text_input(f, :name) %></div><% end %>}
+  end
 
-    test "defines a basic component" do
-      import Temple.Support.Component
-
-      {:safe, result} =
-        temple do
-          flex()
+  test "renders multiline anonymous function with 3 arg before the function" do
+    result =
+      temple do
+        form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f ->
+          "Name: "
+          text_input f, :name
         end
+      end
 
-      assert result == ~s{<div class="flex"></div>}
-    end
+    assert result ==
+             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+  end
 
-    test "defines a component that takes 1 child" do
-      import Temple.Support.Component
+  test "renders multiline anonymous function with 1 arg before the function and 1 arg after" do
+    result =
+      temple do
+        form_for @changeset,
+                 fn f ->
+                   "Name: "
+                   text_input f, :name
+                 end,
+                 foo: :bar
+      end
 
-      {:safe, result} =
-        temple do
-          takes_children do
-            div id: "dynamic-child"
+    assert result ==
+             ~s{<%= form_for @changeset, fn f -> %>Name: <%= text_input(f, :name) %><% end, [foo: :bar] %>}
+  end
+
+  test "tags prefixed with Temple. should be interpreted as temple tags" do
+    result =
+      temple do
+        div do
+          Temple.span do
+            "bob"
           end
         end
+      end
 
-      assert result ==
-               ~s{<div><div id="static-child-1"></div><div id="dynamic-child"></div><div id="static-child-2"></div></div>}
-    end
+    assert result == ~s{<div><span>bob</span></div>}
+  end
 
-    test "defines a component that takes multiple children" do
-      import Temple.Support.Component
-
-      {:safe, result} =
-        temple do
-          takes_children do
-            div id: "dynamic-child-1"
-            div id: "dynamic-child-2"
-          end
+  test "can pass do as an arg instead of a block" do
+    result =
+      temple do
+        div class: "font-bold" do
+          "Hello, world"
         end
 
-      assert result ==
-               ~s{<div><div id="static-child-1"></div><div id="dynamic-child-1"></div><div id="dynamic-child-2"></div><div id="static-child-2"></div></div>}
-    end
+        div class: "font-bold", do: "Hello, world"
+        div do: "Hello, world"
+      end
 
-    test "can access a prop" do
-      import Temple.Support.Component
+    assert result ==
+             ~s{<div class="font-bold">Hello, world</div><div class="font-bold">Hello, world</div><div>Hello, world</div>}
+  end
 
-      {:safe, result} =
-        temple do
-          takes_children name: "mitch" do
-            text @name
-          end
+  test "passing 'compact: true' will not insert new lines" do
+    import Temple.Support.Utils, only: []
+    import Kernel
+
+    result =
+      temple do
+        p compact: true do
+          "Bob"
         end
 
-      assert result ==
-               ~s{<div><div id="static-child-1"></div>mitch<div id="static-child-2"></div></div>}
-    end
-
-    test "can access assigns list" do
-      import Temple.Support.Component
-
-      assigns = [foo: "bar", hello: "world"]
-
-      {:safe, result} =
-        temple do
-          lists_assigns(assigns)
+        p compact: true do
+          foo
         end
+      end
 
-      assert result == inspect(assigns)
-    end
-
-    test "can access assigns map" do
-      import Temple.Support.Component
-
-      assigns = %{foo: "bar", hello: "world"}
-
-      {:safe, result} =
-        temple do
-          lists_assigns(assigns)
-        end
-
-      assert result == inspect(assigns)
-    end
-
-    test "can have arbitrary code inside the definition" do
-      import Temple.Support.Component
-
-      {:safe, result} =
-        temple do
-          arbitrary_code()
-        end
-
-      assert result == ~s{<div>55</div>}
-    end
-
-    test "can use conditionals to render different markup" do
-      import Temple.Support.Component
-
-      {:safe, result} =
-        temple do
-          uses_conditionals(condition: true)
-          uses_conditionals(condition: false)
-        end
-
-      assert result == ~s{<div></div><span></span>}
-    end
-
-    test "can pass arbitrary data as assigns" do
-      import Temple.Support.Component
-
-      {:safe, result} =
-        temple do
-          arbitrary_data(
-            lists: [:atom, %{key: "value"}, {:status, :tuple}, "string", 1, [1, 2, 3]]
-          )
-        end
-
-      assert result ==
-               ~s|<div>:atom</div><div>%{key: &quot;value&quot;}</div><div>{:status, :tuple}</div><div>&quot;string&quot;</div><div>1</div><div>[1, 2, 3]</div>|
-    end
-
-    test "can pass a variable as a prop" do
-      import Temple.Support.Component
-
-      bob = "hi"
-
-      {:safe, result} =
-        temple do
-          variable_as_prop(bob: bob)
-        end
-
-      assert result == ~s|<div id="hi"></div>|
-    end
-
-    test "can pass a variable as a prop to a component with a block" do
-      import Temple.Support.Component
-
-      bob = "hi"
-
-      {:safe, result} =
-        temple do
-          variable_as_prop_with_block bob: bob do
-            div()
-          end
-        end
-
-      assert result == ~s|<div id="hi"><div></div></div>|
-    end
-
-    test "can pass all of the assigns as a variable" do
-      import Temple.Support.Component
-
-      assigns = [bob: "hi"]
-
-      {:safe, result} =
-        temple do
-          variable_as_prop(assigns)
-        end
-
-      assert result == ~s|<div id="hi"></div>|
-    end
-
-    test "can pass all of the assigns as a variable with a block" do
-      import Temple.Support.Component
-
-      assigns = [bob: "hi"]
-
-      {:safe, result} =
-        temple do
-          variable_as_prop_with_block assigns do
-            div()
-          end
-        end
-
-      assert result == ~s|<div id="hi"><div></div></div>|
-    end
-
-    test "can pass a map as assigns with a block" do
-      import Temple.Support.Component
-
-      assigns = %{bob: "hi"}
-
-      {:safe, result} =
-        temple do
-          variable_as_prop_with_block assigns do
-            div()
-          end
-
-          variable_as_prop_with_block %{bob: "hi"} do
-            div()
-          end
-        end
-
-      assert result == ~s|<div id="hi"><div></div></div><div id="hi"><div></div></div>|
-    end
+    assert result == ~s{<p>Bob</p>\n<p><%= foo %></p>}
   end
 end

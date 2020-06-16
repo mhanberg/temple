@@ -6,6 +6,7 @@
 
 # The directory Mix downloads your dependencies sources to.
 /deps/
+/integration_test/temple_demo/deps/
 
 # Where third-party dependencies like ExDoc output generated docs.
 /doc/

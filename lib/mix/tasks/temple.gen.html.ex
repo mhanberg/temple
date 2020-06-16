@@ -213,51 +213,51 @@ if Code.ensure_loaded?(Mix.Phoenix) do
           {nil, nil, nil}
 
         {key, :integer} ->
-          {label(key), ~s(number_input form, #{inspect(key)}), error(key)}
+          {label(key), ~s(number_input f, #{inspect(key)}), error(key)}
 
         {key, :float} ->
-          {label(key), ~s(number_input form, #{inspect(key)}, step: "any"), error(key)}
+          {label(key), ~s(number_input f, #{inspect(key)}, step: "any"), error(key)}
 
         {key, :decimal} ->
-          {label(key), ~s(number_input form, #{inspect(key)}, step: "any"), error(key)}
+          {label(key), ~s(number_input f, #{inspect(key)}, step: "any"), error(key)}
 
         {key, :boolean} ->
-          {label(key), ~s(checkbox form, #{inspect(key)}), error(key)}
+          {label(key), ~s(checkbox f, #{inspect(key)}), error(key)}
 
         {key, :text} ->
-          {label(key), ~s(textarea form, #{inspect(key)}), error(key)}
+          {label(key), ~s(textarea f, #{inspect(key)}), error(key)}
 
         {key, :date} ->
-          {label(key), ~s(date_select form, #{inspect(key)}), error(key)}
+          {label(key), ~s(date_select f, #{inspect(key)}), error(key)}
 
         {key, :time} ->
-          {label(key), ~s(time_select form, #{inspect(key)}), error(key)}
+          {label(key), ~s(time_select f, #{inspect(key)}), error(key)}
 
         {key, :utc_datetime} ->
-          {label(key), ~s(datetime_select form, #{inspect(key)}), error(key)}
+          {label(key), ~s(datetime_select f, #{inspect(key)}), error(key)}
 
         {key, :naive_datetime} ->
-          {label(key), ~s(datetime_select form, #{inspect(key)}), error(key)}
+          {label(key), ~s(datetime_select f, #{inspect(key)}), error(key)}
 
         {key, {:array, :integer}} ->
-          {label(key), ~s(multiple_select form, #{inspect(key)}, ["1": 1, "2": 2]), error(key)}
+          {label(key), ~s(multiple_select f, #{inspect(key)}, ["1": 1, "2": 2]), error(key)}
 
         {key, {:array, _}} ->
           {label(key),
-           ~s(multiple_select form, #{inspect(key)}, ["Option 1": "option1", "Option 2": "option2"]),
+           ~s(multiple_select f, #{inspect(key)}, ["Option 1": "option1", "Option 2": "option2"]),
            error(key)}
 
         {key, _} ->
-          {label(key), ~s(text_input form, #{inspect(key)}), error(key)}
+          {label(key), ~s(text_input f, #{inspect(key)}), error(key)}
       end)
     end
 
     defp label(key) do
-      ~s(phx_label form, #{inspect(key)})
+      ~s(label f, #{inspect(key)})
     end
 
     defp error(field) do
-      ~s{partial error_tag(form, #{inspect(field)})}
+      ~s{error_tag(f, #{inspect(field)})}
     end
   end
 end

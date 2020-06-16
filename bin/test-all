@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+mix test
+
+(cd integration_test/temple_demo && mix test)

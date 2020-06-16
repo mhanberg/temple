@@ -1,182 +1,423 @@
 defmodule Temple do
+  alias Temple.Buffer
+
+  @moduledoc """
+  > Warning: Docs are WIP
+
+  Temple syntax is available inside the `temple` and `live_temple` macros, and is compiled into EEx at build time.
+
+  ### Usage
+
+  ```elixir
+  temple do
+    # You can define attributes by passing a keyword list to the element, the values can be literals or variables.
+    class = "text-blue"
+    id = "jumbotron"
+
+    div class: class, id: id do
+      # Text nodes can be emitted as string literals or variables.
+      "Bob"
+
+      id
+    end
+
+    # if and unless expressions can be used to conditionally render content
+    if 5 > 0 do
+      p do
+        "Greater than 0!"
+      end
+    end
+
+    unless 5 > 0 do
+      p do
+        "Less than 0!"
+      end
+    end
+
+    # You can loop over items using for comprehensions
+    for x <- 0..5 do
+      div do
+        x
+      end
+    end
+
+    # You can use multiline anonymous functions, like if you're building a form in Phoenix
+    form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+      "Name: "
+      text_input f, :name
+    end
+
+    # You can explicitly call a tag by prefixing with the Temple module
+    Temple.div do
+      "Foo"
+    end
+
+    # You can also pass children as a do key instead of a block
+    div do: "Alice", class: "text-yellow"
+  end
+  ```
+
+  ### Reserved keywords
+
+  You can pass a keyword list to an element as element attributes, but there are several reserved keywords.
+
+  #### Compact
+
+  Passing `compact: true` will not rendering new lines from within the element. This is useful if you are trying to use the `:empty` psuedo selector.
+
+  ```elixir
+  temple do
+    p compact: true do
+      "Foo"
+    end
+    p do
+      "Bar"
+    end
+  end
+  ```
+
+  would evaluate to
+
+  ```html
+  <p>Foo</p>
+  <p>
+  Bar
+  </p>
+  ```
+
+  ### Configuration
+
+  #### Aliases
+
+  You can add an alias for an element if there is a namespace collision with a function. If you are using `Phoenix.HTML`, there will be namespace collisions with the `<link>` and `<label>` elements.
+
+  ```elixir
+  config :temple, :aliases,
+    label: :_label,
+    link: :_link
+
+  temple do
+    _label do
+      "Email"
+    end
+
+    _link href: "/css/site.css"
+  end
+  ```
+
+  This will result in:
+
+  ```html
+  <label>
+    Email
+  </label>
+
+  <link href="/css/site.css">
+  ```
+  """
+
   defmacro __using__(_) do
     quote location: :keep do
       import Temple
     end
   end
 
-  @doc """
-  Creates a markup context.
+  defmodule Private do
+    @moduledoc false
+    @aliases Application.get_env(:temple, :aliases, [])
 
-  All tags must be called inside of a `Temple.temple/1` block.
+    @nonvoid_elements ~w[
+    head title style script
+    noscript template
+    body section nav article aside h1 h2 h3 h4 h5 h6
+    header footer address main
+    p pre blockquote ol ul li dl dt dd figure figcaption div
+    a em strong small s cite q dfn abbr data time code var samp kbd
+    sub sup i b u mark ruby rt rp bdi bdo span
+    ins del
+    iframe object video audio canvas
+    map
+    table caption colgroup tbody thead tfoot tr td th
+    form fieldset legend label button select datalist optgroup
+    option textarea output progress meter
+    details summary menuitem menu
+    html
+  ]a
 
-  Returns a safe result of the form `{:safe, result}`
+    @nonvoid_elements_aliases Enum.map(@nonvoid_elements, fn el ->
+                                Keyword.get(@aliases, el, el)
+                              end)
+    @nonvoid_elements_lookup Enum.map(@nonvoid_elements, fn el ->
+                               {Keyword.get(@aliases, el, el), el}
+                             end)
 
-  ## Example
+    @void_elements ~w[
+    meta link base
+    area br col embed hr img input keygen param source track wbr
+  ]a
 
-  ```
-  team = ["Alice", "Bob", "Carol"]
+    @void_elements_aliases Enum.map(@void_elements, fn el -> Keyword.get(@aliases, el, el) end)
+    @void_elements_lookup Enum.map(@void_elements, fn el ->
+                            {Keyword.get(@aliases, el, el), el}
+                          end)
 
-  temple do
-    for name <- team do
-      div class: "text-bold" do
-        text name
-      end
+    def snake_to_kebab(stringable),
+      do:
+        stringable |> to_string() |> String.replace_trailing("_", "") |> String.replace("_", "-")
+
+    def kebab_to_snake(stringable),
+      do: stringable |> to_string() |> String.replace("-", "_")
+
+    def compile_attrs([]), do: ""
+
+    def compile_attrs([attrs]) when is_list(attrs) do
+      compile_attrs(attrs)
     end
-  end
 
-  # {:safe, "<div class=\"text-bold\">Alice</div><div class=\"text-bold\">Bob</div><div class=\"text-bold\">Carol</div>"}
-  ```
-  """
-  defmacro temple([do: block] = _block) do
-    quote location: :keep do
-      import Kernel, except: [div: 2, use: 1, use: 2]
-      import Temple.Html
-      import Temple.Svg
-      import Temple.Form
-      import Temple.Link
+    def compile_attrs(attrs) do
+      for {name, value} <- attrs, into: "" do
+        name = snake_to_kebab(name)
 
-      with {:ok, var!(buff, Temple.Html)} <- Temple.Utils.start_buffer([]) do
-        unquote(block)
+        case value do
+          {_, _, _} = macro ->
+            " " <> name <> "=\"<%= " <> Macro.to_string(macro) <> " %>\""
 
-        markup = Temple.Utils.get_buffer(var!(buff, Temple.Html))
-
-        :ok = Temple.Utils.stop_buffer(var!(buff, Temple.Html))
-
-        Temple.Utils.join_and_escape(markup)
-      end
-    end
-  end
-
-  @doc """
-  Emits a text node into the markup.
-
-  ```
-  temple do
-    div do
-      text "Hello, world!"
-    end
-  end
-
-  # {:safe, "<div>Hello, world!</div>"}
-  ```
-  """
-  defmacro text(text) do
-    quote location: :keep do
-      Temple.Utils.put_buffer(
-        var!(buff, Temple.Html),
-        unquote(text) |> Temple.Utils.escape_content()
-      )
-    end
-  end
-
-  @doc """
-  Emits a Phoenix partial into the markup.
-
-  ```
-  temple do
-    html lang: "en" do
-      head do
-        title "MyApp"
-
-        link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
-      end
-
-      body do
-        main role: "main", class: "container" do
-          p get_flash(@conn, :info), class: "alert alert-info", role: "alert"
-          p get_flash(@conn, :error), class: "alert alert-danger", role: "alert"
-
-          partial render(@view_module, @view_template, assigns)
+          value ->
+            " " <> name <> "=\"" <> to_string(value) <> "\""
         end
-
-        script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
       end
     end
+
+    def split_args(nil), do: {[], []}
+
+    def split_args(args) do
+      {do_and_else, args} =
+        args
+        |> Enum.split_with(fn
+          arg when is_list(arg) ->
+            (Keyword.keys(arg) -- [:do, :else]) |> Enum.count() == 0
+
+          _ ->
+            false
+        end)
+
+      {List.flatten(do_and_else), args}
+    end
+
+    def split_on_fn([{:fn, _, _} = func | rest], {args, _, args2}) do
+      split_on_fn(rest, {args, func, args2})
+    end
+
+    def split_on_fn([arg | rest], {args, nil, args2}) do
+      split_on_fn(rest, {[arg | args], nil, args2})
+    end
+
+    def split_on_fn([arg | rest], {args, func, args2}) do
+      split_on_fn(rest, {args, func, [arg | args2]})
+    end
+
+    def split_on_fn([], {args, func, args2}) do
+      {Enum.reverse(args), func, Enum.reverse(args2)}
+    end
+
+    def pop_compact?([]), do: {false, []}
+    def pop_compact?([args]) when is_list(args), do: pop_compact?(args)
+
+    def pop_compact?(args) do
+      Keyword.pop(args, :compact, false)
+    end
+
+    def traverse(buffer, {:__block__, _meta, block}) do
+      traverse(buffer, block)
+    end
+
+    def traverse(buffer, {name, meta, args} = macro) do
+      {do_and_else, args} =
+        args
+        |> split_args()
+
+      includes_fn? = args |> Enum.any?(fn x -> match?({:fn, _, _}, x) end)
+
+      case name do
+        {:., _, [{:__aliases__, _, [:Temple]}, name]} when name in @nonvoid_elements_aliases ->
+          {do_and_else, args} =
+            case args do
+              [args] ->
+                {do_value, args} = Keyword.pop(args, :do)
+
+                do_and_else = Keyword.put_new(do_and_else, :do, do_value)
+
+                {do_and_else, args}
+
+              _ ->
+                {do_and_else, args}
+            end
+
+          name = @nonvoid_elements_lookup[name]
+
+          {compact?, args} = pop_compact?(args)
+
+          Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+          unless compact?, do: Buffer.put(buffer, "\n")
+          traverse(buffer, do_and_else[:do])
+          if compact?, do: Buffer.remove_new_line(buffer)
+          Buffer.put(buffer, "</#{name}>")
+          Buffer.put(buffer, "\n")
+
+        {:., _, [{:__aliases__, _, [:Temple]}, name]} when name in @void_elements_aliases ->
+          name = @void_elements_lookup[name]
+
+          Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+          Buffer.put(buffer, "\n")
+
+        name when name in @nonvoid_elements_aliases ->
+          {do_and_else, args} =
+            case args do
+              [args] ->
+                {do_value, args} = Keyword.pop(args, :do)
+
+                do_and_else = Keyword.put_new(do_and_else, :do, do_value)
+
+                {do_and_else, args}
+
+              _ ->
+                {do_and_else, args}
+            end
+
+          name = @nonvoid_elements_lookup[name]
+
+          {compact?, args} = pop_compact?(args)
+
+          Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+          unless compact?, do: Buffer.put(buffer, "\n")
+          traverse(buffer, do_and_else[:do])
+          if compact?, do: Buffer.remove_new_line(buffer)
+          Buffer.put(buffer, "</#{name}>")
+          Buffer.put(buffer, "\n")
+
+        name when name in @void_elements_aliases ->
+          name = @void_elements_lookup[name]
+
+          Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
+          Buffer.put(buffer, "\n")
+
+        name when includes_fn? ->
+          {args, func_arg, args2} = split_on_fn(args, {[], nil, []})
+
+          {func, _, [{arrow, _, [[{arg, _, _}], block]}]} = func_arg
+
+          Buffer.put(
+            buffer,
+            "<%= " <>
+              to_string(name) <>
+              " " <>
+              (Enum.map(args, &Macro.to_string(&1)) |> Enum.join(", ")) <>
+              ", " <>
+              to_string(func) <> " " <> to_string(arg) <> " " <> to_string(arrow) <> " %>"
+          )
+
+          Buffer.put(buffer, "\n")
+
+          traverse(buffer, block)
+
+          if Enum.any?(args2) do
+            Buffer.put(
+              buffer,
+              "<% end, " <>
+                (Enum.map(args2, fn arg -> Macro.to_string(arg) end)
+                 |> Enum.join(", ")) <> " %>"
+            )
+
+            Buffer.put(buffer, "\n")
+          else
+            Buffer.put(buffer, "<% end %>")
+            Buffer.put(buffer, "\n")
+          end
+
+        name when name in [:for, :if, :unless] ->
+          Buffer.put(buffer, "<%= " <> Macro.to_string({name, meta, args}) <> " do %>")
+          Buffer.put(buffer, "\n")
+
+          traverse(buffer, do_and_else[:do])
+
+          if Keyword.has_key?(do_and_else, :else) do
+            Buffer.put(buffer, "<% else %>")
+            Buffer.put(buffer, "\n")
+            traverse(buffer, do_and_else[:else])
+          end
+
+          Buffer.put(buffer, "<% end %>")
+          Buffer.put(buffer, "\n")
+
+        name when name in [:=] ->
+          Buffer.put(buffer, "<% " <> Macro.to_string(macro) <> " %>")
+          Buffer.put(buffer, "\n")
+          traverse(buffer, do_and_else[:do])
+
+        _ ->
+          Buffer.put(buffer, "<%= " <> Macro.to_string(macro) <> " %>")
+          Buffer.put(buffer, "\n")
+          traverse(buffer, do_and_else[:do])
+      end
+    end
+
+    def traverse(buffer, [first | rest]) do
+      traverse(buffer, first)
+
+      traverse(buffer, rest)
+    end
+
+    def traverse(buffer, text) when is_binary(text) do
+      Buffer.put(buffer, text)
+      Buffer.put(buffer, "\n")
+    end
+
+    def traverse(_buffer, arg) when arg in [nil, []] do
+      nil
+    end
   end
-  ```
-  """
-  defmacro partial(partial) do
+
+  defmacro temple([do: block] = _block) do
+    {:ok, buffer} = Buffer.start_link()
+
+    buffer
+    |> Temple.Private.traverse(block)
+
+    markup = Buffer.get(buffer)
+
+    Buffer.stop(buffer)
+
     quote location: :keep do
-      Temple.Utils.put_buffer(
-        var!(buff, Temple.Html),
-        unquote(partial) |> Temple.Utils.from_safe()
-      )
+      unquote(markup)
     end
   end
 
-  @doc """
-  Defines a custom component.
-
-  Components are the primary way to extract partials and markup helpers.
-
-  ## Assigns
-
-  Components accept a keyword list or a map of assigns and can be referenced in the body of the component by a module attribute of the same name.
-
-  This works exactly the same as EEx templates. The whole list or map of assigns can be accessed by a special assign called `@assigns`.
-
-  ## Children
-
-  If a block is passed to the component, it can be referenced by a special assign called `@children`.
-
-  ## Example
-
-  ```
-  defcomponent :flex do
-    div id: @id, class: "flex" do
-      @children
-    end
-  end
-
-  temple do
-    flex id: "my-flex" do
-      div "Item 1"
-      div "Item 2"
-      div "Item 3"
-    end
-  end
-
-  # {:safe, "<div id=\"my-flex\" class=\"flex\">
-  #            <div>Item 1</div>
-  #            <div>Item 2</div>
-  #            <div>Item 3</div>
-  #          </div>"}
-  ```
-  """
-  defmacro defcomponent(name, [do: _] = block) do
+  defmacro temple(block) do
     quote location: :keep do
-      defmacro unquote(name)() do
-        outer = unquote(Macro.escape(block))
+      import Temple
 
-        Temple.Utils.__quote__(outer)
-      end
+      {:ok, buffer} = Buffer.start_link()
 
-      defmacro unquote(name)(assigns_or_block)
+      buffer
+      |> Temple.Private.traverse(unquote(block))
 
-      defmacro unquote(name)([{:do, inner}]) do
-        outer =
-          unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_assigns__([], inner)
+      markup = Buffer.get(buffer)
 
-        Temple.Utils.__quote__(outer)
-      end
+      Buffer.stop(buffer)
 
-      defmacro unquote(name)(assigns) do
-        outer =
-          unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_assigns__(assigns, nil)
-
-        Temple.Utils.__quote__(outer)
-      end
-
-      defmacro unquote(name)(assigns, inner) do
-        outer =
-          unquote(Macro.escape(block))
-          |> Temple.Utils.__insert_assigns__(assigns, inner)
-
-        Temple.Utils.__quote__(outer)
-      end
+      markup
     end
+  end
+
+  defmacro live_temple([do: block] = _block) do
+    {:ok, buffer} = Buffer.start_link()
+
+    buffer
+    |> Temple.Private.traverse(block)
+
+    markup = Buffer.get(buffer)
+
+    Buffer.stop(buffer)
+    EEx.compile_string(markup, engine: Phoenix.LiveView.Engine)
   end
 end

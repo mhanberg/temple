@@ -16,7 +16,7 @@ locals_without_parens = ~w[
   details summary menuitem menu
   meta link base
   area br col embed hr img input keygen param source track wbr
-  text partial
+  txt partial
 
   animate animateMotion animateTransform circle clipPath
   color-profile defs desc discard ellipse feBlend
@@ -24,7 +24,7 @@ locals_without_parens = ~w[
   feFlood feFuncA feFuncB feFuncG feFuncR feGaussianBlur feImage feMerge feMergeNode feMorphology feOffset
   fePointLight feSpecularLighting feSpotLight feTile feTurbulence filter foreignObject g hatch hatchpath image line linearGradient
   marker mask mesh meshgradient meshpatch meshrow metadata mpath path pattern polygon
-  polyline radialGradient rect set solidcolor stop svg switch symbol text_
+  polyline radialGradient rect set solidcolor stop svg switch symbol text
   textPath tspan unknown use view
 
   form_for inputs_for
