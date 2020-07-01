@@ -1,0 +1,35 @@
+h1 do: "Listing <%= schema.human_plural %>"
+
+if @live_action in [:new, :edit] do
+  live_modal @socket, <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web_namespace, schema.alias) %>Live.FormComponent,
+    id: @<%= schema.singular %>.id || :new,
+    title: @page_title,
+    action: @live_action,
+    <%= schema.singular %>: @<%= schema.singular %>,
+    return_to: Routes.<%= schema.route_helper %>_index_path(@socket, :index)
+end
+
+table do
+  thead do
+    tr do
+<%= for {k, _} <- schema.attrs do %>      th do: "<%= Phoenix.Naming.humanize(Atom.to_string(k)) %>"
+<% end %>
+      th
+    end
+  end
+  tbody id: "<%= schema.plural %>" do
+     for <%= schema.singular %> <- @<%= schema.collection %> do
+       tr id: "<%= schema.singular %>-<%%= <%= schema.singular %>.id %>" do
+<%= for {k, _} <- schema.attrs do %>        td do: <%= schema.singular %>.<%= k %>
+<% end %>
+         td do
+           span do: live_redirect "Show", to: Routes.<%= schema.route_helper %>_show_path(@socket, :show, <%= schema.singular %>)
+           span do: live_patch "Edit", to: Routes.<%= schema.route_helper %>_index_path(@socket, :edit, <%= schema.singular %>)
+           span do: link "Delete", to: "#", phx_click: "delete", phx_value_id: <%= schema.singular %>.id, data: [confirm: "Are you sure?"]
+         end
+       end
+    end
+  end
+end
+
+span do: live_patch "New <%= schema.human_singular %>", to: Routes.<%= schema.route_helper %>_index_path(@socket, :new)

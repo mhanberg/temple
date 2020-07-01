@@ -207,7 +207,7 @@ if Code.ensure_loaded?(Mix.Phoenix) do
       if context.generate?, do: Gen.Context.print_shell_instructions(context)
     end
 
-    defp inputs(%Schema{} = schema) do
+    def inputs(%Schema{} = schema) do
       Enum.map(schema.attrs, fn
         {_, {:references, _}} ->
           {nil, nil, nil}

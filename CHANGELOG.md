@@ -2,6 +2,24 @@
 
 ## Master
 
+## 0.6.0-alpha.1
+
+### Generators
+
+You can now use `mix temple.gen.live Context Schema table_name col:type` in the same way you can with Phoenix.
+
+### Other
+
+- Make a note in the README to set the filetype for Live temple templates to `lexs`. You should be able to set this extension to use Elixir for syntax highlighting in your editor. In vim, you can add the following to your `.vimrc`
+
+```vim
+augroup elixir
+  autocmd!
+
+  autocmd BufRead,BufNewFile *.lexs set filetype=elixir
+augroup END
+```
+
 ## 0.6.0-alpha.0
 
 ### Breaking!

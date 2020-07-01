@@ -65,7 +65,9 @@ Add the templating engine to your Phoenix configuration.
 config :phoenix, :template_engines,
   exs: Temple.Engine
   # or for LiveView support
-  exs: Temple.LiveViewEngine
+  # this will work for files named like `index.html.lexs`
+  # you can enable Elixir syntax highlighting in your editor
+  lexs: Temple.LiveViewEngine
 
 # config/dev.exs
 config :your_app, YourAppWeb.Endpoint,
