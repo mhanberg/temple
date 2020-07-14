@@ -135,7 +135,7 @@ defmodule Temple do
     a em strong small s cite q dfn abbr data time code var samp kbd
     sub sup i b u mark ruby rt rp bdi bdo span
     ins del
-    iframe object video audio canvas
+    iframe object video audio canvas svg
     map
     table caption colgroup tbody thead tfoot tr td th
     form fieldset legend label button select datalist optgroup
@@ -153,7 +153,7 @@ defmodule Temple do
 
     @void_elements ~w[
     meta link base
-    area br col embed hr img input keygen param source track wbr
+    area br col embed hr img input keygen param source track wbr path
   ]a
 
     @void_elements_aliases Enum.map(@void_elements, fn el -> Keyword.get(@aliases, el, el) end)
