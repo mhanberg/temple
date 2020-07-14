@@ -137,6 +137,6 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
 ```elixir
 [
   import_deps: [:temple],
-  inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs}"],
+  inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs,lexs}"],
 ]
 ```
