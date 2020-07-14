@@ -16,7 +16,7 @@ Add `temple` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:temple, "~> 0.6.0-alpha.0"}]
+  [{:temple, "~> 0.6.0-alpha.1"}]
 end
 ```
 
@@ -73,8 +73,8 @@ config :phoenix, :template_engines,
 config :your_app, YourAppWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"lib/myapp_web/(live|views)/.*(ex|exs)$",
-      ~r"lib/myapp_web/templates/.*(eex|exs)$"
+      ~r"lib/myapp_web/(live|views)/.*(ex|exs|lexs)$",
+      ~r"lib/myapp_web/templates/.*(eex|exs|lexs)$"
     ]
   ]
 ```
@@ -137,6 +137,6 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
 ```elixir
 [
   import_deps: [:temple],
-  inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs}"],
+  inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs,lexs}"],
 ]
 ```
