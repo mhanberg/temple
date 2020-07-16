@@ -76,7 +76,7 @@ defmodule Temple.Parser do
         args
         |> Enum.split_with(fn
           arg when is_list(arg) ->
-            (Keyword.keys(arg) -- [:do, :else]) |> Enum.count() == 0
+            Keyword.keyword?(arg) && (Keyword.keys(arg) -- [:do, :else]) |> Enum.count() == 0
 
           _ ->
             false
