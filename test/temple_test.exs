@@ -265,4 +265,81 @@ defmodule TempleTest do
 
     assert result == ~s{<p>Bob</p>\n<p><%= foo %></p>}
   end
+
+  test "inlines function components" do
+    result =
+      temple do
+        div class: "font-bold" do
+          "Hello, world"
+        end
+
+        component do
+          "I'm a component!"
+        end
+      end
+
+    assert result ==
+             ~s{<div class="font-bold">Hello, world</div><div class="<%= @assign %>">I'm a component!</div>}
+  end
+
+  test "function components can accept local assigns" do
+    result =
+      temple do
+        div class: "font-bold" do
+          "Hello, world"
+        end
+
+        component2 class: "bg-red" do
+          "I'm a component!"
+        end
+      end
+
+    assert result ==
+             ~s{<div class="font-bold">Hello, world</div><div class="bg-red">I'm a component!</div>}
+  end
+
+  test "function components can accept local assigns that are variables" do
+    result =
+      temple do
+        div class: "font-bold" do
+          "Hello, world"
+        end
+
+        class = "bg-red"
+
+        component2 class: class do
+          "I'm a component!"
+        end
+      end
+
+    assert result ==
+             ~s{<div class="font-bold">Hello, world</div><% class = "bg-red" %><div class="<%= class %>">I'm a component!</div>}
+  end
+
+  test "function components can use other components" do
+    result =
+      temple do
+        outer do
+          "outer!"
+        end
+
+        inner do
+          "inner!"
+        end
+      end
+
+    assert result ==
+             ~s{<div id="inner" outer-id="from-outer">outer!</div><div id="inner" outer-id="<%= @outer_id %>">inner!</div>}
+  end
+
+  test "@temple should be available in any component" do
+    result =
+      temple do
+        has_temple class: "boom" do
+          "yay!"
+        end
+      end
+
+    assert result == ~s{<div class="<%= [class: "boom"][:class] %>">yay!</div>}
+  end
 end

@@ -1,5 +1,6 @@
 defmodule Temple.Parser do
   alias Temple.Buffer
+  @components_path Application.get_env(:temple, :components_path, "./lib/components")
 
   @aliases Application.get_env(:temple, :aliases, [])
 
@@ -111,14 +112,20 @@ defmodule Temple.Parser do
       traverse(buffer, block)
     end
 
-    def traverse(buffer, {_name, _meta, _args} = macro) do
+    def traverse(buffer, {_name, _meta, _args} = original_macro) do
       Temple.Parser.parsers()
-      |> Enum.reduce_while(nil, fn parser, _ ->
-        if parser.applicable?.(macro) do
-          parser.parse.(macro, buffer)
-          {:halt, nil}
+      |> Enum.reduce_while(original_macro, fn parser, macro ->
+        with true <- parser.applicable?.(macro),
+             :ok <- parser.parse.(macro, buffer) do
+          {:halt, macro}
         else
-          {:cont, nil}
+          {:component_applied, adjusted_macro} ->
+            traverse(buffer, adjusted_macro)
+
+            {:halt, adjusted_macro}
+
+          false ->
+            {:cont, macro}
         end
       end)
     end
@@ -132,10 +139,12 @@ defmodule Temple.Parser do
     def traverse(buffer, text) when is_binary(text) do
       Buffer.put(buffer, text)
       Buffer.put(buffer, "\n")
+
+      :ok
     end
 
     def traverse(_buffer, arg) when arg in [nil, []] do
-      nil
+      :ok
     end
   end
 
@@ -208,6 +217,77 @@ defmodule Temple.Parser do
 
           Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
           Buffer.put(buffer, "\n")
+        end
+      },
+      %{
+        name: :components,
+        applicable?: fn {name, meta, _} ->
+          try do
+            !meta[:temple_component_applied] &&
+              File.exists?(Path.join([@components_path, "#{name}.exs"]))
+          rescue
+            _ ->
+              false
+          end
+        end,
+        parse: fn {name, _meta, args}, _buffer ->
+          import Temple.Parser.Private
+
+          {assigns, children} =
+            case args do
+              [assigns, [do: block]] ->
+                {assigns, block}
+
+              [[do: block]] ->
+                {nil, block}
+
+              [assigns] ->
+                {assigns, nil}
+
+              _ ->
+                {nil, nil}
+            end
+
+          ast =
+            File.read!(Path.join([@components_path, "#{name}.exs"]))
+            |> Code.string_to_quoted!()
+
+          {name, meta, args} =
+            ast
+            |> Macro.prewalk(fn
+              {:@, _, [{:children, _, _}]} ->
+                children
+
+              {:@, _, [{:temple, _, _}]} ->
+                assigns
+
+              {:@, _, [{name, _, _}]} = node ->
+                if !is_nil(assigns) && name in Keyword.keys(assigns) do
+                  Keyword.get(assigns, name, nil)
+                else
+                  node
+                end
+
+              node ->
+                node
+            end)
+
+          ast =
+            if Enum.any?(
+                 [
+                   @nonvoid_elements,
+                   @nonvoid_elements_aliases,
+                   @void_elements,
+                   @void_elements_aliases
+                 ],
+                 fn elements -> name in elements end
+               ) do
+              {name, Keyword.put(meta, :temple_component_applied, true), args}
+            else
+              {name, meta, args}
+            end
+
+          {:component_applied, ast}
         end
       },
       %{
