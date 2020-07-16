@@ -16,7 +16,7 @@ Add `temple` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:temple, "~> 0.6.0-alpha.1"}]
+  [{:temple, "~> 0.6.0-alpha.2"}]
 end
 ```
 
