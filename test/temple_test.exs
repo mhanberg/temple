@@ -342,4 +342,15 @@ defmodule TempleTest do
 
     assert result == ~s{<div class="<%= [class: "boom"][:class] %>">yay!</div>}
   end
+
+  test "normal functions with blocks should be treated like if expressions" do
+    result =
+      temple do
+        leenk to: "/route", class: "foo" do
+          div class: "hi"
+        end
+      end
+
+    assert result == ~s{<%= leenk(to: "/route", class: "foo") do %><div class="hi"></div><% end %>}
+  end
 end

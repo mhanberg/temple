@@ -393,9 +393,16 @@ defmodule Temple.Parser do
         end
       },
       %{
-        name: :for_if_unless,
-        applicable?: fn {name, _, _} ->
-          name in [:for, :if, :unless]
+        name: :do_expressions,
+        applicable?: fn
+          {_, _, [_, [{:do, _} | _]]} ->
+            true
+
+          {_, _, [[{:do, _} | _]]} ->
+            true
+
+          {_, _, _} ->
+            false
         end,
         parse: fn {name, meta, args}, buffer ->
           import Temple.Parser.Private

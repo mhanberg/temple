@@ -2,6 +2,10 @@
 
 ## Master
 
+## 0.6.0-alpha.3
+
+- Compile functions/macros that take blocks that are not if/unless/for
+
 ## 0.6.0-alpha.2
 
 ### Component API
