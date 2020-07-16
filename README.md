@@ -56,6 +56,64 @@ temple do
 end
 ```
 
+### Components
+
+To define a component, you can create a file in your configured temple
+components directory, which defaults to `lib/components`. You would
+probably want to change that to be `lib/my_app_web/components` if you
+are building a phoenix app.
+
+```elixir
+# config/config.exs
+
+config :temple, :components_path, "./lib/my_app_web/components"
+```
+
+This file should be of the `.exs` extension.
+
+You can then use this component in any other temple template.
+
+For example, if I were to define a `flex` component, I would create a
+file called `lib/my_app_web/components/flex.exs`, with the following
+contents.
+
+```elixir
+div class: "flex #{@temple[:class]}", id: @id do
+  @children
+end
+```
+
+And we could use the component like so
+
+```elixir
+flex class: "justify-between items-center", id: "arnold" do
+  div do: "Hi"
+  div do: "I'm"
+  div do: "Arnold"
+  div do: "Schwarzenegger"
+end
+```
+
+We've demonstrated several features to components in this example.
+
+We can pass assigns to our component, and access them just like we would in a normal phoenix template. If they don't match up with any assigns we passed to our component, they will be rendered as-is, and will become a normal Phoenix assign.
+
+You can also access a special `@temple` assign. This allows you do optionally pass an assign, and not have the `@my_assign` pass through.  If you didn't pass it to your component, it will evaluate to nil.
+
+The block passed to your component can be accessed as `@children`. This allows your components to wrap a body of markup from the call site.
+
+In order for components to trigger a recompile when they are changed, you can call `use Temple.Recompiler` in your `lib/my_app_web.ex` file, in the `view`, `live_view`, and `live_component` functions
+
+```elixir
+def view do
+  quote do
+    # ...
+    use Temple.Recompiler
+    # ...
+  end
+end
+```
+
 ### Phoenix templates
 
 Add the templating engine to your Phoenix configuration.

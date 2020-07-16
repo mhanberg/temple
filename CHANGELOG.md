@@ -2,6 +2,12 @@
 
 ## Master
 
+## 0.6.0-alpha.2
+
+### Component API
+
+Please see the README for more details regarding the Component API
+
 ## 0.6.0-alpha.1
 
 ### Generators

@@ -152,10 +152,10 @@ if Code.ensure_loaded?(Mix.Phoenix) do
     end
 
     defp copy_new_files(%Context{} = context, binding, paths) do
-      files = files_to_be_generated(context) |> IO.inspect(label: "FILES")
+      files = files_to_be_generated(context)
 
       Mix.Phoenix.copy_from(
-        paths |> IO.inspect(label: "PATHS"),
+        paths,
         "priv/templates/temple.gen.live",
         binding,
         files
