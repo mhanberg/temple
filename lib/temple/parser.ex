@@ -395,13 +395,10 @@ defmodule Temple.Parser do
       %{
         name: :do_expressions,
         applicable?: fn
-          {_, _, [_, [{:do, _} | _]]} ->
-            true
+          {_, _, args} when is_list(args) ->
+            Enum.any?(args, fn arg -> match?([{:do, _} | _], arg) end)
 
-          {_, _, [[{:do, _} | _]]} ->
-            true
-
-          {_, _, _} ->
+          _ ->
             false
         end,
         parse: fn {name, meta, args}, buffer ->

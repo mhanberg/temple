@@ -351,6 +351,20 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<%= leenk(to: "/route", class: "foo") do %><div class="hi"></div><% end %>}
+    assert result ==
+             ~s{<%= leenk(to: "/route", class: "foo") do %><div class="hi"></div><% end %>}
+  end
+
+  test "for with 2 generators" do
+    result =
+      temple do
+        for x <- 1..5, y <- 6..10 do
+          div do: x
+          div do: y
+        end
+      end
+
+    assert result ==
+             ~s{<%= for(x <- 1..5, y <- 6..10) do %><div><%= x %></div><div><%= y %></div><% end %>}
   end
 end

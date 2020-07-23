@@ -2,6 +2,10 @@
 
 ## Master
 
+### Bugs
+
+- Did not correctly parse expressions with do blocks where the expression had two or more arguments before the block
+
 ## 0.6.0-alpha.4
 
 - Fix a bug where lists would not properly compile
