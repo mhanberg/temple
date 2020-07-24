@@ -1,5 +1,5 @@
 defmodule Temple do
-  alias Temple.Buffer
+  alias Temple.Parser
 
   @moduledoc """
   > Warning: Docs are WIP
@@ -123,14 +123,7 @@ defmodule Temple do
   end
 
   defmacro temple([do: block] = _block) do
-    {:ok, buffer} = Buffer.start_link()
-
-    buffer
-    |> Temple.Parser.Private.traverse(block)
-
-    markup = Buffer.get(buffer)
-
-    Buffer.stop(buffer)
+    markup = Parser.parse(block)
 
     quote location: :keep do
       unquote(markup)
@@ -139,30 +132,13 @@ defmodule Temple do
 
   defmacro temple(block) do
     quote location: :keep do
-      import Temple
-
-      {:ok, buffer} = Buffer.start_link()
-
-      buffer
-      |> Temple.Parser.Private.traverse(unquote(block))
-
-      markup = Buffer.get(buffer)
-
-      Buffer.stop(buffer)
-
-      markup
+      Parser.parse(unquote(block))
     end
   end
 
   defmacro live_temple([do: block] = _block) do
-    {:ok, buffer} = Buffer.start_link()
+    markup = Parser.parse(block)
 
-    buffer
-    |> Temple.Parser.Private.traverse(block)
-
-    markup = Buffer.get(buffer)
-
-    Buffer.stop(buffer)
     EEx.compile_string(markup, engine: Phoenix.LiveView.Engine)
   end
 end
