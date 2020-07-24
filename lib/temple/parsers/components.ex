@@ -4,14 +4,8 @@ defmodule Temple.Parser.Components do
 
   alias Temple.Parser
 
-  def applicable?({name, meta, _}) do
-    try do
-      !meta[:temple_component_applied] &&
-        File.exists?(Path.join([@components_path, "#{name}.exs"]))
-    rescue
-      _ ->
-        false
-    end
+  def applicable?({name, meta, _}) when is_atom(name) do
+    !meta[:temple_component_applied] && File.exists?(Path.join([@components_path, "#{name}.exs"]))
   end
 
   def applicable?(_), do: false
