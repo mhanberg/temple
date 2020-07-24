@@ -62,6 +62,7 @@ jobs:
       with:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
+
     - uses: actions/cache@v1
       id: cache
       with:
@@ -73,7 +74,7 @@ jobs:
       run: mix deps.get
 
     - name: Run Tests
-      run: mix test
+      run: mix test || mix test --failed || mix test --failed
       env:
         MIX_ENV: test
 
