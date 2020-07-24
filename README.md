@@ -58,28 +58,32 @@ end
 
 ### Components
 
-To define a component, you can create a file in your configured temple
-components directory, which defaults to `lib/components`. You would
-probably want to change that to be `lib/my_app_web/components` if you
-are building a phoenix app.
+To define a component, you can define a module that that starts with your defined components prefix. The last name in the module should be a came-cases version of the component name.
+
+This module should implement the `Temple.Component` behaviour.
 
 ```elixir
 # config/config.exs
 
-config :temple, :components_path, "./lib/my_app_web/components"
+config :temple, :components_prefix, MyAppWeb.Components
 ```
-
-This file should be of the `.exs` extension.
 
 You can then use this component in any other temple template.
 
-For example, if I were to define a `flex` component, I would create a
-file called `lib/my_app_web/components/flex.exs`, with the following
-contents.
+For example, if I were to define a `flex` component, I would create the following module.
 
 ```elixir
-div class: "flex #{@temple[:class]}", id: @id do
-  @children
+defmodule MyAppWeb.Components.Flex do
+  @behavior Temple.Component
+
+  @impl Temple.Component
+  def render do
+    quote do
+      div class: "flex #{@temple[:class]}", id: @id do
+        @children
+      end
+    end
+  end
 end
 ```
 

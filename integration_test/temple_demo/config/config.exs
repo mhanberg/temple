@@ -12,8 +12,7 @@ config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 config :temple_demo,
   ecto_repos: [TempleDemo.Repo]
 
-config :phoenix, :template_engines,
-  exs: Temple.Engine
+config :phoenix, :template_engines, exs: Temple.Engine
 
 # Configures the endpoint
 config :temple_demo, TempleDemoWeb.Endpoint,
@@ -31,11 +30,13 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :temple, :aliases,
-  label: :_label,
-  link: :_link,
-  textarea: :_textarea
-
+config :temple,
+  aliases: [
+    label: :_label,
+    link: :_link,
+    textarea: :_textarea
+  ],
+  component_prefix: TempleDemoWeb.Component
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

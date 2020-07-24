@@ -2,6 +2,10 @@
 
 ## Master
 
+### Breaking
+
+Components are now defined using modules. You can convert your existing components by configuring your component prefix and wrapping your current component files in the `Temple.Component` behaviour implementation.
+
 ### Bugs
 
 - Did not correctly parse expressions with do blocks where the expression had two or more arguments before the block
