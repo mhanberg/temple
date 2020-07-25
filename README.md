@@ -65,7 +65,10 @@ This module should implement the `Temple.Component` behaviour.
 ```elixir
 # config/config.exs
 
-config :temple, :components_prefix, MyAppWeb.Components
+config :temple, :component_prefix, MyAppWeb.Components
+
+# also set the path so recompiling will work in Phoenix projects
+config :temple, :components_path, "./lib/my_app_web/components"
 ```
 
 You can then use this component in any other temple template.
