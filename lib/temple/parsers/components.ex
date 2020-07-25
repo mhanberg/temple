@@ -1,14 +1,19 @@
 defmodule Temple.Parser.Components do
   @behaviour Temple.Parser
-  @components_path Application.get_env(:temple, :components_path, "./lib/components")
+  @component_prefix Application.fetch_env!(:temple, :component_prefix)
 
   alias Temple.Parser
 
   def applicable?({name, meta, _}) when is_atom(name) do
-    !meta[:temple_component_applied] && File.exists?(Path.join([@components_path, "#{name}.exs"]))
+    !meta[:temple_component_applied] &&
+      match?({:module, _}, name |> component_module() |> Code.ensure_compiled())
   end
 
   def applicable?(_), do: false
+
+  defp component_module(name) do
+    Module.concat([@component_prefix, Macro.camelize(to_string(name))])
+  end
 
   def run({name, _meta, args}, _buffer) do
     {assigns, children} =
@@ -26,9 +31,9 @@ defmodule Temple.Parser.Components do
           {nil, nil}
       end
 
-    ast =
-      File.read!(Path.join([@components_path, "#{name}.exs"]))
-      |> Code.string_to_quoted!()
+    component_module = Module.concat([@component_prefix, Macro.camelize(to_string(name))])
+
+    ast = apply(component_module, :render, [])
 
     {name, meta, args} =
       ast
