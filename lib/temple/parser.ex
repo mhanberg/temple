@@ -114,7 +114,7 @@ defmodule Temple.Parser do
       end
     end
 
-    def split_args(nil), do: {[], []}
+    def split_args(not_what_i_want) when is_nil(not_what_i_want) or is_atom(not_what_i_want), do: {[], []}
 
     def split_args(args) do
       {do_and_else, args} =
