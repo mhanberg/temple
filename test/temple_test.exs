@@ -367,4 +367,69 @@ defmodule TempleTest do
     assert result ==
              ~s{<%= for(x <- 1..5, y <- 6..10) do %><div><%= x %></div><div><%= y %></div><% end %>}
   end
+
+  test "can pass an expression as assigns" do
+    result =
+      temple do
+        fieldset if true == false, do: [disabled: true], else: [] do
+          input type: "text"
+        end
+      end
+
+    assert result ==
+             ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(if(true == false) do  [disabled: true]else  []end) %>><input type="text"></fieldset>}
+  end
+
+  test "can pass a variable as assigns" do
+    result =
+      temple do
+        fieldset foo_bar do
+          input type: "text"
+        end
+      end
+
+    assert result ==
+             ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(foo_bar) %>><input type="text"></fieldset>}
+  end
+
+  test "can pass a function as assigns" do
+    result =
+      temple do
+        fieldset Foo.foo_bar() do
+          input type: "text"
+        end
+      end
+
+    assert result ==
+             ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(Foo.foo_bar()) %>><input type="text"></fieldset>}
+  end
+
+  test "can pass a function as assigns that has @temple" do
+    result =
+      temple do
+        has_temple_function_assign class: "justify-end", style: "color: pink" do
+          input type: "text"
+        end
+      end
+
+    expected =
+      ~S"""
+      <div<%= Temple.Parser.Private.runtime_attrs(Keyword.put([class: "justify-end", style: "color: pink"], :class, "flex #{[class: "justify-end", style: "color: pink"][:class]}")) %>>
+      <input type="text">
+      </div>
+      """
+      |> String.trim()
+
+    assert result == expected
+
+    assert evaluate_template(result) == evaluate_template(expected)
+  end
+
+  defp evaluate_template(template) do
+    template
+    |> EEx.compile_string(engine: Phoenix.HTML.Engine)
+      |> Code.eval_quoted()
+      |> elem(0)
+      |> Phoenix.HTML.safe_to_string()
+  end
 end

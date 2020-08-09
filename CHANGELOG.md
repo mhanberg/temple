@@ -2,6 +2,30 @@
 
 ## Master
 
+- Can pass a keyword list to be evaluated at runtime as attrs/assigns to an element.
+
+```elixir
+# compile time
+
+div class: "foo", id: bar do
+  # something
+end
+
+# <div class="foo" id="<%= bar %>">
+#   <!-- something -->
+# </div>
+
+# runtime
+
+div some_var do
+  # something
+end
+
+# <div<%= PrivateTempleModule.runtime_attrs(some_var) %>>
+#   <!-- something -->
+# </div>
+```
+
 ### Breaking
 
 Components are now defined using modules. You can convert your existing components by configuring your component prefix and wrapping your current component files in the `Temple.Component` behaviour implementation.

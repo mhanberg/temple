@@ -21,7 +21,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
 
     {do_and_else, args} =
       case args do
-        [args] ->
+        [args] when is_list(args) ->
           {do_value, args} = Keyword.pop(args, :do)
 
           do_and_else = Keyword.put_new(do_and_else, :do, do_value)

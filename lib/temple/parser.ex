@@ -100,21 +100,36 @@ defmodule Temple.Parser do
       compile_attrs(attrs)
     end
 
-    def compile_attrs(attrs) do
-      for {name, value} <- attrs, into: "" do
-        name = snake_to_kebab(name)
+    def compile_attrs(attrs) when is_list(attrs) do
+      if Keyword.keyword?(attrs) do
+        for {name, value} <- attrs, into: "" do
+          name = snake_to_kebab(name)
 
-        case value do
-          {_, _, _} = macro ->
-            " " <> name <> "=\"<%= " <> Macro.to_string(macro) <> " %>\""
+          case value do
+            {_, _, _} = macro ->
+              " " <> name <> "=\"<%= " <> Macro.to_string(macro) <> " %>\""
 
-          value ->
-            " " <> name <> "=\"" <> to_string(value) <> "\""
+            value ->
+              " " <> name <> "=\"" <> to_string(value) <> "\""
+          end
         end
+      else
+        "<%= Temple.Parser.Private.runtime_attrs(" <>
+          (attrs |> List.first() |> Macro.to_string()) <> ") %>"
       end
     end
 
-    def split_args(not_what_i_want) when is_nil(not_what_i_want) or is_atom(not_what_i_want), do: {[], []}
+    def runtime_attrs(attrs) do
+      {:safe,
+       for {name, value} <- attrs, into: "" do
+         name = snake_to_kebab(name)
+
+         " " <> name <> "=\"" <> to_string(value) <> "\""
+       end}
+    end
+
+    def split_args(not_what_i_want) when is_nil(not_what_i_want) or is_atom(not_what_i_want),
+      do: {[], []}
 
     def split_args(args) do
       {do_and_else, args} =

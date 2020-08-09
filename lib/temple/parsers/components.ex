@@ -22,13 +22,13 @@ defmodule Temple.Parser.Components do
           {assigns, block}
 
         [[do: block]] ->
-          {nil, block}
+          {[], block}
 
         [assigns] ->
           {assigns, nil}
 
         _ ->
-          {nil, nil}
+          {[], nil}
       end
 
     component_module = Module.concat([@component_prefix, Macro.camelize(to_string(name))])
@@ -45,7 +45,7 @@ defmodule Temple.Parser.Components do
           assigns
 
         {:@, _, [{name, _, _}]} = node ->
-          if !is_nil(assigns) && name in Keyword.keys(assigns) do
+          if name in Keyword.keys(assigns) do
             Keyword.get(assigns, name, nil)
           else
             node
