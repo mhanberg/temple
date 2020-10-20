@@ -77,7 +77,7 @@ For example, if I were to define a `flex` component, I would create the followin
 
 ```elixir
 defmodule MyAppWeb.Components.Flex do
-  @behavior Temple.Component
+  @behaviour Temple.Component
 
   @impl Temple.Component
   def render do
