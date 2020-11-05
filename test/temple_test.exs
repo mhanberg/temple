@@ -154,17 +154,17 @@ defmodule TempleTest do
   test "renders a case expression as eex" do
     result =
       temple do
-        case @foo.bar do
+        case @foo do
           :baz ->
-            weight_form(form: @form)
+            some_component(form: @form)
         end
       end
 
     expected =
       ~S"""
-      <%= case(@foo.bar) do %>
+      <%= case(@foo) do %>
       <% :baz -> %>
-      <%= weight_form(form: @form) %>
+      <%= some_component(form: @form) %>
       <% end %>
       """
       |> String.trim()
