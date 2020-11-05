@@ -26,6 +26,8 @@ end
 # </div>
 ```
 
+- it now parses `case` expressions
+
 ### Breaking
 
 Components are now defined using modules. You can convert your existing components by configuring your component prefix and wrapping your current component files in the `Temple.Component` behaviour implementation.
