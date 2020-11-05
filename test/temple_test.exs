@@ -151,6 +151,27 @@ defmodule TempleTest do
     assert result == ~s{<%= unless(true == false) do %><div class="hi"></div><% end %>}
   end
 
+  test "renders a case expression as eex" do
+    result =
+      temple do
+        case @foo.bar do
+          :baz ->
+            weight_form(form: @form)
+        end
+      end
+
+    expected =
+      ~S"""
+      <%= case(@foo.bar) do %>
+      <% :baz -> %>
+      <%= weight_form(form: @form) %>
+      <% end %>
+      """
+      |> String.trim()
+
+    assert result == expected
+  end
+
   test "renders multiline anonymous function with 1 arg before the function" do
     result =
       temple do

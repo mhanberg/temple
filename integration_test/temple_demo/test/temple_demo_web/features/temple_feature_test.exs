@@ -10,6 +10,22 @@ defmodule TempleDemoWeb.TempleFeatureTest do
     |> assert_text("Welcome to Phoenix!")
   end
 
+  feature "case statements work", %{session: session} do
+    session = 
+      session
+      |> visit("/?text=staging")
+
+    session |> assert_text("Welcome to Phoenix!")
+    session |> assert_text("Peace-of-mind from prototype to staging")
+
+    session = 
+      session
+      |> visit("/?text=foobar")
+
+    session |> assert_text("Welcome to Phoenix!")
+    session |> assert_text("Peace-of-mind from prototype to production")
+  end
+
   feature "can create a new post", %{session: session} do
     session
     |> visit(Routes.post_path(E, :index))

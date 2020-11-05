@@ -3,8 +3,15 @@ section class: "phx-hero" do
     gettext("Welcome to %{name}!", name: "Phoenix")
   end
 
-  p do
-    "Peace-of-mind from prototype to production"
+  case @text do
+    "staging" ->
+      p do
+        "Peace-of-mind from prototype to staging"
+      end
+    _ ->
+      p do
+        "Peace-of-mind from prototype to production"
+      end
   end
 end
 

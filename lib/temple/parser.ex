@@ -68,6 +68,7 @@ defmodule Temple.Parser do
       Temple.Parser.NonvoidElementsAliases,
       Temple.Parser.VoidElementsAliases,
       Temple.Parser.AnonymousFunctions,
+      Temple.Parser.RightArrow,
       Temple.Parser.DoExpressions,
       Temple.Parser.Match,
       Temple.Parser.Default
