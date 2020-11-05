@@ -16,7 +16,15 @@ Add `temple` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:temple, "~> 0.6.0-alpha.2"}]
+  [{:temple, "~> 0.6.0-alpha.4"}]
+end
+```
+
+or
+
+```elixir
+def deps do
+  [{:temple, github: "mhanberg/temple"}]
 end
 ```
 
