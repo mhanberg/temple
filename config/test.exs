@@ -1,3 +1,5 @@
 use Mix.Config
 
-config :temple, components_path: "./test/support/components"
+# this is to make the warning go away,
+# Temple does not use a json_library
+config :phoenix, json_library: Temple

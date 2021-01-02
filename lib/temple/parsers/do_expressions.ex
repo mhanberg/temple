@@ -1,4 +1,5 @@
 defmodule Temple.Parser.DoExpressions do
+  @moduledoc false
   @behaviour Temple.Parser
 
   alias Temple.Parser

@@ -15,10 +15,7 @@ defmodule Temple.MixProject do
       source_url: "https://github.com/mhanberg/temple",
       docs: [
         main: "Temple",
-        extras: ["README.md"],
-        deps: [
-          phoenix_html: "https://hexdocs.pm/phoenix_html/"
-        ]
+        extras: ["README.md"]
       ]
     ]
   end
@@ -48,7 +45,8 @@ defmodule Temple.MixProject do
     [
       {:ex_doc, "~> 0.22.0", only: :dev, runtime: false},
       {:phoenix, ">= 0.0.0", optional: true},
-      {:phoenix_html, ">= 0.0.0", only: :test}
+      {:phoenix_html, ">= 0.0.0", only: :test},
+      {:phoenix_live_view, ">= 0.0.0", only: :test}
     ]
   end
 end

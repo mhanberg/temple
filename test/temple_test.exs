@@ -269,7 +269,7 @@ defmodule TempleTest do
              ~s{<div class="font-bold">Hello, world</div><div class="font-bold">Hello, world</div><div>Hello, world</div>}
   end
 
-  test "passing 'compact: true' will not insert new lines" do
+  test "`do` passed as keyword will compile compacted markup" do
     import Temple.Support.Utils, only: []
     import Kernel
 
@@ -285,95 +285,6 @@ defmodule TempleTest do
       end
 
     assert result == ~s{<p>Bob</p>\n<p><%= foo %></p>}
-  end
-
-  test "inlines function components" do
-    result =
-      temple do
-        div class: "font-bold" do
-          "Hello, world"
-        end
-
-        component do
-          "I'm a component!"
-        end
-      end
-
-    assert result ==
-             ~s{<div class="font-bold">Hello, world</div><div class="<%= @assign %>">I'm a component!</div>}
-  end
-
-  test "function components can accept local assigns" do
-    result =
-      temple do
-        div class: "font-bold" do
-          "Hello, world"
-        end
-
-        component2 class: "bg-red" do
-          "I'm a component!"
-        end
-      end
-
-    assert result ==
-             ~s{<div class="font-bold">Hello, world</div><div class="bg-red">I'm a component!</div>}
-  end
-
-  test "function components can accept local assigns that are variables" do
-    result =
-      temple do
-        div class: "font-bold" do
-          "Hello, world"
-        end
-
-        class = "bg-red"
-
-        component2 class: class do
-          "I'm a component!"
-        end
-      end
-
-    assert result ==
-             ~s{<div class="font-bold">Hello, world</div><% class = "bg-red" %><div class="<%= class %>">I'm a component!</div>}
-  end
-
-  test "function components can use other components" do
-    result =
-      temple do
-        outer do
-          "outer!"
-        end
-
-        inner do
-          "inner!"
-        end
-      end
-
-    assert result ==
-             ~s{<div id="inner" outer-id="from-outer">outer!</div><div id="inner" outer-id="<%= @outer_id %>">inner!</div>}
-  end
-
-  test "@temple should be available in any component" do
-    result =
-      temple do
-        has_temple class: "boom" do
-          "yay!"
-        end
-      end
-
-    assert result == ~s{<div class="<%= [class: "boom"][:class] %>">yay!</div>}
-  end
-
-  test "normal functions with blocks should be treated like if expressions" do
-    result =
-      temple do
-        leenk to: "/route", class: "foo" do
-          div class: "hi"
-        end
-      end
-
-    assert result ==
-             ~s{<%= leenk(to: "/route", class: "foo") do %><div class="hi"></div><% end %>}
   end
 
   test "for with 2 generators" do
@@ -423,34 +334,5 @@ defmodule TempleTest do
 
     assert result ==
              ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(Foo.foo_bar()) %>><input type="text"></fieldset>}
-  end
-
-  test "can pass a function as assigns that has @temple" do
-    result =
-      temple do
-        has_temple_function_assign class: "justify-end", style: "color: pink" do
-          input type: "text"
-        end
-      end
-
-    expected =
-      ~S"""
-      <div<%= Temple.Parser.Private.runtime_attrs(Keyword.put([class: "justify-end", style: "color: pink"], :class, "flex #{[class: "justify-end", style: "color: pink"][:class]}")) %>>
-      <input type="text">
-      </div>
-      """
-      |> String.trim()
-
-    assert result == expected
-
-    assert evaluate_template(result) == evaluate_template(expected)
-  end
-
-  defp evaluate_template(template) do
-    template
-    |> EEx.compile_string(engine: Phoenix.HTML.Engine)
-    |> Code.eval_quoted()
-    |> elem(0)
-    |> Phoenix.HTML.safe_to_string()
   end
 end

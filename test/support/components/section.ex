@@ -1,12 +1,9 @@
 defmodule Temple.Components.Section do
-  @behaviour Temple.Component
+  use Temple.Component
 
-  @impl Temple.Component
-  def render do
-    quote do
-      section class: "foo!" do
-        @children
-      end
+  render do
+    section class: "foo!" do
+      @inner_content
     end
   end
 end

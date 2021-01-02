@@ -30,7 +30,58 @@ end
 
 ### Breaking
 
-Components are now defined using modules. You can convert your existing components by configuring your component prefix and wrapping your current component files in the `Temple.Component` behaviour implementation.
+#### Components
+
+Components are now a thin layer over template partials, compiling to calls to `render/3` and `render_layout/4` under the hood.
+
+To upgrade your components the new syntax, you can copy your component markup and paste it into the `render/1` macro inside the component module and references to `@children` can be updated to `@inner_content`.
+
+Components can are also referenced differently than before when using them. Before, one would simply call `flex` to render a component named `Flex`. Now, one must use the keyword `c` to render a component, passing the keyword the component module along with any assigns.
+
+##### Before
+
+```elixir
+# definition
+div class: "flex #{@class}" do
+  @children
+end
+
+# usage
+
+flex class: "justify-between" do
+  for item <- @items do
+    div do
+      item.name
+    end
+  end
+end
+```
+
+##### After
+
+```elixir
+# definition
+defmodule MyAppWeb.Component.Flex do
+  use Temple.Component
+
+  render do
+    div class: "flex #{@class}" do
+      @inner_content
+    end
+  end
+end
+
+# usage
+alias MyApp.Component.Flex # probably located in my_app_web.ex
+
+c Flex, class: "justify-between" do
+  for item <- @items do
+    div do
+      item.name
+    end
+  end
+end
+```
 
 ### Bugs
 

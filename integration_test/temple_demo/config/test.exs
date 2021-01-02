@@ -21,6 +21,10 @@ config :temple_demo, TempleDemoWeb.Endpoint,
 config :temple_demo, :sql_sandbox, true
 
 config :wallaby,
+  chromedriver: [
+    # headless: false,
+    binary: System.get_env("CHROME_BROWSER")
+  ],
   base_url: "http://localhost:4002",
   otp_app: :temple_demo,
   screenshot_on_failure: true

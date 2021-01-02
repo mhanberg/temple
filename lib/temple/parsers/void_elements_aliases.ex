@@ -1,4 +1,5 @@
 defmodule Temple.Parser.VoidElementsAliases do
+  @moduledoc false
   @behaviour Temple.Parser
 
   alias Temple.Parser

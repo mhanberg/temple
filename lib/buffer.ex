@@ -1,5 +1,8 @@
 defmodule Temple.Buffer do
   @moduledoc false
+
+  use Agent
+
   def start_link(state \\ []) do
     Agent.start_link(fn -> state end)
   end

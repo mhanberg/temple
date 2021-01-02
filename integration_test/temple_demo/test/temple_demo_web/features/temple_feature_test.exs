@@ -2,33 +2,28 @@ defmodule TempleDemoWeb.TempleFeatureTest do
   use ExUnit.Case, async: false
   use Wallaby.Feature
   alias TempleDemoWeb.Router.Helpers, as: Routes
-  alias TempleDemoWeb.Endpoint, as: E
+  @endpoint TempleDemoWeb.Endpoint
 
   feature "renders the homepage", %{session: session} do
     session
     |> visit("/")
     |> assert_text("Welcome to Phoenix!")
+    |> assert_text("inner content of outer")
   end
 
   feature "case statements work", %{session: session} do
-    session = 
-      session
-      |> visit("/?text=staging")
-
-    session |> assert_text("Welcome to Phoenix!")
-    session |> assert_text("Peace-of-mind from prototype to staging")
-
-    session = 
-      session
-      |> visit("/?text=foobar")
-
-    session |> assert_text("Welcome to Phoenix!")
-    session |> assert_text("Peace-of-mind from prototype to production")
+    session
+    |> visit("/?text=staging")
+    |> assert_text("Welcome to Phoenix!")
+    |> assert_text("Peace-of-mind from prototype to staging")
+    |> visit("/?text=foobar")
+    |> assert_text("Welcome to Phoenix!")
+    |> assert_text("Peace-of-mind from prototype to production")
   end
 
   feature "can create a new post", %{session: session} do
     session
-    |> visit(Routes.post_path(E, :index))
+    |> visit(Routes.post_path(@endpoint, :index))
     |> click(Query.link("New Post"))
     |> fill_in(Query.text_field("Title"), with: "Temple is awesome!")
     |> fill_in(Query.text_field("Body"), with: "In this post I will show you how to use Temple")

@@ -1,4 +1,5 @@
 defmodule Temple.Parser.TempleNamespaceNonvoid do
+  @moduledoc false
   @behaviour Temple.Parser
 
   alias Temple.Parser

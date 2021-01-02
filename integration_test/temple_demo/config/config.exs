@@ -35,8 +35,7 @@ config :temple,
     label: :_label,
     link: :_link,
     textarea: :_textarea
-  ],
-  component_prefix: TempleDemoWeb.Component
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

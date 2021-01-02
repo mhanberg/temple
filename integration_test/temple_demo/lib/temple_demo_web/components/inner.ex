@@ -1,4 +1,4 @@
-defmodule Temple.Components.Inner do
+defmodule TempleDemoWeb.Component.Inner do
   use Temple.Component
 
   render do

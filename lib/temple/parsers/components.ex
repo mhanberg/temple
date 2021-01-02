@@ -1,21 +1,18 @@
 defmodule Temple.Parser.Components do
+  @moduledoc false
   @behaviour Temple.Parser
-  @component_prefix Application.fetch_env!(:temple, :component_prefix)
 
-  alias Temple.Parser
+  alias Temple.Buffer
 
-  def applicable?({name, meta, _}) when is_atom(name) do
-    !meta[:temple_component_applied] &&
-      match?({:module, _}, name |> component_module() |> Code.ensure_compiled())
+  def applicable?({:c, _, _}) do
+    true
   end
 
   def applicable?(_), do: false
 
-  defp component_module(name) do
-    Module.concat([@component_prefix, Macro.camelize(to_string(name))])
-  end
+  def run({:c, _meta, [component_module | args]}, buffer) do
+    import Temple.Parser.Private
 
-  def run({name, _meta, args}, _buffer) do
     {assigns, children} =
       case args do
         [assigns, [do: block]] ->
@@ -31,45 +28,26 @@ defmodule Temple.Parser.Components do
           {[], nil}
       end
 
-    component_module = Module.concat([@component_prefix, Macro.camelize(to_string(name))])
+    if children do
+      Buffer.put(
+        buffer,
+        "<%= Phoenix.View.render_layout #{Macro.to_string(component_module)}, :self, #{
+          Macro.to_string(assigns)
+        } do %>"
+      )
 
-    ast = apply(component_module, :render, [])
+      traverse(buffer, children)
 
-    {name, meta, args} =
-      ast
-      |> Macro.prewalk(fn
-        {:@, _, [{:children, _, _}]} ->
-          children
+      Buffer.put(buffer, "<% end %>")
+    else
+      Buffer.put(
+        buffer,
+        "<%= Phoenix.View.render #{Macro.to_string(component_module)}, :self, #{
+          Macro.to_string(assigns)
+        } %>"
+      )
+    end
 
-        {:@, _, [{:temple, _, _}]} ->
-          assigns
-
-        {:@, _, [{name, _, _}]} = node ->
-          if name in Keyword.keys(assigns) do
-            Keyword.get(assigns, name, nil)
-          else
-            node
-          end
-
-        node ->
-          node
-      end)
-
-    ast =
-      if Enum.any?(
-           [
-             Parser.nonvoid_elements(),
-             Parser.nonvoid_elements_aliases(),
-             Parser.void_elements(),
-             Parser.void_elements_aliases()
-           ],
-           fn elements -> name in elements end
-         ) do
-        {name, Keyword.put(meta, :temple_component_applied, true), args}
-      else
-        {name, meta, args}
-      end
-
-    {:component_applied, ast}
+    :ok
   end
 end

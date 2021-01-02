@@ -2,9 +2,7 @@ defmodule Temple do
   alias Temple.Parser
 
   @moduledoc """
-  > Warning: Docs are WIP
-
-  Temple syntax is available inside the `temple` and `live_temple` macros, and is compiled into EEx at build time.
+  Temple syntax is available inside the `temple`, and is compiled into EEx at build time.
 
   ### Usage
 
@@ -47,7 +45,7 @@ defmodule Temple do
       text_input f, :name
     end
 
-    # You can explicitly call a tag by prefixing with the Temple module
+    # You can explicitly emit a tag by prefixing with the Temple module
     Temple.div do
       "Foo"
     end
@@ -59,11 +57,11 @@ defmodule Temple do
 
   ### Reserved keywords
 
-  You can pass a keyword list to an element as element attributes, but there are several reserved keywords.
+  You can pass a keyword list to an element as element attributes, but there is currently a reserved keyword.
 
   #### Compact
 
-  Passing `compact: true` will not rendering new lines from within the element. This is useful if you are trying to use the `:empty` psuedo selector.
+  Passing `compact: true` will not emit a new line between the opening tag, the content, and the closing tag. This is useful if you are trying to use the `:empty` psuedo selector.
 
   ```elixir
   temple do
@@ -122,6 +120,27 @@ defmodule Temple do
     end
   end
 
+  @doc """
+  Context for temple markup.
+
+  Returns an EEx string.
+
+  ## Usage
+
+  ```elixir
+  import Temple
+
+  temple do
+    div class: @class do
+      "Hello, world!"
+    end
+  end
+
+  # <div class="<%= @class %>">
+  #   Hello, world!
+  # </div>
+  ```
+  """
   defmacro temple([do: block] = _block) do
     markup = Parser.parse(block)
 
@@ -136,9 +155,26 @@ defmodule Temple do
     end
   end
 
-  defmacro live_temple([do: block] = _block) do
+  @doc """
+  Compiles temple markup into a quoted expression using the given EEx Engine.
+
+  ## Usage
+
+  ```elixir
+  require Temple
+
+  Temple.compile Phoenix.HTML.Engine do
+    div class: @class do
+      "Hello, world!"
+    end
+  end
+
+  # Returns the same output that Phoenix templates output into the `render/1` function of their view modules.
+  ```
+  """
+  defmacro compile(engine, [do: block] = _block) do
     markup = Parser.parse(block)
 
-    EEx.compile_string(markup, engine: Phoenix.LiveView.Engine)
+    EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
   end
 end

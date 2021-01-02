@@ -1,4 +1,6 @@
 defmodule Temple.Parser do
+  @moduledoc false
+
   @doc """
   Should return true if the parser should apply for the given AST.
   """

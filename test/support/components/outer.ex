@@ -1,12 +1,9 @@
 defmodule Temple.Components.Outer do
-  @behaviour Temple.Component
+  use Temple.Component
 
-  @impl Temple.Component
-  def render do
-    quote do
-      inner outer_id: "from-outer" do
-        @children
-      end
+  render do
+    c Temple.Components.Inner, outer_id: "from-outer" do
+      @inner_content
     end
   end
 end

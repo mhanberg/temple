@@ -6,7 +6,7 @@
 
 > You are looking at the README for the master branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.5.0).
 
-Temple is a DSL for writing HTML using Elixir.
+Temple is a DSL for writing HTML and EEx using Elixir.
 
 You're probably here because you want to use Temple to write Phoenix templates, which is why Temple includes a [Phoenix template engine](#phoenix-templates).
 
@@ -16,7 +16,10 @@ Add `temple` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:temple, "~> 0.6.0-alpha.4"}]
+  [
+    {:temple, "~> 0.6.0-alpha.4"},
+    {:phoenix, ">= 1.5.0"} # requires at least Phoenix v1.5.0
+  ]
 end
 ```
 
@@ -30,9 +33,9 @@ end
 
 ## Usage
 
-Using Temple is a as simple as using the DSL inside of an `temple/1` block. This returns an EEx string at compile time.
+Using Temple is as simple as using the DSL inside of an `temple/1` block. This returns an EEx string at compile time.
 
-See the [documentation](https://hexdocs.pm/temple/Temple.Html.html) for more details.
+See the [documentation](https://hexdocs.pm/temple/Temple.html) for more details.
 
 ```elixir
 use Temple
@@ -66,33 +69,17 @@ end
 
 ### Components
 
-To define a component, you can define a module that that starts with your defined components prefix. The last name in the module should be a came-cases version of the component name.
+Temple components are mostly a little syntax sugar over Phoenix's `render/3` and `render_layout/4` functions.
 
-This module should implement the `Temple.Component` behaviour.
-
-```elixir
-# config/config.exs
-
-config :temple, :component_prefix, MyAppWeb.Components
-
-# also set the path so recompiling will work in Phoenix projects
-config :temple, :components_path, "./lib/my_app_web/components"
-```
-
-You can then use this component in any other temple template.
-
-For example, if I were to define a `flex` component, I would create the following module.
+For example, if I were to define a `Flex` component, I would create the following module.
 
 ```elixir
 defmodule MyAppWeb.Components.Flex do
-  @behaviour Temple.Component
+  use Temple.Component
 
-  @impl Temple.Component
-  def render do
-    quote do
-      div class: "flex #{@temple[:class]}", id: @id do
-        @children
-      end
+  render do
+    div class: "flex #\{@class}" do
+      @inner_content
     end
   end
 end
@@ -101,7 +88,9 @@ end
 And we could use the component like so
 
 ```elixir
-flex class: "justify-between items-center", id: "arnold" do
+alias MyAppWeb.Components.Flex
+
+c Flex, class: "justify-between items-center", id: "arnold" do
   div do: "Hi"
   div do: "I'm"
   div do: "Arnold"
@@ -109,29 +98,9 @@ flex class: "justify-between items-center", id: "arnold" do
 end
 ```
 
-We've demonstrated several features to components in this example.
-
-We can pass assigns to our component, and access them just like we would in a normal phoenix template. If they don't match up with any assigns we passed to our component, they will be rendered as-is, and will become a normal Phoenix assign.
-
-You can also access a special `@temple` assign. This allows you do optionally pass an assign, and not have the `@my_assign` pass through.  If you didn't pass it to your component, it will evaluate to nil.
-
-The block passed to your component can be accessed as `@children`. This allows your components to wrap a body of markup from the call site.
-
-In order for components to trigger a recompile when they are changed, you can call `use Temple.Recompiler` in your `lib/my_app_web.ex` file, in the `view`, `live_view`, and `live_component` functions
-
-```elixir
-def view do
-  quote do
-    # ...
-    use Temple.Recompiler
-    # ...
-  end
-end
-```
-
 ### Phoenix templates
 
-Add the templating engine to your Phoenix configuration.
+Add the template engine to your Phoenix configuration.
 
 ```elixir
 # config.exs

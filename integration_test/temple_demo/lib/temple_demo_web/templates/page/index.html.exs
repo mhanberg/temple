@@ -3,6 +3,10 @@ section class: "phx-hero" do
     gettext("Welcome to %{name}!", name: "Phoenix")
   end
 
+  c Outer, outer_id: "hello" do
+    "inner content of outer"
+  end
+
   case @text do
     "staging" ->
       p do

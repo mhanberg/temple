@@ -36,6 +36,9 @@ defmodule TempleDemoWeb do
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
 
+      alias TempleDemoWeb.Component.Outer
+      alias TempleDemoWeb.Component.Flash
+
       # Include shared imports and aliases for views
       unquote(view_helpers())
     end
