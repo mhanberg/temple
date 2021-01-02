@@ -1,6 +1,10 @@
-# Changelog
+# CHANGELOG
 
 ## Master
+
+Nothing Yet
+
+## 0.6.0-rc.0
 
 - Can pass a keyword list to be evaluated at runtime as attrs/assigns to an element.
 

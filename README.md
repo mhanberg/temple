@@ -17,7 +17,7 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.6.0-alpha.4"},
+    {:temple, "~> 0.6.0-rc.0"},
     {:phoenix, ">= 1.5.0"} # requires at least Phoenix v1.5.0
   ]
 end
