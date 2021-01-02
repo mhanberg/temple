@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Master
+## Main
 
 Nothing Yet
 
