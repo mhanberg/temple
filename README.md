@@ -98,6 +98,8 @@ c Flex, class: "justify-between items-center", id: "arnold" do
 end
 ```
 
+Please see the [discussion thread](https://github.com/mhanberg/temple/discussions/104) to share ideas and ask questions about the Component API 😄.
+
 ### Phoenix templates
 
 Add the template engine to your Phoenix configuration.
