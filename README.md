@@ -88,8 +88,10 @@ end
 And we could use the component like so
 
 ```elixir
+# in the view module
 alias MyAppWeb.Components.Flex
 
+# in the template script
 c Flex, class: "justify-between items-center", id: "arnold" do
   div do: "Hi"
   div do: "I'm"
