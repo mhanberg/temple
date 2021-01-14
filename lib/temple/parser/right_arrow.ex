@@ -11,7 +11,7 @@ defmodule Temple.Parser.RightArrow do
 
   @impl Parser
   def run({_, _, [[pattern], args]}, buffer) do
-    import Temple.Parser.Private
+    import Temple.Parser.Utils
 
     Buffer.put(buffer, "<% " <> Macro.to_string(pattern) <> " -> %>\n")
     traverse(buffer, args)

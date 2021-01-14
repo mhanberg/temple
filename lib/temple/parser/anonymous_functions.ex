@@ -7,7 +7,7 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   @impl Parser
   def applicable?({_, _, args}) do
-    import Temple.Parser.Private, only: [split_args: 1]
+    import Temple.Parser.Utils, only: [split_args: 1]
 
     args |> split_args() |> elem(1) |> Enum.any?(fn x -> match?({:fn, _, _}, x) end)
   end
@@ -16,7 +16,7 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   @impl Parser
   def run({name, _, args}, buffer) do
-    import Temple.Parser.Private
+    import Temple.Parser.Utils
 
     {_do_and_else, args} =
       args

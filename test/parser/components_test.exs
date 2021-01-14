@@ -40,12 +40,12 @@ defmodule Temple.Parser.ComponentsTest do
           end
         end
 
-      Temple.Parser.Components.run(ast, buf)
+      buffers = Temple.Parser.Components.run(ast, %{default: buf}, :default)
 
-      result = Temple.Buffer.get(buf)
+      result = Temple.Buffer.get(buffers[:default])
 
       assert result ==
-               ~s{<%= Phoenix.View.render_layout SomeModule, :self, [foo: :bar] do %><aside class="foobar">I'm a component!</aside><% end %>}
+               ~s{<%= Phoenix.View.render_layout SomeModule, :default, [foo: :bar] do %><aside class="foobar">I'm a component!</aside><% end %>}
     end
   end
 end

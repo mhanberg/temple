@@ -14,7 +14,7 @@ defmodule Temple.Parser.DoExpressions do
 
   @impl Parser
   def run({name, meta, args}, buffer) do
-    import Temple.Parser.Private
+    import Temple.Parser.Utils
 
     {do_and_else, args} =
       args

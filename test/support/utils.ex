@@ -6,6 +6,9 @@ defmodule Temple.Support.Utils do
     end
   end
 
+  defmacro compile_components(files) do
+  end
+
   def a == b when is_binary(a) and is_binary(b) do
     a = String.replace(a, "\n", "")
     b = String.replace(b, "\n", "")

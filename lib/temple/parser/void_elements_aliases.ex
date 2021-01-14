@@ -1,4 +1,4 @@
-defmodule Temple.Parser.TempleNamespaceVoid do
+defmodule Temple.Parser.VoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
@@ -6,7 +6,7 @@ defmodule Temple.Parser.TempleNamespaceVoid do
   alias Temple.Buffer
 
   @impl Parser
-  def applicable?({{:., _, [{:__aliases__, _, [:Temple]}, name]}, _meta, _args}) do
+  def applicable?({name, _, _}) do
     name in Parser.void_elements_aliases()
   end
 
@@ -14,8 +14,7 @@ defmodule Temple.Parser.TempleNamespaceVoid do
 
   @impl Parser
   def run({name, _, args}, buffer) do
-    import Temple.Parser.Private
-    {:., _, [{:__aliases__, _, [:Temple]}, name]} = name
+    import Temple.Parser.Utils
 
     {_do_and_else, args} =
       args
