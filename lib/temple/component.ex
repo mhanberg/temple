@@ -44,8 +44,10 @@ defmodule Temple.Component do
   Since components are just modules, if you alias your module, you can use them more ergonomically.
 
   ```
+  # lib/my_app_web/views/page_view.ex
   alias MyAppWeb.Components.Flex
 
+  # lib/my_app_web/templates/page/index.html.exs
   c Flex, class: "justify-between items center" do
     for item <- items do
       div class: "p-4" do
