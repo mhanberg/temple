@@ -13,7 +13,7 @@ defmodule Temple.Parser.TempleNamespaceNonvoid do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({name, _, args}, buffer) do
+  def run({name, _, args}, buffers, buffer) do
     import Temple.Parser.Private
     {:., _, [{:__aliases__, _, [:Temple]}, name]} = name
 
@@ -38,13 +38,13 @@ defmodule Temple.Parser.TempleNamespaceNonvoid do
 
     {compact?, args} = pop_compact?(args)
 
-    Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
-    unless compact?, do: Buffer.put(buffer, "\n")
-    traverse(buffer, do_and_else[:do])
-    if compact?, do: Buffer.remove_new_line(buffer)
-    Buffer.put(buffer, "</#{name}>")
-    Buffer.put(buffer, "\n")
+    Buffer.put(buffers[buffer], "<#{name}#{compile_attrs(args)}>")
+    unless compact?, do: Buffer.put(buffers[buffer], "\n")
+    buffers = traverse(buffers, buffer, do_and_else[:do])
+    if compact?, do: Buffer.remove_new_line(buffers[buffer])
+    Buffer.put(buffers[buffer], "</#{name}>")
+    Buffer.put(buffers[buffer], "\n")
 
-    :ok
+    buffers
   end
 end

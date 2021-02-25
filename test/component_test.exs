@@ -20,7 +20,7 @@ defmodule Temple.ComponentTest do
       end
 
     assert result ==
-             ~s{<div class="font-bold">Hello, world</div><%= Phoenix.View.render_layout Temple.Components.Component, :self, [] do %><aside class="foobar">I'm a component!</aside><% end %>}
+             ~s{<div class="font-bold">Hello, world</div><%= Phoenix.View.render_layout Temple.Components.Component, :component, [] do %><aside class="foobar">I'm a component!</aside><% end %>}
 
     assert evaluate_template(result) ==
              ~s{<div class="font-bold">Hello, world</div><div><aside class="foobar">I'm a component!</aside></div>}
@@ -39,7 +39,7 @@ defmodule Temple.ComponentTest do
       end
 
     assert result ==
-             ~s{<div class="font-bold">Hello, world</div><%= Phoenix.View.render_layout Temple.Components.Component2, :self, [class: "bg-red"] do %>I'm a component!<% end %>}
+             ~s{<div class="font-bold">Hello, world</div><%= Phoenix.View.render_layout Temple.Components.Component2, :component, [class: "bg-red"] do %>I'm a component!<% end %>}
 
     assert evaluate_template(result) ==
              ~s{<div class="font-bold">Hello, world</div><div class="bg-red">I'm a component!</div>}
@@ -60,7 +60,7 @@ defmodule Temple.ComponentTest do
       end
 
     assert result ==
-             ~s{<div class="font-bold">Hello, world</div><% class = "bg-red" %><%= Phoenix.View.render_layout Temple.Components.Component2, :self, [class: class] do %>I'm a component!<% end %>}
+             ~s{<div class="font-bold">Hello, world</div><% class = "bg-red" %><%= Phoenix.View.render_layout Temple.Components.Component2, :component, [class: class] do %>I'm a component!<% end %>}
   end
 
   test "function components can use other components" do
@@ -76,7 +76,7 @@ defmodule Temple.ComponentTest do
       end
 
     assert result ==
-             ~s{<%= Phoenix.View.render_layout Temple.Components.Outer, :self, [] do %>outer!\n<% end %><%= Phoenix.View.render_layout Temple.Components.Inner, :self, [outer_id: "set by root inner"] do %>inner!\n<% end %>}
+             ~s{<%= Phoenix.View.render_layout Temple.Components.Outer, :component, [] do %>outer!\n<% end %><%= Phoenix.View.render_layout Temple.Components.Inner, :component, [outer_id: "set by root inner"] do %>inner!\n<% end %>}
 
     assert evaluate_template(result) == ~s"""
            <div id="inner" outer-id="from-outer">outer!</div>
@@ -105,7 +105,7 @@ defmodule Temple.ComponentTest do
       end
 
     assert result ==
-             ~s{<%= Phoenix.View.render_layout Temple.Components.WithFuncs, :self, [foo: :bar] do %>doo doo<% end %>}
+             ~s{<%= Phoenix.View.render_layout Temple.Components.WithFuncs, :component, [foo: :bar] do %>doo doo<% end %>}
 
     assert evaluate_template(result) == ~s{<div class="barbarbar">doo doo</div>}
   end
@@ -117,8 +117,76 @@ defmodule Temple.ComponentTest do
       end
 
     assert result ==
-             ~s{<%= Phoenix.View.render Temple.Components.VoidComponent, :self, [foo: :bar] %>}
+             ~s{<%= Phoenix.View.render Temple.Components.VoidComponent, :component, [foo: :bar] %>}
 
     assert evaluate_template(result) == ~s{<div class="void!!">bar</div>}
+  end
+
+  describe "slots" do
+    test "basic slots" do
+      result =
+        temple do
+          c Temple.Components.SlotComponent do
+            slot :foo, %{this: that} do
+              div do
+                that
+              end
+            end
+
+            span do
+              "inner content"
+            end
+          end
+        end
+
+      assert result =~
+               ~s|<%= Phoenix.View.render_layout Temple.Components.SlotComponent, :component, [slots: %{foo: :"Elixir.Temple.Components.SlotComponent.Foo.|
+
+      assert result =~ ~s|"}] do %><span>inner content</span><% end %>|
+
+      assert evaluate_template(result) ==
+               ~s{<section class="foo!"><div>is an assign passed in from slotcomponent</div><span>inner content</span></section>}
+    end
+
+    test "component with a slot renders another component that takes a slot" do
+      result =
+        temple do
+          c Temple.Components.SlotWithASlotComponent do
+            slot :foo, %{this: that} do
+              div do
+                that
+              end
+            end
+
+            span do
+              "inner content from slotwithaslot"
+            end
+          end
+        end
+
+      assert result =~
+               ~s|<%= Phoenix.View.render_layout Temple.Components.SlotWithASlotComponent, :component, [slots: %{foo: :"Elixir.Temple.Components.SlotWithASlotComponent.Foo.|
+
+      assert result =~ ~s|"}] do %><span>inner content from slotwithaslot</span><% end %>|
+
+      assert evaluate_template(result) ==
+               ~s"""
+               <section class="foo! from slotwithaslot">
+               <div>
+               is an assign from the slotwithaslot slot
+               </div><section class="foo!">
+               <span>
+               is an assign passed in from slotcomponent
+               </span>
+               <span>
+               inner content from slot
+               </span>
+               </section>
+               <span>
+               inner content from slotwithaslot
+               </span>
+               </section>
+               """
+    end
   end
 end

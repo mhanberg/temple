@@ -10,10 +10,10 @@ defmodule Temple.Parser.Text do
   def applicable?(_), do: false
 
   @impl Parser
-  def run(text, buffer) do
-    Buffer.put(buffer, text)
-    Buffer.put(buffer, "\n")
+  def run(text, buffers, buffer) do
+    Buffer.put(buffers[buffer], text)
+    Buffer.put(buffers[buffer], "\n")
 
-    :ok
+    buffers
   end
 end

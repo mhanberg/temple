@@ -10,12 +10,12 @@ defmodule Temple.Parser.RightArrow do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({_, _, [[pattern], args]}, buffer) do
+  def run({_, _, [[pattern], args]}, buffers, buffer) do
     import Temple.Parser.Private
 
-    Buffer.put(buffer, "<% " <> Macro.to_string(pattern) <> " -> %>\n")
-    traverse(buffer, args)
+    Buffer.put(buffer[buffer], "<% " <> Macro.to_string(pattern) <> " -> %>\n")
+    buffers = traverse(buffers, buffer, args)
 
-    :ok
+    buffers
   end
 end

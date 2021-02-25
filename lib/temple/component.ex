@@ -86,17 +86,37 @@ defmodule Temple.Component do
 
   """
   defmacro render(block) do
-    quote do
-      def render(assigns), do: render(:self, assigns)
+    slots =
+      Temple.compile(
+        %{
+          engine: Temple.Component.engine(),
+          line: __CALLER__.line,
+          file: __CALLER__.file
+        },
+        block
+      )
 
-      def render(:self, var!(assigns)) do
-        require Temple
-
-        _ = var!(assigns)
-
-        Temple.compile(unquote(Temple.Component.engine()), unquote(block))
+    catchall =
+      quote do
+        def render(var!(assigns)) do
+          render(:default, var!(assigns))
+        end
       end
-    end
+
+    render_funcs =
+      for {name, %{assigns: assigns, slot: slot}} <- slots do
+        quote do
+          def render(unquote(name), var!(assigns)) do
+            require Temple
+
+            unquote(assigns) = var!(assigns)
+
+            unquote(slot)
+          end
+        end
+      end
+
+    [catchall] ++ render_funcs
   end
 
   @doc """

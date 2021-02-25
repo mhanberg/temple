@@ -15,7 +15,7 @@ defmodule Temple.Parser.AnonymousFunctions do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({name, _, args}, buffer) do
+  def run({name, _, args}, buffers, buffer) do
     import Temple.Parser.Private
 
     {_do_and_else, args} =
@@ -27,7 +27,7 @@ defmodule Temple.Parser.AnonymousFunctions do
     {func, _, [{arrow, _, [[{arg, _, _}], block]}]} = func_arg
 
     Buffer.put(
-      buffer,
+      buffers[buffer],
       "<%= " <>
         to_string(name) <>
         " " <>
@@ -36,24 +36,24 @@ defmodule Temple.Parser.AnonymousFunctions do
         to_string(func) <> " " <> to_string(arg) <> " " <> to_string(arrow) <> " %>"
     )
 
-    Buffer.put(buffer, "\n")
+    Buffer.put(buffers[buffer], "\n")
 
-    traverse(buffer, block)
+    buffers = traverse(buffers, buffer, block)
 
     if Enum.any?(args2) do
       Buffer.put(
-        buffer,
+        buffers[buffer],
         "<% end, " <>
           (Enum.map(args2, fn arg -> Macro.to_string(arg) end)
            |> Enum.join(", ")) <> " %>"
       )
 
-      Buffer.put(buffer, "\n")
+      Buffer.put(buffers[buffer], "\n")
     else
-      Buffer.put(buffer, "<% end %>")
-      Buffer.put(buffer, "\n")
+      Buffer.put(buffers[buffer], "<% end %>")
+      Buffer.put(buffers[buffer], "\n")
     end
 
-    :ok
+    buffers
   end
 end

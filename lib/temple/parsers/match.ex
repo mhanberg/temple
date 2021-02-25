@@ -13,17 +13,17 @@ defmodule Temple.Parser.Match do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({_, _, args} = macro, buffer) do
+  def run({_, _, args} = macro, buffers, buffer) do
     import Temple.Parser.Private
 
     {do_and_else, _args} =
       args
       |> split_args()
 
-    Buffer.put(buffer, "<% " <> Macro.to_string(macro) <> " %>")
-    Buffer.put(buffer, "\n")
-    traverse(buffer, do_and_else[:do])
+    Buffer.put(buffers[buffer], "<% " <> Macro.to_string(macro) <> " %>")
+    Buffer.put(buffers[buffer], "\n")
+    buffers = traverse(buffers, buffer, do_and_else[:do])
 
-    :ok
+    buffers
   end
 end

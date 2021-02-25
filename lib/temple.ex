@@ -172,9 +172,10 @@ defmodule Temple do
   # Returns the same output that Phoenix templates output into the `render/1` function of their view modules.
   ```
   """
-  defmacro compile(engine, [do: block] = _block) do
+  def compile(opts, [do: block] = _block) do
+    %{line: line, file: file, engine: engine} = opts
     markup = Parser.parse(block)
 
-    EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
+    EEx.compile_string(markup, engine: engine, line: line, file: file)
   end
 end

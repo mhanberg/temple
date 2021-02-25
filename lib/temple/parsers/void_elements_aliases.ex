@@ -13,7 +13,7 @@ defmodule Temple.Parser.VoidElementsAliases do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({name, _, args}, buffer) do
+  def run({name, _, args}, buffers, buffer) do
     import Temple.Parser.Private
 
     {_do_and_else, args} =
@@ -22,9 +22,9 @@ defmodule Temple.Parser.VoidElementsAliases do
 
     name = Parser.void_elements_lookup()[name]
 
-    Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
-    Buffer.put(buffer, "\n")
+    Buffer.put(buffers[buffer], "<#{name}#{compile_attrs(args)}>")
+    Buffer.put(buffers[buffer], "\n")
 
-    :ok
+    buffers
   end
 end

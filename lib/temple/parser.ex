@@ -11,8 +11,9 @@ defmodule Temple.Parser do
 
   Should return `:ok` if the parsing pass is over, or `{:component_applied, ast}` if the pass should be restarted.
   """
-  @callback run(ast :: Macro.t(), buffer :: pid()) :: :ok | {:component_applied, Macro.t()}
-
+  @callback run(ast :: Macro.t(), buffers :: %{atom() => pid()}, buffer :: atom()) :: %{
+              atom() => pid()
+            }
   alias Temple.Buffer
 
   @aliases Application.get_env(:temple, :aliases, [])
@@ -79,12 +80,13 @@ defmodule Temple.Parser do
   def parse(ast) do
     {:ok, buffer} = Buffer.start_link()
 
-    Temple.Parser.Private.traverse(buffer, ast)
-    markup = Buffer.get(buffer)
+    buffers = Temple.Parser.Private.traverse(%{default: buffer}, :default, ast)
 
-    Buffer.stop(buffer)
+    for {name, buffer} <- buffers, into: %{} do
+      slot = Buffer.get(buffer, stop: true)
 
-    markup
+      {name, slot}
+    end
   end
 
   defmodule Private do
@@ -171,28 +173,25 @@ defmodule Temple.Parser do
       Keyword.pop(args, :compact, false)
     end
 
-    def traverse(buffer, {:__block__, _meta, block}) do
-      traverse(buffer, block)
+    def traverse(buffers, buffer, {:__block__, _meta, block}) do
+      traverse(buffers, buffer, block)
     end
 
-    def traverse(buffer, [first | rest]) do
-      traverse(buffer, first)
+    def traverse(buffers, buffer, [first | rest]) do
+      buffers = traverse(buffers, buffer, first)
 
-      traverse(buffer, rest)
+      traverse(buffers, buffer, rest)
     end
 
-    def traverse(buffer, original_macro) do
+    def traverse(buffers, buffer, original_macro) do
       Temple.Parser.parsers()
       |> Enum.reduce_while(original_macro, fn parser, macro ->
-        with true <- parser.applicable?(macro),
-             :ok <- parser.run(macro, buffer) do
-          {:halt, macro}
+        with true <-
+               parser.applicable?(macro |> IO.inspect(label: "MACRO"))
+               |> IO.inspect(label: "#{inspect(parser)}.applicable?"),
+             buffers <- parser.run(macro, buffers, buffer) |> IO.inspect(label: "RUN") do
+          {:halt, buffers}
         else
-          {:component_applied, adjusted_macro} ->
-            traverse(buffer, adjusted_macro)
-
-            {:halt, adjusted_macro}
-
           false ->
             {:cont, macro}
         end

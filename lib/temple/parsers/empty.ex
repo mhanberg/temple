@@ -9,7 +9,7 @@ defmodule Temple.Parser.Empty do
   def applicable?(_), do: false
 
   @impl Parser
-  def run(_ast, _buffer) do
-    :ok
+  def run(_ast, buffers, _buffer) do
+    buffers
   end
 end

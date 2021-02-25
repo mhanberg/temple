@@ -45,7 +45,7 @@ defmodule Temple.Parser.ComponentsTest do
       result = Temple.Buffer.get(buf)
 
       assert result ==
-               ~s{<%= Phoenix.View.render_layout SomeModule, :self, [foo: :bar] do %><aside class="foobar">I'm a component!</aside><% end %>}
+               ~s{<%= Phoenix.View.render_layout SomeModule, :component, [foo: :bar] do %><aside class="foobar">I'm a component!</aside><% end %>}
     end
   end
 end
