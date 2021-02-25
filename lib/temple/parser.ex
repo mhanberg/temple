@@ -112,6 +112,10 @@ defmodule Temple.Parser do
             {_, _, _} = macro ->
               " " <> name <> "=\"<%= " <> Macro.to_string(macro) <> " %>\""
 
+            value when is_list(value) ->
+              value = value |> Enum.map(&to_string/1) |> Enum.join(" ")
+              " " <> name <> "=\"" <> to_string(value) <> "\""
+
             value ->
               " " <> name <> "=\"" <> to_string(value) <> "\""
           end
