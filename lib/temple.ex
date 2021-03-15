@@ -142,7 +142,7 @@ defmodule Temple do
   ```
   """
   defmacro temple([do: block] = _block) do
-    markup = Parser.parse(block)
+    markup = Parser.old_parse(block)
 
     quote location: :keep do
       unquote(markup)
@@ -151,7 +151,7 @@ defmodule Temple do
 
   defmacro temple(block) do
     quote location: :keep do
-      Parser.parse(unquote(block))
+      Parser.old_parse(unquote(block))
     end
   end
 
@@ -173,7 +173,7 @@ defmodule Temple do
   ```
   """
   defmacro compile(engine, [do: block] = _block) do
-    markup = Parser.parse(block)
+    markup = Parser.old_parse(block)
 
     EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
   end

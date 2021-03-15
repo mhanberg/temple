@@ -4,10 +4,15 @@ defmodule Temple.Parser.Text do
 
   alias Temple.Buffer
   alias Temple.Parser
+  alias Temple.Ast
 
   @impl Parser
   def applicable?(text) when is_binary(text), do: true
   def applicable?(_), do: false
+
+  def run(text) do
+    Ast.new(content: text, meta: %{type: :text})
+  end
 
   @impl Parser
   def run(text, buffer) do

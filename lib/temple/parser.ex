@@ -1,6 +1,19 @@
 defmodule Temple.Parser do
   @moduledoc false
 
+  alias Temple.Parser.Empty
+  alias Temple.Parser.Text
+  alias Temple.Parser.TempleNamespaceNonvoid
+  alias Temple.Parser.TempleNamespaceVoid
+  alias Temple.Parser.Components
+  alias Temple.Parser.NonvoidElementsAliases
+  alias Temple.Parser.VoidElementsAliases
+  alias Temple.Parser.AnonymousFunctions
+  alias Temple.Parser.RightArrow
+  alias Temple.Parser.DoExpressions
+  alias Temple.Parser.Match
+  alias Temple.Parser.Default
+
   @doc """
   Should return true if the parser should apply for the given AST.
   """
@@ -77,6 +90,28 @@ defmodule Temple.Parser do
     ]
 
   def parse(ast) do
+    with {_, false} <- {Empty, Empty.applicable?(ast)},
+         {_, false} <- {Text, Text.applicable?(ast)},
+         {_, false} <- {TempleNamespaceNonvoid, TempleNamespaceNonvoid.applicable?(ast)},
+         {_, false} <- {TempleNamespaceVoid, TempleNamespaceVoid.applicable?(ast)},
+         {_, false} <- {Components, Components.applicable?(ast)} do
+      # {_, false} <- {NonvoidElementsAliases, NonvoidElementsAliases.applicable?(ast)},
+      # {_, false} <- {VoidElementsAliases, VoidElementsAliases.applicable?(ast)},
+      # {_, false} <- {AnonymousFunctions, AnonymousFunctions.applicable?(ast)},
+      # {_, false} <- {RightArrow, RightArrow.applicable?(ast)},
+      # {_, false} <- {DoExpressions, DoExpressions.applicable?(ast)},
+      # {_, false} <- {Match, Match.applicable?(ast)},
+      # {_, false} <- {Default, Default.applicable?(ast)} do
+      raise "No parsers applicable!!"
+    else
+      {parser, true} ->
+        ast
+        |> parser.run()
+        |> List.wrap()
+    end
+  end
+
+  def old_parse(ast) do
     {:ok, buffer} = Buffer.start_link()
 
     Temple.Parser.Private.traverse(buffer, ast)
@@ -137,12 +172,14 @@ defmodule Temple.Parser do
     def split_args(args) do
       {do_and_else, args} =
         args
-        |> Enum.split_with(fn
-          arg when is_list(arg) ->
-            Keyword.keyword?(arg) && (Keyword.keys(arg) -- [:do, :else]) |> Enum.count() == 0
-
-          _ ->
+        |> Enum.split_with(fn arg ->
+          if Keyword.keyword?(arg) do
+            arg
+            |> Keyword.drop([:do, :else])
+            |> Enum.empty?()
+          else
             false
+          end
         end)
 
       {List.flatten(do_and_else), args}

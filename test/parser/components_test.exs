@@ -28,10 +28,28 @@ defmodule Temple.Parser.ComponentsTest do
   end
 
   describe "run/2" do
-    test "is correct" do
-      buf = start_supervised!(Temple.Buffer)
+    test "adds a node to the buffer" do
+      raw_ast =
+        quote do
+          c SomeModule do
+            aside class: "foobar" do
+              "I'm a component!"
+            end
+          end
+        end
 
-      ast =
+      ast = Components.run(raw_ast)
+
+      assert %Temple.Ast{
+               meta: %{type: :component},
+               content: SomeModule,
+               attrs: [],
+               children: _
+             } = ast
+    end
+
+    test "adds a node to the buffer that takes args" do
+      raw_ast =
         quote do
           c SomeModule, foo: :bar do
             aside class: "foobar" do
@@ -40,12 +58,14 @@ defmodule Temple.Parser.ComponentsTest do
           end
         end
 
-      Temple.Parser.Components.run(ast, buf)
+      ast = Components.run(raw_ast)
 
-      result = Temple.Buffer.get(buf)
-
-      assert result ==
-               ~s{<%= Phoenix.View.render_layout SomeModule, :self, [foo: :bar] do %><aside class="foobar">I'm a component!</aside><% end %>}
+      assert %Temple.Ast{
+               meta: %{type: :component},
+               content: SomeModule,
+               attrs: [foo: :bar],
+               children: _
+             } = ast
     end
   end
 end
