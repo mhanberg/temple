@@ -10,6 +10,19 @@ defmodule Temple.Parser.Components do
 
   def applicable?(_), do: false
 
+  def run({:c, meta, [component_module, [do: _] = block]}) do
+    run({:c, meta, [component_module, [], block]})
+  end
+
+  def run({:c, _meta, [component_module, args, [do: block]]}) do
+    Temple.Ast.new(
+      meta: %{type: :component},
+      content: Macro.expand_once(component_module, __ENV__),
+      attrs: args,
+      children: block
+    )
+  end
+
   def run({:c, _meta, [component_module | args]}, buffer) do
     import Temple.Parser.Private
 
