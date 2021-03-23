@@ -2,7 +2,6 @@
 
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
-[![Slack](https://img.shields.io/badge/chat-Slack-blue)](https://elixir-lang.slack.com/messages/CMH6MA4UD)
 
 > You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.5.0).
 
