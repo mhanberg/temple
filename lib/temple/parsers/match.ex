@@ -12,6 +12,13 @@ defmodule Temple.Parser.Match do
 
   def applicable?(_), do: false
 
+  def run(macro) do
+    Temple.Ast.new(
+      meta: %{type: :match},
+      content: macro
+    )
+  end
+
   @impl Parser
   def run({_, _, args} = macro, buffer) do
     import Temple.Parser.Private

@@ -6,7 +6,14 @@ defmodule Temple.Parser.Default do
   alias Temple.Buffer
 
   @impl Parser
-  def applicable?(_), do: true
+  def applicable?(_ast), do: true
+
+  def run(ast) do
+    Temple.Ast.new(
+      meta: %{type: :default},
+      content: ast
+    )
+  end
 
   @impl Parser
   def run({_, _, args} = macro, buffer) do

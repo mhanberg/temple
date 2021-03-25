@@ -94,14 +94,14 @@ defmodule Temple.Parser do
          {_, false} <- {Text, Text.applicable?(ast)},
          {_, false} <- {TempleNamespaceNonvoid, TempleNamespaceNonvoid.applicable?(ast)},
          {_, false} <- {TempleNamespaceVoid, TempleNamespaceVoid.applicable?(ast)},
-         {_, false} <- {Components, Components.applicable?(ast)} do
-      # {_, false} <- {NonvoidElementsAliases, NonvoidElementsAliases.applicable?(ast)},
-      # {_, false} <- {VoidElementsAliases, VoidElementsAliases.applicable?(ast)},
-      # {_, false} <- {AnonymousFunctions, AnonymousFunctions.applicable?(ast)},
-      # {_, false} <- {RightArrow, RightArrow.applicable?(ast)},
-      # {_, false} <- {DoExpressions, DoExpressions.applicable?(ast)},
-      # {_, false} <- {Match, Match.applicable?(ast)},
-      # {_, false} <- {Default, Default.applicable?(ast)} do
+         {_, false} <- {Components, Components.applicable?(ast)},
+         {_, false} <- {NonvoidElementsAliases, NonvoidElementsAliases.applicable?(ast)},
+         {_, false} <- {VoidElementsAliases, VoidElementsAliases.applicable?(ast)},
+         {_, false} <- {AnonymousFunctions, AnonymousFunctions.applicable?(ast)},
+         {_, false} <- {RightArrow, RightArrow.applicable?(ast)},
+         {_, false} <- {DoExpressions, DoExpressions.applicable?(ast)},
+         {_, false} <- {Match, Match.applicable?(ast)},
+         {_, false} <- {Default, Default.applicable?(ast)} do
       raise "No parsers applicable!!"
     else
       {parser, true} ->
@@ -185,20 +185,20 @@ defmodule Temple.Parser do
       {List.flatten(do_and_else), args}
     end
 
-    def split_on_fn([{:fn, _, _} = func | rest], {args, _, args2}) do
-      split_on_fn(rest, {args, func, args2})
+    def split_on_fn([{:fn, _, _} = func | rest], {args_before, _, args_after}) do
+      split_on_fn(rest, {args_before, func, args_after})
     end
 
-    def split_on_fn([arg | rest], {args, nil, args2}) do
-      split_on_fn(rest, {[arg | args], nil, args2})
+    def split_on_fn([arg | rest], {args_before, nil, args_after}) do
+      split_on_fn(rest, {[arg | args_before], nil, args_after})
     end
 
-    def split_on_fn([arg | rest], {args, func, args2}) do
-      split_on_fn(rest, {args, func, [arg | args2]})
+    def split_on_fn([arg | rest], {args_before, func, args_after}) do
+      split_on_fn(rest, {args_before, func, [arg | args_after]})
     end
 
-    def split_on_fn([], {args, func, args2}) do
-      {Enum.reverse(args), func, Enum.reverse(args2)}
+    def split_on_fn([], {args_before, func, args_after}) do
+      {Enum.reverse(args_before), func, Enum.reverse(args_after)}
     end
 
     def pop_compact?([]), do: {false, []}

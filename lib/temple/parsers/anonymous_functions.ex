@@ -9,10 +9,29 @@ defmodule Temple.Parser.AnonymousFunctions do
   def applicable?({_, _, args}) do
     import Temple.Parser.Private, only: [split_args: 1]
 
-    args |> split_args() |> elem(1) |> Enum.any?(fn x -> match?({:fn, _, _}, x) end)
+    args
+    |> split_args()
+    |> elem(1)
+    |> Enum.any?(fn x -> match?({:fn, _, _}, x) end)
   end
 
   def applicable?(_), do: false
+
+  def run({_name, _, args} = expression) do
+    {_do_and_else, args} = Temple.Parser.Private.split_args(args)
+
+    {_args, func_arg, _args2} = Temple.Parser.Private.split_on_fn(args, {[], nil, []})
+
+    {_func, _, [{_arrow, _, [[{_arg, _, _}], block]}]} = func_arg
+
+    children = Temple.Parser.parse(block)
+
+    Temple.Ast.new(
+      meta: %{type: :anonymous_functions},
+      content: expression,
+      children: children
+    )
+  end
 
   @impl Parser
   def run({name, _, args}, buffer) do
