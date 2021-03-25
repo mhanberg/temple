@@ -12,6 +12,20 @@ defmodule Temple.Parser.DoExpressions do
 
   def applicable?(_), do: false
 
+  def run({name, meta, args}) do
+    {do_and_else, args} = Temple.Parser.Private.split_args(args)
+
+    do_body = Temple.Parser.parse(do_and_else[:do])
+
+    else_body = Temple.Parser.parse(do_and_else[:else])
+
+    Temple.Ast.new(
+      meta: %{type: :do_expression},
+      children: [do_body, else_body],
+      content: {name, meta, args}
+    )
+  end
+
   @impl Parser
   def run({name, meta, args}, buffer) do
     import Temple.Parser.Private

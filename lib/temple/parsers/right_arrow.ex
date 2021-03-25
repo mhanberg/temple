@@ -9,6 +9,16 @@ defmodule Temple.Parser.RightArrow do
   def applicable?({:->, _, _}), do: true
   def applicable?(_), do: false
 
+  def run({_, _, [[pattern], args]}) do
+    children = Temple.Parser.parse(args)
+
+    Temple.Ast.new(
+      meta: %{type: :right_arrow},
+      content: pattern,
+      children: children
+    )
+  end
+
   @impl Parser
   def run({_, _, [[pattern], args]}, buffer) do
     import Temple.Parser.Private

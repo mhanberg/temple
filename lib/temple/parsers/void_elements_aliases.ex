@@ -12,6 +12,18 @@ defmodule Temple.Parser.VoidElementsAliases do
 
   def applicable?(_), do: false
 
+  def run({name, _, args}) do
+    {_do_and_else, [args]} = Temple.Parser.Private.split_args(args)
+
+    name = Parser.void_elements_lookup()[name]
+
+    Temple.Ast.new(
+      content: name,
+      meta: %{type: :void_alias},
+      attrs: args
+    )
+  end
+
   @impl Parser
   def run({name, _, args}, buffer) do
     import Temple.Parser.Private
