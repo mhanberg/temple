@@ -22,8 +22,7 @@ defmodule Temple.Parser.AnonymousFunctions do
   def run({_name, _, args} = expression) do
     {_do_and_else, args} = Temple.Parser.Private.split_args(args)
 
-    {_args, func_arg, _args2} =
-      Temple.Parser.Private.split_on_fn(args, {[], nil, []})
+    {_args, func_arg, _args2} = Temple.Parser.Private.split_on_fn(args, {[], nil, []})
 
     {_func, _, [{_arrow, _, [[{_arg, _, _}], block]}]} = func_arg
 
