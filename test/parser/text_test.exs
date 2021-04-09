@@ -39,7 +39,7 @@ defmodule Temple.Parser.TextTest do
         |> Text.run()
         |> Temple.EEx.to_eex()
 
-      assert result |> :erlang.iolist_to_binary() == ~s|string literal|
+      assert result |> :erlang.iolist_to_binary() == ~s|string literal\n|
     end
   end
 end

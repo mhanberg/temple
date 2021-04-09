@@ -5,7 +5,6 @@ defmodule Temple.Parser.Match do
   defstruct content: nil, attrs: [], children: []
 
   alias Temple.Parser
-  alias Temple.Buffer
 
   @impl Parser
   def applicable?({name, _, _}) do
@@ -14,6 +13,7 @@ defmodule Temple.Parser.Match do
 
   def applicable?(_), do: false
 
+  @impl Parser
   def run(macro) do
     Temple.Ast.new(
       __MODULE__,
@@ -26,20 +26,5 @@ defmodule Temple.Parser.Match do
     def to_eex(%{content: content}) do
       ["<% ", Macro.to_string(content), " %>"]
     end
-  end
-
-  @impl Parser
-  def run({_, _, args} = macro, buffer) do
-    import Temple.Parser.Private
-
-    {do_and_else, _args} =
-      args
-      |> split_args()
-
-    Buffer.put(buffer, "<% " <> Macro.to_string(macro) <> " %>")
-    Buffer.put(buffer, "\n")
-    traverse(buffer, do_and_else[:do])
-
-    :ok
   end
 end

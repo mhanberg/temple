@@ -11,16 +11,12 @@ defmodule Temple.Parser.Empty do
   def applicable?(ast) when ast in [nil, []], do: true
   def applicable?(_), do: false
 
+  @impl Parser
   def run(_ast) do
     Ast.new(
       __MODULE__,
       meta: %{type: :empty}
     )
-  end
-
-  @impl Parser
-  def run(_ast, _buffer) do
-    :ok
   end
 
   defimpl Temple.EEx do

@@ -59,30 +59,6 @@ defmodule Temple do
 
   You can pass a keyword list to an element as element attributes, but there is currently a reserved keyword.
 
-  #### Compact
-
-  Passing `compact: true` will not emit a new line between the opening tag, the content, and the closing tag. This is useful if you are trying to use the `:empty` psuedo selector.
-
-  ```elixir
-  temple do
-    p compact: true do
-      "Foo"
-    end
-    p do
-      "Bar"
-    end
-  end
-  ```
-
-  would evaluate to
-
-  ```html
-  <p>Foo</p>
-  <p>
-  Bar
-  </p>
-  ```
-
   ### Configuration
 
   #### Aliases
@@ -142,7 +118,11 @@ defmodule Temple do
   ```
   """
   defmacro temple([do: block] = _block) do
-    markup = Parser.old_parse(block)
+    markup =
+      block
+      |> Parser.parse()
+      |> Enum.map(&Temple.EEx.to_eex/1)
+      |> :erlang.iolist_to_binary()
 
     quote location: :keep do
       unquote(markup)
@@ -151,7 +131,10 @@ defmodule Temple do
 
   defmacro temple(block) do
     quote location: :keep do
-      Parser.old_parse(unquote(block))
+      unquote(block)
+      |> Parser.parse()
+      |> Enum.map(&Temple.EEx.to_eex/1)
+      |> :erlang.iolist_to_binary()
     end
   end
 
@@ -173,7 +156,11 @@ defmodule Temple do
   ```
   """
   defmacro compile(engine, [do: block] = _block) do
-    markup = Parser.old_parse(block)
+    markup =
+      block
+      |> Parser.parse()
+      |> Enum.map(&Temple.EEx.to_eex/1)
+      |> :erlang.iolist_to_binary()
 
     EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
   end

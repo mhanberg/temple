@@ -1,11 +1,10 @@
 defmodule Temple.Parser.DoExpressions do
   @moduledoc false
-  @behaviour Temple.Parser
+  alias Temple.Parser
+
+  @behaviour Parser
 
   defstruct content: nil, attrs: [], children: []
-
-  alias Temple.Parser
-  alias Temple.Buffer
 
   @impl Parser
   def applicable?({_, _, args}) when is_list(args) do
@@ -14,6 +13,7 @@ defmodule Temple.Parser.DoExpressions do
 
   def applicable?(_), do: false
 
+  @impl Parser
   def run({name, meta, args}) do
     {do_and_else, args} = Temple.Parser.Private.split_args(args)
 
@@ -28,7 +28,6 @@ defmodule Temple.Parser.DoExpressions do
 
     Temple.Ast.new(
       __MODULE__,
-      meta: %{type: :do_expression},
       children: [do_body, else_body],
       content: {name, meta, args}
     )
@@ -43,37 +42,11 @@ defmodule Temple.Parser.DoExpressions do
         "\n",
         for(child <- do_body, do: Temple.EEx.to_eex(child)),
         if(else_body != nil,
-          do: ["\n<% else %>\n", for(child <- else_body, do: Temple.EEx.to_eex(child))],
+          do: ["<% else %>\n", for(child <- else_body, do: Temple.EEx.to_eex(child))],
           else: ""
         ),
-        "\n",
         "<% end %>"
       ]
     end
-  end
-
-  @impl Parser
-  def run({name, meta, args}, buffer) do
-    import Temple.Parser.Private
-
-    {do_and_else, args} =
-      args
-      |> split_args()
-
-    Buffer.put(buffer, "<%= " <> Macro.to_string({name, meta, args}) <> " do %>")
-    Buffer.put(buffer, "\n")
-
-    traverse(buffer, do_and_else[:do])
-
-    if Keyword.has_key?(do_and_else, :else) do
-      Buffer.put(buffer, "<% else %>")
-      Buffer.put(buffer, "\n")
-      traverse(buffer, do_and_else[:else])
-    end
-
-    Buffer.put(buffer, "<% end %>")
-    Buffer.put(buffer, "\n")
-
-    :ok
   end
 end
