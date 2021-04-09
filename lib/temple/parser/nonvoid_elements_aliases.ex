@@ -21,18 +21,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
       args
       |> Temple.Parser.Utils.split_args()
 
-    {do_and_else, args} =
-      case args do
-        [args] when is_list(args) ->
-          {do_value, args} = Keyword.pop(args, :do)
-
-          do_and_else = Keyword.put_new(do_and_else, :do, do_value)
-
-          {do_and_else, args}
-
-        _ ->
-          {do_and_else, args}
-      end
+    {do_and_else, args} = Temple.Parser.Utils.consolidate_blocks(do_and_else, args)
 
     children = Temple.Parser.parse(do_and_else[:do])
 

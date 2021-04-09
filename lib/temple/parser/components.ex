@@ -13,26 +13,17 @@ defmodule Temple.Parser.Components do
 
   @impl Temple.Parser
   def run({:c, _meta, [component_module | args]}) do
-    {assigns, block} =
-      case args do
-        [assigns, [do: block]] ->
-          {assigns, block}
+    {do_and_else, args} =
+      args
+      |> Temple.Parser.Utils.split_args()
 
-        [[do: block]] ->
-          {[], block}
-
-        [assigns] ->
-          {assigns, nil}
-
-        _ ->
-          {[], nil}
-      end
+    {do_and_else, assigns} = Temple.Parser.Utils.consolidate_blocks(do_and_else, args)
 
     children =
-      if block == nil do
+      if do_and_else[:do] == nil do
         []
       else
-        Temple.Parser.parse(block)
+        Temple.Parser.parse(do_and_else[:do])
       end
 
     Temple.Ast.new(

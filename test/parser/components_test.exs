@@ -17,6 +17,15 @@ defmodule Temple.Parser.ComponentsTest do
       assert Components.applicable?(ast)
     end
 
+    test "runs when using the `c` ast with an inline block" do
+      ast =
+        quote do
+          c SomeModule, foo: :bar, do: "hello"
+        end
+
+      assert Components.applicable?(ast)
+    end
+
     test "runs when using the `c` ast without a block" do
       ast =
         quote do
@@ -43,6 +52,21 @@ defmodule Temple.Parser.ComponentsTest do
       assert %Components{
                content: SomeModule,
                attrs: [],
+               children: _
+             } = ast
+    end
+
+    test "runs when using the `c` ast with an inline block" do
+      ast =
+        quote do
+          c SomeModule, foo: :bar, do: "hello"
+        end
+
+      ast = Components.run(ast)
+
+      assert %Components{
+               content: SomeModule,
+               attrs: [foo: :bar],
                children: _
              } = ast
     end
