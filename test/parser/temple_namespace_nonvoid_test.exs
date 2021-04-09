@@ -1,6 +1,7 @@
 defmodule Temple.Parser.TempleNamespaceNonvoidTest do
   use ExUnit.Case, async: true
 
+  alias Temple.Parser.NonvoidElementsAliases
   alias Temple.Parser.TempleNamespaceNonvoid
 
   describe "applicable?/1" do
@@ -46,12 +47,27 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
 
       ast = TempleNamespaceNonvoid.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :temple_nonvoid},
+      assert %NonvoidElementsAliases{
                content: "div",
                attrs: [class: "foo", id: {:var, [], _}],
-               children: [%Temple.Ast{content: "foo"}]
+               children: [%Temple.Parser.Text{content: "foo"}]
              } = ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          Temple.div class: "foo", id: var do
+            "foo"
+          end
+        end
+        |> TempleNamespaceNonvoid.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<div class="foo" id="<%= var %>">\nfoo\n</div>|
     end
   end
 end

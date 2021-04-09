@@ -26,12 +26,27 @@ defmodule Temple.Parser.EmptyTest do
       for _ <- [nil, []] do
         ast = Empty.run(nil)
 
-        assert %Temple.Ast{
-                 meta: %{type: :empty},
+        assert %Empty{
                  content: nil,
                  children: []
                } == ast
       end
+    end
+  end
+
+  describe "Temple.EEx.to_eex/1" do
+    test "emits eex for non void component" do
+      raw_ast =
+        quote do
+          nil
+        end
+
+      result =
+        raw_ast
+        |> Empty.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ""
     end
   end
 end

@@ -54,17 +54,35 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
 
       ast = AnonymousFunctions.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :anonymous_functions},
+      assert %AnonymousFunctions{
                content: _,
                children: [
-                 %Temple.Ast{
-                   meta: %{type: :default},
+                 %Temple.Parser.Default{
                    content: ^expected_child,
                    children: []
                  }
                ]
              } = ast
+    end
+  end
+
+  describe "Temple.EEx.to_eex/1" do
+    test "emits eex" do
+      raw_ast =
+        quote do
+          form_for changeset, Routes.foo_path(conn, :create), fn form ->
+            Does.something!(form)
+          end
+        end
+
+      result =
+        raw_ast
+        |> AnonymousFunctions.run()
+        |> struct(children: [])
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= form_for changeset, Routes.foo_path(conn, :create), fn form -> %>\n<% end %>\n|
     end
   end
 end

@@ -27,26 +27,44 @@ defmodule Temple.Parser.DoExpressionsTest do
 
       ast = DoExpressions.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :do_expression},
+      assert %DoExpressions{
                content: _,
                children: [
-                 [
-                   %Temple.Ast{
-                     meta: %{type: :text},
-                     content: "bob",
-                     children: []
-                   }
-                 ],
-                 [
-                   %Temple.Ast{
-                     meta: %{type: :empty},
-                     content: nil,
-                     children: []
-                   }
-                 ]
+                 [%Temple.Parser.Text{content: "bob", children: []}], nil
                ]
              } = ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          for big <- boys do
+            "bob"
+          end
+        end
+        |> DoExpressions.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= for(big <- boys) do %>\nbob\n<% end %>|
+    end
+
+    test "emits eex for that includes in else clause" do
+      result =
+        quote do
+          if foo? do
+            "bob"
+          else
+            "carol"
+          end
+        end
+        |> DoExpressions.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= if(foo?) do %>\nbob\n<% else %>\ncarol\n<% end %>|
     end
   end
 end

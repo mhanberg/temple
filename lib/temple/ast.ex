@@ -1,7 +1,5 @@
 defmodule Temple.Ast do
-  defstruct content: nil, attrs: [], children: [], meta: %{}
-
-  def new(opts \\ []) do
-    struct(__MODULE__, opts)
+  def new(module, opts \\ []) do
+    struct(module, opts)
   end
 end

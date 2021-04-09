@@ -23,11 +23,23 @@ defmodule Temple.Parser.DefaultTest do
 
       ast = Default.run(expression)
 
-      assert %Temple.Ast{
-               meta: %{type: :default},
+      assert %Default{
                content: expression,
                children: []
              } == ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          Foo.bar!(baz)
+        end
+        |> Default.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ~s|<%= Foo.bar!(baz) %>|
     end
   end
 end
