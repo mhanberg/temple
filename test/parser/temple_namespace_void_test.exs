@@ -2,6 +2,7 @@ defmodule Temple.Parser.TempleNamespaceVoidTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.TempleNamespaceVoid
+  alias Temple.Parser.VoidElementsAliases
 
   describe "applicable?/1" do
     test "returns true when the node is a Temple aliased nonvoid element" do
@@ -42,12 +43,24 @@ defmodule Temple.Parser.TempleNamespaceVoidTest do
 
       ast = TempleNamespaceVoid.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :temple_void},
-               content: "meta",
+      assert %VoidElementsAliases{
+               content: :meta,
                attrs: [class: "foo", id: {:var, [], _}],
                children: []
              } = ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          Temple.meta(content: "foo")
+        end
+        |> TempleNamespaceVoid.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ~s|<meta content="foo">\n|
     end
   end
 end

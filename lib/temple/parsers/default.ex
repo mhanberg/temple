@@ -2,6 +2,8 @@ defmodule Temple.Parser.Default do
   @moduledoc false
   @behaviour Temple.Parser
 
+  defstruct content: nil, attrs: [], children: []
+
   alias Temple.Parser
   alias Temple.Buffer
 
@@ -10,6 +12,7 @@ defmodule Temple.Parser.Default do
 
   def run(ast) do
     Temple.Ast.new(
+      __MODULE__,
       meta: %{type: :default},
       content: ast
     )
@@ -28,5 +31,11 @@ defmodule Temple.Parser.Default do
     traverse(buffer, do_and_else[:do])
 
     :ok
+  end
+
+  defimpl Temple.EEx do
+    def to_eex(%{content: expression}) do
+      ["<%= ", Macro.to_string(expression), " %>"]
+    end
   end
 end

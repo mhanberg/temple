@@ -49,17 +49,31 @@ defmodule Temple.Parser.RightArrowTest do
 
       ast = RightArrow.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :right_arrow},
+      assert %RightArrow{
                content: :bing,
                children: [
-                 %Temple.Ast{
-                   meta: %{type: :default},
+                 %Temple.Parser.Default{
                    content: ^bong,
                    children: []
                  }
                ]
              } = ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          :bing ->
+            :bong
+        end
+        |> List.first()
+        |> RightArrow.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<% :bing -> %>\n<%= :bong %>|
     end
   end
 end

@@ -25,11 +25,21 @@ defmodule Temple.Parser.TextTest do
       text = "string literal"
       ast = Text.run(text)
 
-      assert %Temple.Ast{
-               meta: %{type: :text},
+      assert %Text{
                content: text,
                children: []
              } == ast
+    end
+  end
+
+  describe "Temple.EEx.to_eex/1" do
+    test "emits eex" do
+      result =
+        "string literal"
+        |> Text.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ~s|string literal|
     end
   end
 end

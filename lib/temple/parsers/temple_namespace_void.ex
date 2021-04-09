@@ -2,6 +2,8 @@ defmodule Temple.Parser.TempleNamespaceVoid do
   @moduledoc false
   @behaviour Temple.Parser
 
+  defstruct content: nil, attrs: [], children: []
+
   alias Temple.Parser
   alias Temple.Buffer
 
@@ -12,16 +14,10 @@ defmodule Temple.Parser.TempleNamespaceVoid do
 
   def applicable?(_), do: false
 
-  def run({name, _, [args]}) do
+  def run({name, meta, args}) do
     {:., _, [{:__aliases__, _, [:Temple]}, name]} = name
 
-    name = Parser.void_elements_lookup()[name]
-
-    Temple.Ast.new(
-      content: to_string(name),
-      meta: %{type: :temple_void},
-      attrs: args
-    )
+    Temple.Parser.VoidElementsAliases.run({name, meta, args})
   end
 
   @impl Parser

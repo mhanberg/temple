@@ -48,12 +48,24 @@ defmodule Temple.Parser.VoidElementsAliasesTest do
 
       ast = VoidElementsAliases.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :void_alias},
+      assert %VoidElementsAliases{
                content: :meta,
                attrs: [content: "foo"],
                children: []
              } = ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          meta content: "foo"
+        end
+        |> VoidElementsAliases.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ~s|<meta content="foo">\n|
     end
   end
 end

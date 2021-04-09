@@ -60,24 +60,43 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
 
       ast = NonvoidElementsAliases.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :nonvoid_alias},
+      assert %NonvoidElementsAliases{
                content: "div",
                attrs: [class: "foo", id: {:var, [], _}],
                children: [
-                 %Temple.Ast{
+                 %NonvoidElementsAliases{
                    content: "select",
                    children: [
-                     %Temple.Ast{
+                     %NonvoidElementsAliases{
                        content: "option",
                        children: [
-                         %Temple.Ast{content: "foo"}
+                         %Temple.Parser.Text{content: "foo"}
                        ]
                      }
                    ]
                  }
                ]
              } = ast
+    end
+  end
+
+  describe "to_eex/1" do
+    test "emits eex" do
+      result =
+        quote do
+          div class: "foo", id: var do
+            select__ do
+              option do
+                "foo"
+              end
+            end
+          end
+        end
+        |> NonvoidElementsAliases.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<div class="foo" id="<%= var %>">\n<select>\n<option>\nfoo\n</option>\n</select>\n</div>|
     end
   end
 end

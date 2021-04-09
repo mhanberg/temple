@@ -40,8 +40,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       ast = Components.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :component},
+      assert %Components{
                content: SomeModule,
                attrs: [],
                children: _
@@ -60,12 +59,60 @@ defmodule Temple.Parser.ComponentsTest do
 
       ast = Components.run(raw_ast)
 
-      assert %Temple.Ast{
-               meta: %{type: :component},
+      assert %Components{
                content: SomeModule,
                attrs: [foo: :bar],
                children: _
              } = ast
+    end
+
+    test "adds a node to the buffer that without a block" do
+      raw_ast =
+        quote do
+          c SomeModule, foo: :bar
+        end
+
+      ast = Components.run(raw_ast)
+
+      assert %Components{
+               content: SomeModule,
+               attrs: [foo: :bar],
+               children: []
+             } = ast
+    end
+  end
+
+  describe "Temple.EEx.to_eex/1" do
+    test "emits eex for non void component" do
+      raw_ast =
+        quote do
+          c SomeModule, foo: :bar do
+            "I'm a component!"
+          end
+        end
+
+      result =
+        raw_ast
+        |> Components.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= Phoenix.View.render_layout SomeModule, :self, [foo: :bar] do %>\nI'm a component!\n<% end %>|
+    end
+
+    test "emits eex for void component" do
+      raw_ast =
+        quote do
+          c SomeModule, foo: :bar
+        end
+
+      result =
+        raw_ast
+        |> Components.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= Phoenix.View.render SomeModule, :self, [foo: :bar] %>|
     end
   end
 end

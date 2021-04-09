@@ -2,6 +2,8 @@ defmodule Temple.Parser.DoExpressions do
   @moduledoc false
   @behaviour Temple.Parser
 
+  defstruct content: nil, attrs: [], children: []
+
   alias Temple.Parser
   alias Temple.Buffer
 
@@ -17,13 +19,37 @@ defmodule Temple.Parser.DoExpressions do
 
     do_body = Temple.Parser.parse(do_and_else[:do])
 
-    else_body = Temple.Parser.parse(do_and_else[:else])
+    else_body =
+      if do_and_else[:else] == nil do
+        nil
+      else
+        Temple.Parser.parse(do_and_else[:else])
+      end
 
     Temple.Ast.new(
+      __MODULE__,
       meta: %{type: :do_expression},
       children: [do_body, else_body],
       content: {name, meta, args}
     )
+  end
+
+  defimpl Temple.EEx do
+    def to_eex(%{content: expression, children: [do_body, else_body]}) do
+      [
+        "<%= ",
+        Macro.to_string(expression),
+        " do %>",
+        "\n",
+        for(child <- do_body, do: Temple.EEx.to_eex(child)),
+        if(else_body != nil,
+          do: ["\n<% else %>\n", for(child <- else_body, do: Temple.EEx.to_eex(child))],
+          else: ""
+        ),
+        "\n",
+        "<% end %>"
+      ]
+    end
   end
 
   @impl Parser

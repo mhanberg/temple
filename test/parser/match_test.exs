@@ -33,11 +33,43 @@ defmodule Temple.Parser.MatchTest do
 
       ast = Match.run(expression)
 
-      assert %Temple.Ast{
-               meta: %{type: :match},
+      assert %Match{
                content: expression,
                children: []
              } == ast
+    end
+  end
+
+  describe "Temple.EEx.to_eex/1" do
+    test "emits eex" do
+      raw_ast =
+        quote do
+          yolo = :synergy
+        end
+
+      result =
+        raw_ast
+        |> Match.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ~s|<% yolo = :synergy %>|
+    end
+
+    test "emits eex big boy" do
+      raw_ast =
+        quote do
+          yolo =
+            if true do
+              :synergy
+            end
+        end
+
+      result =
+        raw_ast
+        |> Match.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() == ~s|<% yolo = if(true) do\n  :synergy\nend %>|
     end
   end
 end
