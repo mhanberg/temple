@@ -39,7 +39,7 @@ defmodule Temple.Parser.DefaultTest do
         |> Default.run()
         |> Temple.EEx.to_eex()
 
-      assert result |> :erlang.iolist_to_binary() == ~s|<%= Foo.bar!(baz) %>|
+      assert result |> :erlang.iolist_to_binary() == ~s|<%= Foo.bar!(baz) %>\n|
     end
   end
 end

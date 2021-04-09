@@ -5,7 +5,6 @@ defmodule Temple.Parser.VoidElementsAliases do
   defstruct content: nil, attrs: [], children: []
 
   alias Temple.Parser
-  alias Temple.Buffer
 
   @impl Parser
   def applicable?({name, _, _}) do
@@ -14,6 +13,7 @@ defmodule Temple.Parser.VoidElementsAliases do
 
   def applicable?(_), do: false
 
+  @impl Parser
   def run({name, _, args}) do
     {_do_and_else, [args]} = Temple.Parser.Private.split_args(args)
 
@@ -36,21 +36,5 @@ defmodule Temple.Parser.VoidElementsAliases do
         ">\n"
       ]
     end
-  end
-
-  @impl Parser
-  def run({name, _, args}, buffer) do
-    import Temple.Parser.Private
-
-    {_do_and_else, args} =
-      args
-      |> split_args()
-
-    name = Parser.void_elements_lookup()[name]
-
-    Buffer.put(buffer, "<#{name}#{compile_attrs(args)}>")
-    Buffer.put(buffer, "\n")
-
-    :ok
   end
 end

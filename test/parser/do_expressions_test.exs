@@ -30,7 +30,8 @@ defmodule Temple.Parser.DoExpressionsTest do
       assert %DoExpressions{
                content: _,
                children: [
-                 [%Temple.Parser.Text{content: "bob", children: []}], nil
+                 [%Temple.Parser.Text{content: "bob", children: []}],
+                 nil
                ]
              } = ast
     end
@@ -56,6 +57,8 @@ defmodule Temple.Parser.DoExpressionsTest do
         quote do
           if foo? do
             "bob"
+
+            "bobby"
           else
             "carol"
           end
@@ -64,7 +67,22 @@ defmodule Temple.Parser.DoExpressionsTest do
         |> Temple.EEx.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= if(foo?) do %>\nbob\n<% else %>\ncarol\n<% end %>|
+               ~s|<%= if(foo?) do %>\nbob\nbobby\n<% else %>\ncarol\n<% end %>|
+    end
+
+    test "emits eex for a case expression" do
+      result =
+        quote do
+          case foo? do
+            :bing ->
+              :bong
+          end
+        end
+        |> DoExpressions.run()
+        |> Temple.EEx.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= case(foo?) do %>\n<% :bing -> %>\n<%= :bong %>\n<% end %>|
     end
   end
 end

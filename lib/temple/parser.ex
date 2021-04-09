@@ -14,6 +14,20 @@ defmodule Temple.Parser do
   alias Temple.Parser.Match
   alias Temple.Parser.Default
 
+  @type ast ::
+          %Empty{}
+          | %Text{}
+          | %TempleNamespaceNonvoid{}
+          | %TempleNamespaceVoid{}
+          | %Components{}
+          | %NonvoidElementsAliases{}
+          | %VoidElementsAliases{}
+          | %AnonymousFunctions{}
+          | %RightArrow{}
+          | %DoExpressions{}
+          | %Match{}
+          | %Default{}
+
   @doc """
   Should return true if the parser should apply for the given AST.
   """
@@ -24,9 +38,7 @@ defmodule Temple.Parser do
 
   Should return `:ok` if the parsing pass is over, or `{:component_applied, ast}` if the pass should be restarted.
   """
-  @callback run(ast :: Macro.t(), buffer :: pid()) :: :ok | {:component_applied, Macro.t()}
-
-  alias Temple.Buffer
+  @callback run(ast :: Macro.t()) :: ast()
 
   @aliases Application.get_env(:temple, :aliases, [])
 
@@ -89,6 +101,16 @@ defmodule Temple.Parser do
       Temple.Parser.Default
     ]
 
+  def parse({:__block__, _, asts}) do
+    parse(asts)
+  end
+
+  def parse(asts) when is_list(asts) do
+    Enum.flat_map(asts, fn ast ->
+      parse(ast)
+    end)
+  end
+
   def parse(ast) do
     with {_, false} <- {Empty, Empty.applicable?(ast)},
          {_, false} <- {Text, Text.applicable?(ast)},
@@ -109,17 +131,6 @@ defmodule Temple.Parser do
         |> parser.run()
         |> List.wrap()
     end
-  end
-
-  def old_parse(ast) do
-    {:ok, buffer} = Buffer.start_link()
-
-    Temple.Parser.Private.traverse(buffer, ast)
-    markup = Buffer.get(buffer)
-
-    Buffer.stop(buffer)
-
-    markup
   end
 
   defmodule Private do

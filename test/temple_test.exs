@@ -269,24 +269,6 @@ defmodule TempleTest do
              ~s{<div class="font-bold">Hello, world</div><div class="font-bold">Hello, world</div><div>Hello, world</div>}
   end
 
-  test "`do` passed as keyword will compile compacted markup" do
-    import Temple.Support.Utils, only: []
-    import Kernel
-
-    result =
-      temple do
-        p compact: true do
-          "Bob"
-        end
-
-        p compact: true do
-          foo
-        end
-      end
-
-    assert result == ~s{<p>Bob</p>\n<p><%= foo %></p>}
-  end
-
   test "for with 2 generators" do
     result =
       temple do
