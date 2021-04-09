@@ -60,6 +60,18 @@ defmodule Temple.Parser.Utils do
     {List.flatten(do_and_else), args}
   end
 
+  def consolidate_blocks(blocks, args) do
+    case args do
+      [args] when is_list(args) ->
+        {do_value, args} = Keyword.pop(args, :do)
+
+        {Keyword.put_new(blocks, :do, do_value), args}
+
+      _ ->
+        {blocks, args}
+    end
+  end
+
   def split_on_fn([{:fn, _, _} = func | rest], {args_before, _, args_after}) do
     split_on_fn(rest, {args_before, func, args_after})
   end
