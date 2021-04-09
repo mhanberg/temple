@@ -15,7 +15,7 @@ defmodule Temple.Parser.VoidElementsAliases do
 
   @impl Parser
   def run({name, _, args}) do
-    {_do_and_else, [args]} = Temple.Parser.Private.split_args(args)
+    {_do_and_else, [args]} = Temple.Parser.Utils.split_args(args)
 
     name = Parser.void_elements_lookup()[name]
 
@@ -32,7 +32,7 @@ defmodule Temple.Parser.VoidElementsAliases do
       [
         "<",
         to_string(content),
-        Temple.Parser.Private.compile_attrs(attrs),
+        Temple.Parser.Utils.compile_attrs(attrs),
         ">\n"
       ]
     end

@@ -25,7 +25,7 @@ div some_var do
   # something
 end
 
-# <div<%= PrivateTempleModule.runtime_attrs(some_var) %>>
+# <div<%= UtilsTempleModule.runtime_attrs(some_var) %>>
 #   <!-- something -->
 # </div>
 ```

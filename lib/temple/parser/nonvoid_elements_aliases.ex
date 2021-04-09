@@ -19,7 +19,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
 
     {do_and_else, args} =
       args
-      |> Temple.Parser.Private.split_args()
+      |> Temple.Parser.Utils.split_args()
 
     {do_and_else, args} =
       case args do
@@ -50,7 +50,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
       [
         "<",
         content,
-        Temple.Parser.Private.compile_attrs(attrs),
+        Temple.Parser.Utils.compile_attrs(attrs),
         ">\n",
         for(child <- children, do: Temple.EEx.to_eex(child)),
         "\n</",

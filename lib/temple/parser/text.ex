@@ -5,7 +5,6 @@ defmodule Temple.Parser.Text do
   defstruct content: nil, attrs: [], children: []
 
   alias Temple.Parser
-  alias Temple.Ast
 
   @impl Parser
   def applicable?(text) when is_binary(text), do: true
@@ -13,7 +12,7 @@ defmodule Temple.Parser.Text do
 
   @impl Parser
   def run(text) do
-    Ast.new(
+    Temple.Ast.new(
       __MODULE__,
       content: text
     )

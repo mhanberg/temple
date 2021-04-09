@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Private do
+defmodule Temple.Parser.Utils do
   @moduledoc false
 
   def snake_to_kebab(stringable),
@@ -27,7 +27,7 @@ defmodule Temple.Parser.Private do
         end
       end
     else
-      "<%= Temple.Parser.Private.runtime_attrs(" <>
+      "<%= Temple.Parser.Utils.runtime_attrs(" <>
         (attrs |> List.first() |> Macro.to_string()) <> ") %>"
     end
   end
@@ -81,33 +81,5 @@ defmodule Temple.Parser.Private do
 
   def pop_compact?(args) do
     Keyword.pop(args, :compact, false)
-  end
-
-  def traverse(buffer, {:__block__, _meta, block}) do
-    traverse(buffer, block)
-  end
-
-  def traverse(buffer, [first | rest]) do
-    traverse(buffer, first)
-
-    traverse(buffer, rest)
-  end
-
-  def traverse(buffer, original_macro) do
-    Temple.Parser.parsers()
-    |> Enum.reduce_while(original_macro, fn parser, macro ->
-      with true <- parser.applicable?(macro),
-           :ok <- parser.run(macro, buffer) do
-        {:halt, macro}
-      else
-        {:component_applied, adjusted_macro} ->
-          traverse(buffer, adjusted_macro)
-
-          {:halt, adjusted_macro}
-
-        false ->
-          {:cont, macro}
-      end
-    end)
   end
 end
