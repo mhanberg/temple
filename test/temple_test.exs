@@ -291,7 +291,7 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(if(true == false) do  [disabled: true]else  []end) %>><input type="text"></fieldset>}
+             ~s{<fieldset<%= Temple.Parser.Utils.runtime_attrs(if(true == false) do  [disabled: true]else  []end) %>><input type="text"></fieldset>}
   end
 
   test "can pass a variable as assigns" do
@@ -303,7 +303,7 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(foo_bar) %>><input type="text"></fieldset>}
+             ~s{<fieldset<%= Temple.Parser.Utils.runtime_attrs(foo_bar) %>><input type="text"></fieldset>}
   end
 
   test "can pass a function as assigns" do
@@ -315,6 +315,6 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<fieldset<%= Temple.Parser.Private.runtime_attrs(Foo.foo_bar()) %>><input type="text"></fieldset>}
+             ~s{<fieldset<%= Temple.Parser.Utils.runtime_attrs(Foo.foo_bar()) %>><input type="text"></fieldset>}
   end
 end

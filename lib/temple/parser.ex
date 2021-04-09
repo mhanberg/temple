@@ -106,9 +106,7 @@ defmodule Temple.Parser do
   end
 
   def parse(asts) when is_list(asts) do
-    Enum.flat_map(asts, fn ast ->
-      parse(ast)
-    end)
+    Enum.flat_map(asts, &parse/1)
   end
 
   def parse(ast) do

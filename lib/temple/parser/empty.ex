@@ -5,7 +5,6 @@ defmodule Temple.Parser.Empty do
   defstruct content: nil, attrs: [], children: []
 
   alias Temple.Parser
-  alias Temple.Ast
 
   @impl Parser
   def applicable?(ast) when ast in [nil, []], do: true
@@ -13,7 +12,7 @@ defmodule Temple.Parser.Empty do
 
   @impl Parser
   def run(_ast) do
-    Ast.new(
+    Temple.Ast.new(
       __MODULE__,
       meta: %{type: :empty}
     )

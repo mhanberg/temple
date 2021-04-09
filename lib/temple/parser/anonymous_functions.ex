@@ -8,7 +8,7 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   @impl Parser
   def applicable?({_, _, args}) do
-    import Temple.Parser.Private, only: [split_args: 1]
+    import Temple.Parser.Utils, only: [split_args: 1]
 
     args
     |> split_args()
@@ -20,9 +20,9 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   @impl Parser
   def run({_name, _, args} = expression) do
-    {_do_and_else, args} = Temple.Parser.Private.split_args(args)
+    {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
-    {_args, func_arg, _args2} = Temple.Parser.Private.split_on_fn(args, {[], nil, []})
+    {_args, func_arg, _args2} = Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
 
     {_func, _, [{_arrow, _, [[{_arg, _, _}], block]}]} = func_arg
 
@@ -37,10 +37,10 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   defimpl Temple.EEx do
     def to_eex(%{content: {name, _, args}, children: children}) do
-      {_do_and_else, args} = Temple.Parser.Private.split_args(args)
+      {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
       {args, {func, _, [{arrow, _, [[{arg, _, _}], _block]}]}, args2} =
-        Temple.Parser.Private.split_on_fn(args, {[], nil, []})
+        Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
 
       [
         "<%= ",
