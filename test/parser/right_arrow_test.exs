@@ -50,11 +50,10 @@ defmodule Temple.Parser.RightArrowTest do
       ast = RightArrow.run(raw_ast)
 
       assert %RightArrow{
-               content: :bing,
+               elixir_ast: :bing,
                children: [
                  %Temple.Parser.Default{
-                   content: ^bong,
-                   children: []
+                   elixir_ast: ^bong
                  }
                ]
              } = ast

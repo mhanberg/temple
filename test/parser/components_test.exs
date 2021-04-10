@@ -50,8 +50,8 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               content: SomeModule,
-               attrs: [],
+               module: SomeModule,
+               assigns: [],
                children: _
              } = ast
     end
@@ -65,8 +65,8 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(ast)
 
       assert %Components{
-               content: SomeModule,
-               attrs: [foo: :bar],
+               module: SomeModule,
+               assigns: [foo: :bar],
                children: _
              } = ast
     end
@@ -84,8 +84,8 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               content: SomeModule,
-               attrs: [foo: :bar],
+               module: SomeModule,
+               assigns: [foo: :bar],
                children: _
              } = ast
     end
@@ -99,8 +99,8 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               content: SomeModule,
-               attrs: [foo: :bar],
+               module: SomeModule,
+               assigns: [foo: :bar],
                children: []
              } = ast
     end

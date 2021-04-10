@@ -48,9 +48,9 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
       ast = TempleNamespaceNonvoid.run(raw_ast)
 
       assert %NonvoidElementsAliases{
-               content: "div",
+               name: "div",
                attrs: [class: "foo", id: {:var, [], _}],
-               children: [%Temple.Parser.Text{content: "foo"}]
+               children: [%Temple.Parser.Text{text: "foo"}]
              } = ast
     end
   end

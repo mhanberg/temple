@@ -2,7 +2,7 @@ defmodule Temple.Parser.Empty do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct []
 
   alias Temple.Parser
 
@@ -12,10 +12,7 @@ defmodule Temple.Parser.Empty do
 
   @impl Parser
   def run(_ast) do
-    Temple.Ast.new(
-      __MODULE__,
-      meta: %{type: :empty}
-    )
+    Temple.Ast.new(__MODULE__)
   end
 
   defimpl Temple.EEx do

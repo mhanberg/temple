@@ -2,7 +2,7 @@ defmodule Temple.Parser.AnonymousFunctions do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct elixir_ast: nil, children: []
 
   alias Temple.Parser
 
@@ -28,15 +28,11 @@ defmodule Temple.Parser.AnonymousFunctions do
 
     children = Temple.Parser.parse(block)
 
-    Temple.Ast.new(
-      __MODULE__,
-      content: expression,
-      children: children
-    )
+    Temple.Ast.new(__MODULE__, elixir_ast: expression, children: children)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: {name, _, args}, children: children}) do
+    def to_eex(%{elixir_ast: {name, _, args}, children: children}) do
       {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
       {args, {func, _, [{arrow, _, [[{arg, _, _}], _block]}]}, args2} =

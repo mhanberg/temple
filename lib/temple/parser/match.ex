@@ -2,7 +2,7 @@ defmodule Temple.Parser.Match do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct elixir_ast: nil
 
   alias Temple.Parser
 
@@ -15,16 +15,12 @@ defmodule Temple.Parser.Match do
 
   @impl Parser
   def run(macro) do
-    Temple.Ast.new(
-      __MODULE__,
-      meta: %{type: :match},
-      content: macro
-    )
+    Temple.Ast.new(__MODULE__, elixir_ast: macro)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: content}) do
-      ["<% ", Macro.to_string(content), " %>"]
+    def to_eex(%{elixir_ast: elixir_ast}) do
+      ["<% ", Macro.to_string(elixir_ast), " %>"]
     end
   end
 end

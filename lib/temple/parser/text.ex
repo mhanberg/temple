@@ -2,7 +2,7 @@ defmodule Temple.Parser.Text do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct text: nil
 
   alias Temple.Parser
 
@@ -12,14 +12,11 @@ defmodule Temple.Parser.Text do
 
   @impl Parser
   def run(text) do
-    Temple.Ast.new(
-      __MODULE__,
-      content: text
-    )
+    Temple.Ast.new(__MODULE__, text: text)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: text}) do
+    def to_eex(%{text: text}) do
       [text, "\n"]
     end
   end

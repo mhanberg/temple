@@ -26,10 +26,7 @@ defmodule Temple.Parser.EmptyTest do
       for _ <- [nil, []] do
         ast = Empty.run(nil)
 
-        assert %Empty{
-                 content: nil,
-                 children: []
-               } == ast
+        assert %Empty{} == ast
       end
     end
   end

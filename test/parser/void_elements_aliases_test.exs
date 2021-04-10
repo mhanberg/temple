@@ -49,9 +49,8 @@ defmodule Temple.Parser.VoidElementsAliasesTest do
       ast = VoidElementsAliases.run(raw_ast)
 
       assert %VoidElementsAliases{
-               content: :meta,
-               attrs: [content: "foo"],
-               children: []
+               name: :meta,
+               attrs: [content: "foo"]
              } = ast
     end
   end

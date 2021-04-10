@@ -61,16 +61,16 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
       ast = NonvoidElementsAliases.run(raw_ast)
 
       assert %NonvoidElementsAliases{
-               content: "div",
+               name: "div",
                attrs: [class: "foo", id: {:var, [], _}],
                children: [
                  %NonvoidElementsAliases{
-                   content: "select",
+                   name: "select",
                    children: [
                      %NonvoidElementsAliases{
-                       content: "option",
+                       name: "option",
                        children: [
-                         %Temple.Parser.Text{content: "foo"}
+                         %Temple.Parser.Text{text: "foo"}
                        ]
                      }
                    ]

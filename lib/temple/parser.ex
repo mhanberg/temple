@@ -17,8 +17,6 @@ defmodule Temple.Parser do
   @type ast ::
           %Empty{}
           | %Text{}
-          | %TempleNamespaceNonvoid{}
-          | %TempleNamespaceVoid{}
           | %Components{}
           | %NonvoidElementsAliases{}
           | %VoidElementsAliases{}

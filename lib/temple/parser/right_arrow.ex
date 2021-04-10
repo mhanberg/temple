@@ -4,7 +4,7 @@ defmodule Temple.Parser.RightArrow do
 
   @behaviour Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct elixir_ast: nil, children: []
 
   @impl Parser
   def applicable?({:->, _, _}), do: true
@@ -14,19 +14,14 @@ defmodule Temple.Parser.RightArrow do
   def run({_, _, [[pattern], args]}) do
     children = Parser.parse(args)
 
-    Temple.Ast.new(
-      __MODULE__,
-      meta: %{type: :right_arrow},
-      content: pattern,
-      children: children
-    )
+    Temple.Ast.new(__MODULE__, elixir_ast: pattern, children: children)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: content, children: children}) do
+    def to_eex(%{elixir_ast: elixir_ast, children: children}) do
       [
         "<% ",
-        Macro.to_string(content),
+        Macro.to_string(elixir_ast),
         " -> %>\n",
         for(child <- children, do: Temple.EEx.to_eex(child))
       ]

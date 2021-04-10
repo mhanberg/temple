@@ -33,10 +33,7 @@ defmodule Temple.Parser.MatchTest do
 
       ast = Match.run(expression)
 
-      assert %Match{
-               content: expression,
-               children: []
-             } == ast
+      assert %Match{elixir_ast: expression} == ast
     end
   end
 

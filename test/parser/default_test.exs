@@ -23,10 +23,7 @@ defmodule Temple.Parser.DefaultTest do
 
       ast = Default.run(expression)
 
-      assert %Default{
-               content: expression,
-               children: []
-             } == ast
+      assert %Default{elixir_ast: expression} == ast
     end
   end
 

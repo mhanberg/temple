@@ -2,8 +2,6 @@ defmodule Temple.Parser.TempleNamespaceNonvoid do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
-
   alias Temple.Parser
 
   @impl Parser

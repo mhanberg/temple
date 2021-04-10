@@ -55,11 +55,10 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
       ast = AnonymousFunctions.run(raw_ast)
 
       assert %AnonymousFunctions{
-               content: _,
+               elixir_ast: _,
                children: [
                  %Temple.Parser.Default{
-                   content: ^expected_child,
-                   children: []
+                   elixir_ast: ^expected_child
                  }
                ]
              } = ast

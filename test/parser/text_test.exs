@@ -25,10 +25,7 @@ defmodule Temple.Parser.TextTest do
       text = "string literal"
       ast = Text.run(text)
 
-      assert %Text{
-               content: text,
-               children: []
-             } == ast
+      assert %Text{text: text} == ast
     end
   end
 

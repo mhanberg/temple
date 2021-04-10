@@ -28,9 +28,9 @@ defmodule Temple.Parser.DoExpressionsTest do
       ast = DoExpressions.run(raw_ast)
 
       assert %DoExpressions{
-               content: _,
+               elixir_ast: _,
                children: [
-                 [%Temple.Parser.Text{content: "bob", children: []}],
+                 [%Temple.Parser.Text{text: "bob"}],
                  nil
                ]
              } = ast

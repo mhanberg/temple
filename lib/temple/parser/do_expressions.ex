@@ -4,7 +4,7 @@ defmodule Temple.Parser.DoExpressions do
 
   @behaviour Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct elixir_ast: nil, children: []
 
   @impl Parser
   def applicable?({_, _, args}) when is_list(args) do
@@ -26,15 +26,11 @@ defmodule Temple.Parser.DoExpressions do
         Temple.Parser.parse(do_and_else[:else])
       end
 
-    Temple.Ast.new(
-      __MODULE__,
-      children: [do_body, else_body],
-      content: {name, meta, args}
-    )
+    Temple.Ast.new(__MODULE__, elixir_ast: {name, meta, args}, children: [do_body, else_body])
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: expression, children: [do_body, else_body]}) do
+    def to_eex(%{elixir_ast: expression, children: [do_body, else_body]}) do
       [
         "<%= ",
         Macro.to_string(expression),

@@ -2,7 +2,7 @@ defmodule Temple.Parser.Components do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct module: nil, assigns: [], children: []
 
   @impl Temple.Parser
   def applicable?({:c, _, _}) do
@@ -26,21 +26,19 @@ defmodule Temple.Parser.Components do
         Temple.Parser.parse(do_and_else[:do])
       end
 
-    Temple.Ast.new(
-      __MODULE__,
-      meta: %{type: :component},
-      content: Macro.expand_once(component_module, __ENV__),
-      attrs: assigns,
+    Temple.Ast.new(__MODULE__,
+      module: Macro.expand_once(component_module, __ENV__),
+      assigns: assigns,
       children: children
     )
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: component_module, attrs: assigns, children: []}) do
+    def to_eex(%{module: module, assigns: assigns, children: []}) do
       [
         "<%= Phoenix.View.render",
         " ",
-        Macro.to_string(component_module),
+        Macro.to_string(module),
         ", ",
         ":self,",
         " ",
@@ -50,10 +48,10 @@ defmodule Temple.Parser.Components do
       ]
     end
 
-    def to_eex(%{content: component_module, attrs: assigns, children: children}) do
+    def to_eex(%{module: module, assigns: assigns, children: children}) do
       [
         "<%= Phoenix.View.render_layout ",
-        Macro.to_string(component_module),
+        Macro.to_string(module),
         ", ",
         ":self",
         ", ",

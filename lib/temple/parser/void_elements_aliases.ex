@@ -2,36 +2,29 @@ defmodule Temple.Parser.VoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct name: nil, attrs: []
 
-  alias Temple.Parser
-
-  @impl Parser
+  @impl Temple.Parser
   def applicable?({name, _, _}) do
-    name in Parser.void_elements_aliases()
+    name in Temple.Parser.void_elements_aliases()
   end
 
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl Temple.Parser
   def run({name, _, args}) do
     {_do_and_else, [args]} = Temple.Parser.Utils.split_args(args)
 
-    name = Parser.void_elements_lookup()[name]
+    name = Temple.Parser.void_elements_lookup()[name]
 
-    Temple.Ast.new(
-      __MODULE__,
-      content: name,
-      meta: %{type: :void_alias},
-      attrs: args
-    )
+    Temple.Ast.new(__MODULE__, name: name, attrs: args)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: content, attrs: attrs}) do
+    def to_eex(%{name: name, attrs: attrs}) do
       [
         "<",
-        to_string(content),
+        to_string(name),
         Temple.Parser.Utils.compile_attrs(attrs),
         ">\n"
       ]

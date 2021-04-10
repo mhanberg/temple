@@ -2,7 +2,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct name: nil, attrs: [], children: []
 
   alias Temple.Parser
 
@@ -25,25 +25,19 @@ defmodule Temple.Parser.NonvoidElementsAliases do
 
     children = Temple.Parser.parse(do_and_else[:do])
 
-    Temple.Ast.new(
-      __MODULE__,
-      content: to_string(name),
-      meta: %{type: :nonvoid_alias},
-      attrs: args,
-      children: children
-    )
+    Temple.Ast.new(__MODULE__, name: to_string(name), attrs: args, children: children)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: content, attrs: attrs, children: children}) do
+    def to_eex(%{name: name, attrs: attrs, children: children}) do
       [
         "<",
-        content,
+        name,
         Temple.Parser.Utils.compile_attrs(attrs),
         ">\n",
         for(child <- children, do: Temple.EEx.to_eex(child)),
         "\n</",
-        content,
+        name,
         ">"
       ]
     end

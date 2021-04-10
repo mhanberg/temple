@@ -2,7 +2,7 @@ defmodule Temple.Parser.Default do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct content: nil, attrs: [], children: []
+  defstruct elixir_ast: nil
 
   alias Temple.Parser
 
@@ -11,14 +11,11 @@ defmodule Temple.Parser.Default do
 
   @impl Parser
   def run(ast) do
-    Temple.Ast.new(
-      __MODULE__,
-      content: ast
-    )
+    Temple.Ast.new(__MODULE__, elixir_ast: ast)
   end
 
   defimpl Temple.EEx do
-    def to_eex(%{content: expression}) do
+    def to_eex(%{elixir_ast: expression}) do
       ["<%= ", Macro.to_string(expression), " %>\n"]
     end
   end

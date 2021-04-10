@@ -44,9 +44,8 @@ defmodule Temple.Parser.TempleNamespaceVoidTest do
       ast = TempleNamespaceVoid.run(raw_ast)
 
       assert %VoidElementsAliases{
-               content: :meta,
-               attrs: [class: "foo", id: {:var, [], _}],
-               children: []
+               name: :meta,
+               attrs: [class: "foo", id: {:var, [], _}]
              } = ast
     end
   end
