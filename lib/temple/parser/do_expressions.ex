@@ -29,16 +29,16 @@ defmodule Temple.Parser.DoExpressions do
     Temple.Ast.new(__MODULE__, elixir_ast: {name, meta, args}, children: [do_body, else_body])
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{elixir_ast: expression, children: [do_body, else_body]}) do
       [
         "<%= ",
         Macro.to_string(expression),
         " do %>",
         "\n",
-        for(child <- do_body, do: Temple.EEx.to_eex(child)),
+        for(child <- do_body, do: Temple.Generator.to_eex(child)),
         if(else_body != nil,
-          do: ["<% else %>\n", for(child <- else_body, do: Temple.EEx.to_eex(child))],
+          do: ["<% else %>\n", for(child <- else_body, do: Temple.Generator.to_eex(child))],
           else: ""
         ),
         "<% end %>"

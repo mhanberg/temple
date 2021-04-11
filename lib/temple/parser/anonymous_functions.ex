@@ -31,7 +31,7 @@ defmodule Temple.Parser.AnonymousFunctions do
     Temple.Ast.new(__MODULE__, elixir_ast: expression, children: children)
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{elixir_ast: {name, _, args}, children: children}) do
       {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
@@ -51,7 +51,7 @@ defmodule Temple.Parser.AnonymousFunctions do
         to_string(arrow),
         " %>",
         "\n",
-        for(child <- children, do: Temple.EEx.to_eex(child)),
+        for(child <- children, do: Temple.Generator.to_eex(child)),
         if Enum.any?(args2) do
           [
             "<% end, ",

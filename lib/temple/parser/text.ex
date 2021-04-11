@@ -15,7 +15,7 @@ defmodule Temple.Parser.Text do
     Temple.Ast.new(__MODULE__, text: text)
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{text: text}) do
       [text, "\n"]
     end

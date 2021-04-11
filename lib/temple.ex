@@ -121,7 +121,7 @@ defmodule Temple do
     markup =
       block
       |> Parser.parse()
-      |> Enum.map(&Temple.EEx.to_eex/1)
+      |> Enum.map(&Temple.Generator.to_eex/1)
       |> :erlang.iolist_to_binary()
 
     quote location: :keep do
@@ -133,7 +133,7 @@ defmodule Temple do
     quote location: :keep do
       unquote(block)
       |> Parser.parse()
-      |> Enum.map(&Temple.EEx.to_eex/1)
+      |> Enum.map(&Temple.Generator.to_eex/1)
       |> :erlang.iolist_to_binary()
     end
   end
@@ -159,7 +159,7 @@ defmodule Temple do
     markup =
       block
       |> Parser.parse()
-      |> Enum.map(&Temple.EEx.to_eex/1)
+      |> Enum.map(&Temple.Generator.to_eex/1)
       |> :erlang.iolist_to_binary()
 
     EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)

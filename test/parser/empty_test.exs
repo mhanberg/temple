@@ -31,7 +31,7 @@ defmodule Temple.Parser.EmptyTest do
     end
   end
 
-  describe "Temple.EEx.to_eex/1" do
+  describe "Temple.Generator.to_eex/1" do
     test "emits eex for non void component" do
       raw_ast =
         quote do
@@ -41,7 +41,7 @@ defmodule Temple.Parser.EmptyTest do
       result =
         raw_ast
         |> Empty.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() == ""
     end

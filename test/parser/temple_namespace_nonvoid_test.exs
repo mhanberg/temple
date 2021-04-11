@@ -64,7 +64,7 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
           end
         end
         |> TempleNamespaceNonvoid.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
                ~s|<div class="foo" id="<%= var %>">\nfoo\n\n</div>|

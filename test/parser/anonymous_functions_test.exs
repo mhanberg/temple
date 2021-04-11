@@ -65,7 +65,7 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
     end
   end
 
-  describe "Temple.EEx.to_eex/1" do
+  describe "Temple.Generator.to_eex/1" do
     test "emits eex" do
       raw_ast =
         quote do
@@ -78,7 +78,7 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
         raw_ast
         |> AnonymousFunctions.run()
         |> struct(children: [])
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
                ~s|<%= form_for changeset, Routes.foo_path(conn, :create), fn form -> %>\n<% end %>\n|

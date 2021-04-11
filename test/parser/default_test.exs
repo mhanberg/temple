@@ -34,7 +34,7 @@ defmodule Temple.Parser.DefaultTest do
           Foo.bar!(baz)
         end
         |> Default.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() == ~s|<%= Foo.bar!(baz) %>\n|
     end

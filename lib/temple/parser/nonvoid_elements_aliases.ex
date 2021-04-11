@@ -28,14 +28,14 @@ defmodule Temple.Parser.NonvoidElementsAliases do
     Temple.Ast.new(__MODULE__, name: to_string(name), attrs: args, children: children)
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{name: name, attrs: attrs, children: children}) do
       [
         "<",
         name,
         Temple.Parser.Utils.compile_attrs(attrs),
         ">\n",
-        for(child <- children, do: Temple.EEx.to_eex(child)),
+        for(child <- children, do: Temple.Generator.to_eex(child)),
         "\n</",
         name,
         ">"

@@ -18,7 +18,7 @@ defmodule Temple.Parser.Match do
     Temple.Ast.new(__MODULE__, elixir_ast: macro)
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{elixir_ast: elixir_ast}) do
       ["<% ", Macro.to_string(elixir_ast), " %>"]
     end

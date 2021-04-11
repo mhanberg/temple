@@ -33,7 +33,7 @@ defmodule Temple.Parser.Components do
     )
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{module: module, assigns: assigns, children: []}) do
       [
         "<%= Phoenix.View.render",
@@ -59,7 +59,7 @@ defmodule Temple.Parser.Components do
         " ",
         "do %>",
         "\n",
-        for(child <- children, do: Temple.EEx.to_eex(child)),
+        for(child <- children, do: Temple.Generator.to_eex(child)),
         "\n",
         "<% end %>"
       ]

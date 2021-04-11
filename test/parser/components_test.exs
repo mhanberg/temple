@@ -106,7 +106,7 @@ defmodule Temple.Parser.ComponentsTest do
     end
   end
 
-  describe "Temple.EEx.to_eex/1" do
+  describe "Temple.Generator.to_eex/1" do
     test "emits eex for non void component" do
       raw_ast =
         quote do
@@ -118,7 +118,7 @@ defmodule Temple.Parser.ComponentsTest do
       result =
         raw_ast
         |> Components.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
                ~s|<%= Phoenix.View.render_layout SomeModule, :self, [foo: :bar] do %>\nI'm a component!\n<% end %>|
@@ -133,7 +133,7 @@ defmodule Temple.Parser.ComponentsTest do
       result =
         raw_ast
         |> Components.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
                ~s|<%= Phoenix.View.render SomeModule, :self, [foo: :bar] %>|

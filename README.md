@@ -30,6 +30,12 @@ def deps do
 end
 ```
 
+## Goals
+
+Temple has a few things on which it won't compromise.
+
+- On
+
 ## Usage
 
 Using Temple is as simple as using the DSL inside of an `temple/1` block. This returns an EEx string at compile time.

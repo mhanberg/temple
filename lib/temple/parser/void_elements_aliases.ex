@@ -20,7 +20,7 @@ defmodule Temple.Parser.VoidElementsAliases do
     Temple.Ast.new(__MODULE__, name: name, attrs: args)
   end
 
-  defimpl Temple.EEx do
+  defimpl Temple.Generator do
     def to_eex(%{name: name, attrs: attrs}) do
       [
         "<",

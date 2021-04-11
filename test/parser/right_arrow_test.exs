@@ -69,7 +69,7 @@ defmodule Temple.Parser.RightArrowTest do
         end
         |> List.first()
         |> RightArrow.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
                ~s|<% :bing -> %>\n<%= :bong %>\n|

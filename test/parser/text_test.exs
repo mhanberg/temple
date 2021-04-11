@@ -29,12 +29,12 @@ defmodule Temple.Parser.TextTest do
     end
   end
 
-  describe "Temple.EEx.to_eex/1" do
+  describe "Temple.Generator.to_eex/1" do
     test "emits eex" do
       result =
         "string literal"
         |> Text.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() == ~s|string literal\n|
     end

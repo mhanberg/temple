@@ -62,7 +62,7 @@ defmodule Temple.Parser.VoidElementsAliasesTest do
           meta content: "foo"
         end
         |> VoidElementsAliases.run()
-        |> Temple.EEx.to_eex()
+        |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() == ~s|<meta content="foo">\n|
     end
