@@ -32,9 +32,9 @@ end
 
 ## Goals
 
-Temple has a few things on which it won't compromise.
+Currently Temple has the following things on which it won't compromise.
 
-- On
+- Will only work with valid Elixir syntax.
 
 ## Usage
 
