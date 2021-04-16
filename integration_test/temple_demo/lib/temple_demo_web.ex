@@ -38,6 +38,7 @@ defmodule TempleDemoWeb do
 
       alias TempleDemoWeb.Component.Outer
       alias TempleDemoWeb.Component.Flash
+      alias TempleDemoWeb.Component.Form
 
       # Include shared imports and aliases for views
       unquote(view_helpers())

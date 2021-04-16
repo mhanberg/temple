@@ -12,6 +12,7 @@ section class: "phx-hero" do
       p do
         "Peace-of-mind from prototype to staging"
       end
+
     _ ->
       p do
         "Peace-of-mind from prototype to production"

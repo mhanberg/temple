@@ -11,16 +11,20 @@ table do
 
   tbody do
     for post <- @posts do
-      tr do 
-        td do: post.title 
-        td do: post.body 
-        td do: post.published_at 
-        td do: post.author 
+      tr do
+        td do: post.title
+        td do: post.body
+        td do: post.published_at
+        td do: post.author
+
         td do
           link "Show", to: Routes.post_path(@conn, :show, post)
           link "Edit", to: Routes.post_path(@conn, :edit, post)
-          link "Delete", to: Routes.post_path(@conn, :delete, post),
-            method: :delete, data: [confirm: "Are you sure?"]
+
+          link "Delete",
+            to: Routes.post_path(@conn, :delete, post),
+            method: :delete,
+            data: [confirm: "Are you sure?"]
         end
       end
     end

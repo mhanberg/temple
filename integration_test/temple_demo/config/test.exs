@@ -29,6 +29,5 @@ config :wallaby,
   otp_app: :temple_demo,
   screenshot_on_failure: true
 
-
 # Print only warnings and errors during test
 config :logger, level: :warn

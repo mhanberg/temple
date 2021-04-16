@@ -6,7 +6,7 @@ defmodule TempleDemoWeb.PostView do
 
   defcomp Headers do
     thead id: PostView.thing() do
-      tr do 
+      tr do
         @inner_content
       end
     end

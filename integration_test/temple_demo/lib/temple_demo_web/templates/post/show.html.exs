@@ -1,19 +1,22 @@
 h1 do: "Show Post"
 
-ul do 
+ul do
   li do: [strong(do: "Title"), @post.title]
+
   li do
     strong do: "Body"
-    Phoenix.HTML.Format.text_to_html @post.body, attributes: [class: "whitespace-pre"]
-  end 
+    Phoenix.HTML.Format.text_to_html(@post.body, attributes: [class: "whitespace-pre"])
+  end
+
   li do
     strong do: "Published at"
     @post.published_at
-  end 
+  end
+
   li do
     strong do: "Author"
     @post.author
-  end 
+  end
 
   span do
     link "Edit", to: Routes.post_path(@conn, :edit, @post)

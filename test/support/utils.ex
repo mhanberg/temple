@@ -20,10 +20,10 @@ defmodule Temple.Support.Utils do
     Kernel.=~(a, b)
   end
 
-  def evaluate_template(template) do
+  def evaluate_template(template, assigns \\ %{}) do
     template
     |> EEx.compile_string(engine: Phoenix.HTML.Engine)
-    |> Code.eval_quoted([])
+    |> Code.eval_quoted(assigns: assigns)
     |> elem(0)
     |> Phoenix.HTML.safe_to_string()
   end

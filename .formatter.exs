@@ -1,5 +1,5 @@
 locals_without_parens = ~w[
-  temple c
+  temple c slot
   html head title style script
   noscript template
   body section nav article aside h1 h2 h3 h4 h5 h6
