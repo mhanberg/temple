@@ -6,6 +6,7 @@ defmodule Temple.Parser do
   alias Temple.Parser.TempleNamespaceNonvoid
   alias Temple.Parser.TempleNamespaceVoid
   alias Temple.Parser.Components
+  alias Temple.Parser.Slot
   alias Temple.Parser.NonvoidElementsAliases
   alias Temple.Parser.VoidElementsAliases
   alias Temple.Parser.AnonymousFunctions
@@ -18,6 +19,7 @@ defmodule Temple.Parser do
           %Empty{}
           | %Text{}
           | %Components{}
+          | %Slot{}
           | %NonvoidElementsAliases{}
           | %VoidElementsAliases{}
           | %AnonymousFunctions{}
@@ -83,21 +85,23 @@ defmodule Temple.Parser do
   def void_elements_aliases, do: @void_elements_aliases
   def void_elements_lookup, do: @void_elements_lookup
 
-  def parsers(),
-    do: [
-      Temple.Parser.Empty,
-      Temple.Parser.Text,
-      Temple.Parser.TempleNamespaceNonvoid,
-      Temple.Parser.TempleNamespaceVoid,
-      Temple.Parser.Components,
-      Temple.Parser.NonvoidElementsAliases,
-      Temple.Parser.VoidElementsAliases,
-      Temple.Parser.AnonymousFunctions,
-      Temple.Parser.RightArrow,
-      Temple.Parser.DoExpressions,
-      Temple.Parser.Match,
-      Temple.Parser.Default
+  def parsers() do
+    [
+      Empty,
+      Text,
+      TempleNamespaceNonvoid,
+      TempleNamespaceVoid,
+      Components,
+      Slot,
+      NonvoidElementsAliases,
+      VoidElementsAliases,
+      AnonymousFunctions,
+      RightArrow,
+      DoExpressions,
+      Match,
+      Default
     ]
+  end
 
   def parse({:__block__, _, asts}) do
     parse(asts)
@@ -113,6 +117,7 @@ defmodule Temple.Parser do
          {_, false} <- {TempleNamespaceNonvoid, TempleNamespaceNonvoid.applicable?(ast)},
          {_, false} <- {TempleNamespaceVoid, TempleNamespaceVoid.applicable?(ast)},
          {_, false} <- {Components, Components.applicable?(ast)},
+         {_, false} <- {Slot, Slot.applicable?(ast)},
          {_, false} <- {NonvoidElementsAliases, NonvoidElementsAliases.applicable?(ast)},
          {_, false} <- {VoidElementsAliases, VoidElementsAliases.applicable?(ast)},
          {_, false} <- {AnonymousFunctions, AnonymousFunctions.applicable?(ast)},

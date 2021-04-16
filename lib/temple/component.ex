@@ -56,6 +56,46 @@ defmodule Temple.Component do
     end
   end
   ```
+
+  ## Slots
+
+  Components can use slots, which are named placeholders that can be called like functions to be able to pass them data. This is very useful
+  when a component needs to pass data from the inside of the component back to the caller, like when rendering a form in LiveView.
+
+  The definition of a slot happens at the call site of the component and you utilize that slot from inside of the component module.
+
+  ```elixir
+  defmodule Form do
+    use Temple.Component
+
+    render do
+      form = form_for(@changeset, @action, assigns)
+
+      form
+
+      slot(:f, form: form)
+
+      "</form>"
+    end
+  end
+
+  # lib/my_app_web/templates/post/new.html.lexs
+
+  c Form, changeset: @changeset,
+          action: @action,
+          class: "form-control",
+          phx_submit: :save,
+          phx_change: :validate do
+    slot :f, %{form: f} do
+      label f do
+        "Widget Name"
+        text_input f, :name, class: "text-input"
+      end
+
+      submit "Save!"
+    end
+  end
+  ```
   """
 
   defmacro __using__(_) do

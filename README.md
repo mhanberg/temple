@@ -191,3 +191,8 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
   inputs: ["*.{ex,exs}", "priv/*/seeds.exs", "{config,lib,test}/**/*.{ex,exs,lexs}"],
 ]
 ```
+
+## Related
+
+- [Introducing Temple: An elegant HTML library for Elixir and Phoenix](https://www.mitchellhanberg.com/introducing-temple-an-elegant-html-library-for-elixir-and-phoenix/)
+- [Temple, AST, and Protocols](https://www.mitchellhanberg.com/temple-ast-and-protocols/)

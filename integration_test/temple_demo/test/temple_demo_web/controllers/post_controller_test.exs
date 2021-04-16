@@ -3,8 +3,18 @@ defmodule TempleDemoWeb.PostControllerTest do
 
   alias TempleDemo.Blog
 
-  @create_attrs %{author: "some author", body: "some body", published_at: ~N[2010-04-17 14:00:00], title: "some title"}
-  @update_attrs %{author: "some updated author", body: "some updated body", published_at: ~N[2011-05-18 15:01:01], title: "some updated title"}
+  @create_attrs %{
+    author: "some author",
+    body: "some body",
+    published_at: ~N[2010-04-17 14:00:00],
+    title: "some title"
+  }
+  @update_attrs %{
+    author: "some updated author",
+    body: "some updated body",
+    published_at: ~N[2011-05-18 15:01:01],
+    title: "some updated title"
+  }
   @invalid_attrs %{author: nil, body: nil, published_at: nil, title: nil}
 
   def fixture(:post) do
@@ -75,6 +85,7 @@ defmodule TempleDemoWeb.PostControllerTest do
     test "deletes chosen post", %{conn: conn, post: post} do
       conn = delete(conn, Routes.post_path(conn, :delete, post))
       assert redirected_to(conn) == Routes.post_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.post_path(conn, :show, post))
       end

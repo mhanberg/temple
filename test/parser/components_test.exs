@@ -1,6 +1,7 @@
 defmodule Temple.Parser.ComponentsTest do
   use ExUnit.Case, async: false
   alias Temple.Parser.Components
+  alias Temple.Parser.Slottable
   use Temple.Support.Utils
 
   describe "applicable?/1" do
@@ -104,6 +105,32 @@ defmodule Temple.Parser.ComponentsTest do
                children: []
              } = ast
     end
+
+    test "gathers all slots" do
+      raw_ast =
+        quote do
+          c SomeModule, foo: :bar do
+            slot :foo, %{form: form} do
+              "in the slot"
+            end
+          end
+        end
+
+      ast = Components.run(raw_ast)
+
+      assert %Components{
+               module: SomeModule,
+               assigns: [foo: :bar],
+               slots: [
+                 %Slottable{
+                   name: :foo,
+                   content: [%Temple.Parser.Text{}],
+                   assigns: {:%{}, _, [form: _]}
+                 }
+               ],
+               children: []
+             } = ast
+    end
   end
 
   describe "Temple.Generator.to_eex/1" do
@@ -121,7 +148,53 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Phoenix.View.render_layout SomeModule, :self, [foo: :bar] do %>\nI'm a component!\n<% end %>|
+               ~s|<%= Phoenix.View.render_layout SomeModule, :self, [{:__temple_slots__, %{}} \| [foo: :bar]] do %>\nI'm a component!\n<% end %>|
+    end
+
+    test "emits eex for void component with slots" do
+      raw_ast =
+        quote do
+          c SomeModule, foo: :bar do
+            slot :foo, %{form: form} do
+              div do
+                "in the slot"
+              end
+            end
+          end
+        end
+
+      result =
+        raw_ast
+        |> Components.run()
+        |> Temple.Generator.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= Phoenix.View.render SomeModule, :self, [{:__temple_slots__, %{foo: fn %{form: form} -> %><div>\nin the slot\n\n</div><% end, }} \| [foo: :bar]] %>|
+    end
+
+    test "emits eex for nonvoid component with slots" do
+      raw_ast =
+        quote do
+          c SomeModule, foo: :bar do
+            slot :foo, %{form: form} do
+              div do
+                "in the slot"
+              end
+            end
+
+            div do
+              "inner content"
+            end
+          end
+        end
+
+      result =
+        raw_ast
+        |> Components.run()
+        |> Temple.Generator.to_eex()
+
+      assert result |> :erlang.iolist_to_binary() ==
+               ~s|<%= Phoenix.View.render_layout SomeModule, :self, [{:__temple_slots__, %{foo: fn %{form: form} -> %><div>\nin the slot\n\n</div><% end, }} \| [foo: :bar]] do %>\n<div>\ninner content</div>\n<% end %>|
     end
 
     test "emits eex for void component" do
@@ -136,7 +209,7 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Phoenix.View.render SomeModule, :self, [foo: :bar] %>|
+               ~s|<%= Phoenix.View.render SomeModule, :self, [{:__temple_slots__, %{}} \| [foo: :bar]] %>|
     end
   end
 end
