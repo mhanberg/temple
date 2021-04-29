@@ -1,0 +1,23 @@
+version: 2
+updates:
+- package-ecosystem: mix
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: ex_doc
+    versions:
+    - 0.24.0
+    - 0.24.1
+    - 0.24.2
+  - dependency-name: phoenix_live_view
+    versions:
+    - 0.15.4
+  - dependency-name: phoenix
+    versions:
+    - 1.5.7
+  - dependency-name: phoenix_html
+    versions:
+    - 2.14.3
