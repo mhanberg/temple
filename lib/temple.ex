@@ -4,7 +4,7 @@ defmodule Temple do
   @moduledoc """
   Temple syntax is available inside the `temple`, and is compiled into EEx at build time.
 
-  ### Usage
+  ## Usage
 
   ```elixir
   temple do
@@ -55,20 +55,31 @@ defmodule Temple do
   end
   ```
 
-  ### Reserved keywords
+  ## Configuration
 
-  You can pass a keyword list to an element as element attributes, but there is currently a reserved keyword.
+  ### Mode
 
-  ### Configuration
+  There are two "modes", `:normal` (the default) and `:live_view`.
 
-  #### Aliases
+  In `:live_view` mode, Temple emits markup that uses functions provided by Phoenix LiveView in order to be fully "diff trackable".
+
+  ```elixir
+  config :temple, :mode, :normal # default
+
+  # or
+
+  config :temple, :mode, :live_view
+  ```
+
+  ### Aliases
 
   You can add an alias for an element if there is a namespace collision with a function. If you are using `Phoenix.HTML`, there will be namespace collisions with the `<link>` and `<label>` elements.
 
   ```elixir
   config :temple, :aliases,
     label: :_label,
-    link: :_link
+    link: :_link,
+    select: :_select
 
   temple do
     _label do
@@ -99,7 +110,7 @@ defmodule Temple do
   @doc """
   Context for temple markup.
 
-  Returns an EEx string.
+  Returns an EEx string that can be passed into an EEx template engine.
 
   ## Usage
 
@@ -141,6 +152,8 @@ defmodule Temple do
   @doc """
   Compiles temple markup into a quoted expression using the given EEx Engine.
 
+  Returns the same output that Phoenix templates output into the `render/1` function of their view modules.
+
   ## Usage
 
   ```elixir
@@ -152,7 +165,6 @@ defmodule Temple do
     end
   end
 
-  # Returns the same output that Phoenix templates output into the `render/1` function of their view modules.
   ```
   """
   defmacro compile(engine, [do: block] = _block) do

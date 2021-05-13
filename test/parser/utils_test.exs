@@ -8,13 +8,13 @@ defmodule Temple.Parser.UtilsTest do
       attrs_map = %{
         class: "text-red",
         id: "form1",
-        __temple_slots__: %{}
+        inner_block: %{}
       }
 
       attrs_kw = [
         class: "text-red",
         id: "form1",
-        __temple_slots__: %{}
+        inner_block: %{}
       ]
 
       assert {:safe, ~s| class="text-red" id="form1"|} == Utils.runtime_attrs(attrs_map)

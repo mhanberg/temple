@@ -31,6 +31,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :temple,
+  mode: :normal,
   aliases: [
     label: :_label,
     link: :_link,
