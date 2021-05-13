@@ -34,7 +34,7 @@ defmodule Temple.Parser.Utils do
 
   def runtime_attrs(attrs) do
     {:safe,
-     for {name, value} <- attrs, name != :__temple_slots__, into: "" do
+     for {name, value} <- attrs, name not in [:inner_block, :inner_content], into: "" do
        name = snake_to_kebab(name)
 
        " " <> name <> "=\"" <> to_string(value) <> "\""

@@ -1,9 +1,9 @@
 defmodule Temple.Components.Inner do
-  use Temple.Component
+  import Temple.Component
 
   render do
     div id: "inner", outer_id: @outer_id do
-      @inner_content
+      slot :default
     end
   end
 end

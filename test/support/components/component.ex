@@ -1,9 +1,9 @@
 defmodule Temple.Components.Component do
-  use Temple.Component
+  import Temple.Component
 
   render do
     div do
-      @inner_content
+      slot :default
     end
   end
 end

@@ -17,7 +17,8 @@ Add `temple` to your list of dependencies in `mix.exs`:
 def deps do
   [
     {:temple, "~> 0.6.0-rc.0"},
-    {:phoenix, ">= 1.5.0"} # requires at least Phoenix v1.5.0
+    {:phoenix, ">= 1.5.0"}, # requires at least Phoenix v1.5.0
+    {:phoenix_live_ivew, github: "phoenixframework/phoenix_live_ivew"} # currently requires an unreleased version of phoenix_live_ivew if you are using live view
   ]
 end
 ```
@@ -35,6 +36,7 @@ end
 Currently Temple has the following things on which it won't compromise.
 
 - Will only work with valid Elixir syntax.
+- Should always work with normal EEx, as well as Phoenix and Phoenix LiveView.
 
 ## Usage
 
@@ -74,17 +76,27 @@ end
 
 ### Components
 
-Temple components are mostly a little syntax sugar over Phoenix's `render/3` and `render_layout/4` functions.
+Temple components provide an ergonomic API for creating flexible and reusable views. Unlike normal partials, Temple components can take slots, which are similar [Vue](https://v3.vuejs.org/guide/component-slots.html#named-slots).
 
-For example, if I were to define a `Flex` component, I would create the following module.
+For example, if I were to define a `Card` component, I would create the following module.
 
 ```elixir
-defmodule MyAppWeb.Components.Flex do
-  use Temple.Component
+defmodule MyAppWeb.Components.Card do
+  import Temple.Component
 
   render do
-    div class: "flex #\{@class}" do
-      @inner_content
+    section do
+      div do
+        slot :header
+      end
+
+      div do
+        slot :default
+      end
+
+      div do
+        slot :footer
+      end
     end
   end
 end
@@ -94,22 +106,30 @@ And we could use the component like so
 
 ```elixir
 # lib/my_app_web/views/page_view.ex
-alias MyAppWeb.Components.Flex
+alias MyAppWeb.Components.Card
 
 # lib/my_app_web/templates/page/index.html.exs
-c Flex, class: "justify-between items-center", id: "arnold" do
-  div do: "Hi"
-  div do: "I'm"
-  div do: "Arnold"
-  div do: "Schwarzenegger"
+c Card do
+  slot :header do
+    @user.full_name
+  end
+
+  @user.bio
+
+  slot :footer do
+    a href: "https://twitter.com/#{@user.twitter}" do
+      "@#{@user.twitter}"
+    end
+    a href: "https://github.com/#{@user.github}" do
+      "@#{@user.github}"
+    end
+  end
 end
 ```
 
-Please see the [discussion thread](https://github.com/mhanberg/temple/discussions/104) to share ideas and ask questions about the Component API 😄.
-
 ### Phoenix templates
 
-Add the template engine to your Phoenix configuration.
+To use temple as a Phoenix Template engine, you'll need to configure the right file extensions with the right Temple engine.
 
 ```elixir
 # config.exs

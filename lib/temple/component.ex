@@ -6,11 +6,11 @@ defmodule Temple.Component do
 
   Since component modules are view modules, the assigns you pass to the component are accessible via the `@` macro and the `assigns` variable.
 
-  ## Usage
+  ## Components
 
   ```elixir
   defmodule MyAppWeb.Components.Flash do
-    use Temple.Component
+    import Temple.Component
 
     def border_class(:info), do: "border-blue-500"
     def border_class(:warning), do: "border-yellow-500"
@@ -19,7 +19,7 @@ defmodule Temple.Component do
 
     render do
       div class: "border rounded p-2 #\{assigns[:class]} #\{border_class(@message_type)}" do
-        @inner_content
+        slot :default
       end
     end
   end
@@ -59,26 +59,52 @@ defmodule Temple.Component do
 
   ## Slots
 
-  Components can use slots, which are named placeholders that can be called like functions to be able to pass them data. This is very useful
-  when a component needs to pass data from the inside of the component back to the caller, like when rendering a form in LiveView.
+  Components can use slots, which are named placeholders for markup that can be passed to the component by the caller.
 
-  The definition of a slot happens at the call site of the component and you utilize that slot from inside of the component module.
+  Slots are invoked by using the `slot` keyword, followed by the name of the slot and any assigns you'd like to pass into the slot.
+
+  `slot` is a _**compile time keyword**_, not a function or a macro, so you won't see it in the generated documention.
+
+  ```elixir
+  defmodule Flex do
+    import Temple.Component
+
+    render do
+      div class: "flex #\{@class}" do
+        slot :default
+      end
+    end
+  end
+  ```
+
+  You can also use "named slots", which allow for data to be passed back into them. This is very useful
+  when a component needs to pass data from the inside of the component back to the caller, like when rendering a form in LiveView.
 
   ```elixir
   defmodule Form do
-    use Temple.Component
+    import Temple.Component
 
     render do
       form = form_for(@changeset, @action, assigns)
 
       form
 
-      slot(:f, form: form)
+      slot :f, form: form
 
       "</form>"
     end
   end
+  ```
 
+  By default, the body of a component fills the `:default` slot.
+
+  Named slots can be defined by invoking the `slot` keyword with the name of the slot and a do block.
+
+  You can also pattern match on any assigns that are being passed into the slot as if you were defining an anonymous function.
+
+  `slot` is a _**compile time keyword**_, not a function or a macro, so you won't see it in the generated documention.
+
+  ```elixir
   # lib/my_app_web/templates/post/new.html.lexs
 
   c Form, changeset: @changeset,
@@ -98,9 +124,46 @@ defmodule Temple.Component do
   ```
   """
 
-  defmacro __using__(_) do
+  @doc false
+  defmacro __component__(module, assigns \\ [], block \\ []) do
+    {inner_block, assigns} =
+      case {block, assigns} do
+        {[do: do_block], _} -> {rewrite_do(do_block), assigns}
+        {_, [do: do_block]} -> {rewrite_do(do_block), []}
+        {_, _} -> {nil, assigns}
+      end
+
+    if is_nil(inner_block) do
+      quote do
+        Phoenix.View.render(unquote(module), :self, unquote(assigns))
+      end
+    else
+      quote do
+        Phoenix.View.render(
+          unquote(module),
+          :self,
+          Map.put(Map.new(unquote(assigns)), :inner_block, unquote(inner_block))
+        )
+      end
+    end
+  end
+
+  @doc false
+  defmacro __render_block__(inner_block, argument \\ []) do
     quote do
-      import Temple.Component, only: [render: 1]
+      unquote(inner_block).(unquote(argument))
+    end
+  end
+
+  defp rewrite_do([{:->, meta, _} | _] = do_block) do
+    {:fn, meta, do_block}
+  end
+
+  defp rewrite_do(do_block) do
+    quote do
+      fn _ ->
+        unquote(do_block)
+      end
     end
   end
 
@@ -111,7 +174,7 @@ defmodule Temple.Component do
 
   ```elixir
   defmodule MyAppWeb.Components.Flash do
-    use Temple.Component
+    import Temple.Component
 
     def border_class(:info), do: "border-blue-500"
     def border_class(:warning), do: "border-yellow-500"
@@ -120,7 +183,7 @@ defmodule Temple.Component do
 
     render do
       div class: "border rounded p-2 #\{assigns[:class]} #\{border_class(@message_type)}" do
-        @inner_content
+        slot :default
       end
     end
   end
@@ -129,14 +192,20 @@ defmodule Temple.Component do
   """
   defmacro render(block) do
     quote do
-      def render(assigns), do: render(:self, assigns)
+      def render(var!(assigns)) do
+        require Temple
+
+        _ = var!(assigns)
+
+        Temple.compile(unquote(Temple.Component.__engine__()), unquote(block))
+      end
 
       def render(:self, var!(assigns)) do
         require Temple
 
         _ = var!(assigns)
 
-        Temple.compile(unquote(Temple.Component.engine()), unquote(block))
+        Temple.compile(unquote(Temple.Component.__engine__()), unquote(block))
       end
     end
   end
@@ -163,7 +232,7 @@ defmodule Temple.Component do
       button id: SomeView.foobar(), # `MyAppWeb.SomeView` is aliased for you.
              class: "text-sm px-3 py-2 rounded #\{assigns[:extra_classes]}",
              type: "submit" do
-        @inner_content
+        slot :default
       end
     end
   end
@@ -177,7 +246,7 @@ defmodule Temple.Component do
   defmacro defcomp(module, [do: block] = _block) do
     quote location: :keep do
       defmodule unquote(module) do
-        use Temple.Component
+        import Temple.Component
         alias unquote(__CALLER__.module)
 
         render do
@@ -188,7 +257,7 @@ defmodule Temple.Component do
   end
 
   @doc false
-  def engine() do
+  def __engine__() do
     cond do
       Code.ensure_loaded?(Phoenix.LiveView.Engine) ->
         Phoenix.LiveView.Engine

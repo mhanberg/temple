@@ -25,10 +25,14 @@ defmodule Temple.Parser.Components do
           children,
           %{},
           fn
-            {:slot, _, [name | args]}, named_slots ->
+            {:slot, _, [name | args]} = node, named_slots ->
               {assigns, slot} = split_assigns_and_children(args, Macro.escape(%{}))
 
-              {nil, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}
+              if is_nil(slot) do
+                {node, named_slots}
+              else
+                {nil, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}
+              end
 
             node, named_slots ->
               {node, named_slots}
@@ -80,57 +84,41 @@ defmodule Temple.Parser.Components do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{module: module, assigns: assigns, children: [], slots: slots}) do
-      [
-        "<%= Phoenix.View.render",
-        " ",
-        Macro.to_string(module),
-        ", ",
-        ":self,",
-        " ",
-        "[{:__temple_slots__, %{",
-        for slot <- slots do
-          [
-            to_string(slot.name),
-            ": ",
-            "fn #{Macro.to_string(slot.assigns)} -> %>",
-            for(child <- slot.content, do: Temple.Generator.to_eex(child)),
-            "<% end, "
-          ]
-        end,
-        "}} | ",
-        Macro.to_string(assigns),
-        "]",
-        " ",
-        "%>"
-      ]
-    end
-
     def to_eex(%{module: module, assigns: assigns, children: children, slots: slots}) do
+      component_function = Temple.Config.mode().component_function
+      renderer = Temple.Config.mode().renderer.(module)
+
       [
-        "<%= Phoenix.View.render_layout ",
-        Macro.to_string(module),
+        "<%= #{component_function} ",
+        renderer,
         ", ",
-        ":self,",
-        " ",
-        "[{:__temple_slots__, %{",
-        for slot <- slots do
-          [
-            to_string(slot.name),
-            ": ",
-            "fn #{Macro.to_string(slot.assigns)} -> %>",
-            for(child <- slot.content, do: Temple.Generator.to_eex(child)),
-            "<% end, "
-          ]
-        end,
-        "}} | ",
         Macro.to_string(assigns),
-        "]",
-        " do %>",
-        "\n",
-        for(child <- children, do: Temple.Generator.to_eex(child)),
-        "\n",
-        "<% end %>"
+        if not Enum.empty?(children ++ slots) do
+          [
+            " do %>\n",
+            if not Enum.empty?(children) do
+              [
+                "<% {:default, _} -> %>\n",
+                for(child <- children, do: Temple.Generator.to_eex(child)),
+                "\n"
+              ]
+            else
+              ""
+            end,
+            for slot <- slots do
+              [
+                "<% {:",
+                to_string(slot.name),
+                ", ",
+                "#{Macro.to_string(slot.assigns)}} -> %>\n",
+                for(child <- slot.content, do: Temple.Generator.to_eex(child))
+              ]
+            end,
+            "<% end %>"
+          ]
+        else
+          " %>"
+        end
       ]
     end
   end

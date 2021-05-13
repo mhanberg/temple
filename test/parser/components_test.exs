@@ -148,7 +148,7 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Phoenix.View.render_layout SomeModule, :self, [{:__temple_slots__, %{}} \| [foo: :bar]] do %>\nI'm a component!\n<% end %>|
+               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>\n<% {:default, _} -> %>\nI'm a component!\n<% end %>|
     end
 
     test "emits eex for void component with slots" do
@@ -169,7 +169,7 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Phoenix.View.render SomeModule, :self, [{:__temple_slots__, %{foo: fn %{form: form} -> %><div>\nin the slot\n\n</div><% end, }} \| [foo: :bar]] %>|
+               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>\n<% {:foo, %{form: form}} -> %>\n<div>\nin the slot\n\n</div>\n<% end %>|
     end
 
     test "emits eex for nonvoid component with slots" do
@@ -194,7 +194,7 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Phoenix.View.render_layout SomeModule, :self, [{:__temple_slots__, %{foo: fn %{form: form} -> %><div>\nin the slot\n\n</div><% end, }} \| [foo: :bar]] do %>\n<div>\ninner content</div>\n<% end %>|
+               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>\n<% {:default, _} -> %>\n<div>\ninner content\n\n</div>\n<% {:foo, %{form: form}} -> %><div>\nin the slot\n\n</div><% end %>|
     end
 
     test "emits eex for void component" do
@@ -209,7 +209,7 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Phoenix.View.render SomeModule, :self, [{:__temple_slots__, %{}} \| [foo: :bar]] %>|
+               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] %>|
     end
   end
 end

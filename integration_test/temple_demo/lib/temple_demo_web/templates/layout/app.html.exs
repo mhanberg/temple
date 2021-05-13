@@ -29,8 +29,11 @@ html lang: "en" do
     end
 
     main role: "main", class: "container" do
-      p class: "alert alert-info", role: "alert", compact: true, do: get_flash(@conn, :info)
-      p class: "alert alert-danger", role: "alert", compact: true, do: get_flash(@conn, :error)
+      for {type, message} <- get_flash(@conn) do
+        p class: "alert alert-#{type}", role: "alert" do
+          message
+        end
+      end
 
       @inner_content
     end

@@ -1,5 +1,5 @@
 defmodule Temple.Components.WithFuncs do
-  use Temple.Component
+  import Temple.Component
 
   def get_class(:bar) do
     "barbarbar"
@@ -11,7 +11,7 @@ defmodule Temple.Components.WithFuncs do
 
   render do
     div class: get_class(@foo) do
-      @inner_content
+      slot :default
     end
   end
 end

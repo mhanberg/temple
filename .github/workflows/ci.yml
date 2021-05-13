@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        otp: [21.x]
+        otp: [23.x]
         elixir: [1.9.x, 1.11.x]
 
     steps:
@@ -20,12 +20,15 @@ jobs:
       with:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
-    - uses: actions/cache@v1
-      id: cache
+    - uses: actions/cache@v2
       with:
-        path: deps
-        key: ${{ runner.os }}-test-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-        restore-keys:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
+
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: mix deps.get
@@ -42,7 +45,7 @@ jobs:
 
     strategy:
       matrix:
-        otp: [21.x, 22.x]
+        otp: [23.x]
         elixir: [1.9.x, 1.11.x]
 
     services:
@@ -55,7 +58,6 @@ jobs:
         ports: ['5432:5432']
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-
     steps:
     - uses: actions/checkout@v2
     - uses: erlef/setup-beam@v1
@@ -63,11 +65,14 @@ jobs:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
 
-    - uses: actions/cache@v1
-      id: cache
+    - uses: actions/cache@v2
       with:
-        path: deps
-        key: ${{ runner.os }}-integration-test-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/integration_test/temple_demo/mix.lock')) }}
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -86,19 +91,20 @@ jobs:
 
   formatter:
     runs-on: ubuntu-latest
-    name: Formatter (1.11.x/21.x)
+    name: Formatter (1.11.x.x/23.x)
 
     steps:
     - uses: actions/checkout@v2
     - uses: erlef/setup-beam@v1
       with:
-        otp-version: 21.x
+        otp-version: 23.x
         elixir-version: 1.11.x
-    - uses: actions/cache@v1
-      id: cache
+    - uses: actions/cache@v2
       with:
-        path: deps
-        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
           ${{ runner.os }}-mix-
 
