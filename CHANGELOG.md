@@ -4,6 +4,18 @@
 
 Nothing Yet
 
+## 0.6.0-rc.1
+
+### Enhancements
+
+- Components can now use slots.
+- Markup is 100% live view compliant.
+
+### Breaking
+
+- `@inner_content` is removed in favor of invoking the default slot.
+- The `compact` reserved keyword for elements has been removed. This is not really intentional, just a side effect of getting slots to a usable place. I expect to add it back, or at least similar functionality in the future.
+
 ## 0.6.0-rc.0
 
 - Can pass a keyword list to be evaluated at runtime as attrs/assigns to an element.
