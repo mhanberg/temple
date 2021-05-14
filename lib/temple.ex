@@ -104,6 +104,7 @@ defmodule Temple do
   defmacro __using__(_) do
     quote location: :keep do
       import Temple
+      require Temple.Component
     end
   end
 

@@ -6,6 +6,8 @@ defmodule Temple.Component do
 
   Since component modules are view modules, the assigns you pass to the component are accessible via the `@` macro and the `assigns` variable.
 
+  You must `require Temple.Component` in your views that use components, as the `c` and `slot` generate markup that uses macros provided by Temple.
+
   ## Components
 
   ```elixir

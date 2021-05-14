@@ -18,7 +18,7 @@ def deps do
   [
     {:temple, "~> 0.6.0-rc.1"},
     {:phoenix, ">= 1.5.0"}, # requires at least Phoenix v1.5.0
-    {:phoenix_live_ivew, github: "phoenixframework/phoenix_live_ivew"} # currently requires an unreleased version of phoenix_live_ivew if you are using live view
+    {:phoenix_live_ivew, github: "phoenixframework/phoenix_live_view"} # currently requires an unreleased version of phoenix_live_ivew if you are using live view
   ]
 end
 ```
