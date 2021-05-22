@@ -140,6 +140,9 @@ config :phoenix, :template_engines,
   # you can enable Elixir syntax highlighting in your editor
   lexs: Temple.LiveViewEngine
 
+# If you're going to be using live_view, make sure to set the `:mode`
+config :temple, :mode, :live_view # defaults to normal
+
 # config/dev.exs
 config :your_app, YourAppWeb.Endpoint,
   live_reload: [

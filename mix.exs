@@ -6,7 +6,7 @@ defmodule Temple.MixProject do
       app: :temple,
       name: "Temple",
       description: "An HTML DSL for Elixir and Phoenix",
-      version: "0.6.0-rc.1",
+      version: "0.6.0",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.9",
@@ -36,14 +36,13 @@ defmodule Temple.MixProject do
       maintainers: ["Mitchell Hanberg"],
       licenses: ["MIT"],
       links: %{github: "https://github.com/mhanberg/temple"},
-      exclude_patterns: ["temple.update_mdn_docs.ex"],
       files: ~w(lib priv CHANGELOG.md LICENSE mix.exs README.md .formatter.exs)
     ]
   end
 
   defp deps do
     [
-      {:ex_doc, "~> 0.22.0", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.24.0", only: :dev, runtime: false},
       {:phoenix, ">= 0.0.0", optional: true},
       {:phoenix_html, ">= 0.0.0", only: :test},
       {:phoenix_live_view, ">= 0.0.0", only: :test}

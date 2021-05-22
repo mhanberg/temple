@@ -4,6 +4,104 @@
 
 Nothing Yet
 
+## 0.6.0 The LiveView compatibility release!
+
+Temple now is written to be fully compatible with Phoenix LiveView! This comes with substantial internal changes as well as a better component API.
+
+### Phoenix LiveView
+
+Temple now outputs LiveView compatible EEx at compile time, which is fed right into the normal LiveView EEx engine (or the traditional HTML Engine if you are not using LiveView).
+
+### Components
+
+Temple now has a more complete component API.
+
+Components work with anywhere, whether you are writing a little plug app, a vanilla Phoenix app, or a Phoenix LiveView app!
+
+Please see the [documenation](https://hexdocs.pm/temple/Temple.html) for more information.
+
+To migrate component from the 0.5.0 syntax to the 0.6.0 syntax, you can use the following as a guide
+
+```elixir
+# 0.5.0
+
+# definition
+defmodule PageView do
+  defcomponent :flex do
+    div id: @id, class: "flex" do
+      @children
+    end
+  end
+end
+
+# usage
+
+require PageView
+# or 
+
+import PageView
+
+temple do
+  PageView.flex id: "my-flex" do
+    div "Item 1"
+    div "Item 2"
+    div "Item 3"
+  end
+
+  # with import
+  flex id: "my-flex" do
+    div "Item 1"
+    div "Item 2"
+    div "Item 3"
+  end
+end
+```
+
+to
+
+```elixir
+# 0.6.0
+
+# definition
+
+defmodule Flex do
+  import Temple.Component
+
+  render do
+    div id: @id, class: "flex" do
+      slot :default
+    end
+  end
+end
+
+# usage
+
+temple do
+  c Flex id: "my-flex" do
+    div do: "Item 1"
+    div do: "Item 2"
+    div do: "Item 3"
+  end
+end
+```
+
+### Other breaking changes
+
+0.6.0 has been a year in the making and a lot has changed in that time (in many cases, several times over), and I honestly can't really remember everything that is different now, but I will list some things here that I think you'll need to change or look out for.
+
+- The `partial` macro is removed.
+    - You can now just call the `render` function like you normally would to render a phoenix partial.
+- The `defcomponent` macro is removed.
+    - You now define components using the API described above.
+- The `text` macro is now removed.
+    - You can just use a string literal or a variable to emit a text node.
+- Elements and components no longer can take "content" as the first argument. A do block is now required, but you can still use the keyword list style for a concise style, e.g., `span do: "foobar"` instead of `span "foobar"`.
+- The `:compact` reserved keyword option was removed.
+- The macros that wrapped `Phoenix.HTML` are removed as they are no longer needed.
+- The `temple.convert` task has been removed, but I am working to bring it back.
+
+There might be some more, so if you run into any problems, please open a [GitHub Discussion](https://github.com/mhanberg/temple/discussions/new).
+
 ## 0.6.0-rc.1
 
 ### Enhancements
