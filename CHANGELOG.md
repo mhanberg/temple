@@ -2,6 +2,10 @@
 
 ## Main
 
+Nothing yet
+
+## 0.6.1
+
 ### Bug fixes
 
 - Only collect slots in the root of a component instance #127

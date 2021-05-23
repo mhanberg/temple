@@ -16,8 +16,8 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.6.0"},
-    {:phoenix, ">= 1.5.0"}, # requires at least Phoenix v1.5.0
+    {:temple, "~> 0.6.1"},
+    {:phoenix_view, github: "phoenixframework/phoenix_view"},
     {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"} # currently requires an unreleased version of phoenix_live_view if you are using live view
   ]
 end
