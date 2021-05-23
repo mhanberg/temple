@@ -131,6 +131,45 @@ defmodule Temple.Parser.ComponentsTest do
                children: []
              } = ast
     end
+
+    test "slots should only be assigned to the component root" do
+      raw_ast =
+        quote do
+          c Card do
+            c Card.Footer do
+              c LinkList, socials: @user.socials do
+                "hello"
+
+                slot :default, %{text: text, url: url} do
+                  a class: "text-blue-500 hover:underline", href: url do
+                    text
+                  end
+                end
+              end
+            end
+          end
+        end
+
+      ast = Components.run(raw_ast)
+
+      assert Kernel.==(ast.slots, [])
+
+      assert %Components{
+               children: [
+                 %Components{
+                   children: [
+                     %Components{
+                       slots: [
+                         %Slottable{
+                           name: :default
+                         }
+                       ]
+                     }
+                   ]
+                 }
+               ]
+             } = ast
+    end
   end
 
   describe "Temple.Generator.to_eex/1" do

@@ -2,7 +2,9 @@
 
 ## Main
 
-Nothing Yet
+### Bug fixes
+
+- Only collect slots in the root of a component instance #127
 
 ## 0.6.0 The LiveView compatibility release!
 

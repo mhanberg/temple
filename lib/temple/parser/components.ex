@@ -19,27 +19,31 @@ defmodule Temple.Parser.Components do
 
     {do_and_else, assigns} = Temple.Parser.Utils.consolidate_blocks(do_and_else, args)
 
-    {default_slot, named_slots} =
+    {default_slot, {_, named_slots}} =
       if children = do_and_else[:do] do
-        Macro.postwalk(
+        Macro.prewalk(
           children,
-          %{},
+          {component_module, %{}},
           fn
-            {:slot, _, [name | args]} = node, named_slots ->
+            {:c, _, [name | _]} = node, {_, named_slots} ->
+              {node, {name, named_slots}}
+
+            {:slot, _, [name | args]} = node, {^component_module, named_slots} ->
               {assigns, slot} = split_assigns_and_children(args, Macro.escape(%{}))
 
               if is_nil(slot) do
-                {node, named_slots}
+                {node, {component_module, named_slots}}
               else
-                {nil, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}
+                {nil,
+                 {component_module, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}}
               end
 
-            node, named_slots ->
-              {node, named_slots}
+            node, acc ->
+              {node, acc}
           end
         )
       else
-        {nil, %{}}
+        {nil, {nil, %{}}}
       end
 
     children =
