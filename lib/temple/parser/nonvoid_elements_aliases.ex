@@ -17,9 +17,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
   def run({name, _, args}) do
     name = Parser.nonvoid_elements_lookup()[name]
 
-    {do_and_else, args} =
-      args
-      |> Temple.Parser.Utils.split_args()
+    {do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
     {do_and_else, args} = Temple.Parser.Utils.consolidate_blocks(do_and_else, args)
 

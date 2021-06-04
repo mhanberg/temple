@@ -13,7 +13,14 @@ defmodule Temple.Parser.VoidElementsAliases do
 
   @impl Temple.Parser
   def run({name, _, args}) do
-    {_do_and_else, [args]} = Temple.Parser.Utils.split_args(args)
+    args =
+      case Temple.Parser.Utils.split_args(args) do
+        {_, [args]} when is_list(args) ->
+          args
+
+        {_, args} ->
+          args
+      end
 
     name = Temple.Parser.void_elements_lookup()[name]
 
