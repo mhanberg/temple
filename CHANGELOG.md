@@ -4,6 +4,12 @@
 
 Nothing yet
 
+## 0.6.2
+
+### Bug fixes
+
+- Compile void elements with zero attrs #135
+
 ## 0.6.1
 
 ### Bug fixes
