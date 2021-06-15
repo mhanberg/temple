@@ -22,15 +22,6 @@ def deps do
   ]
 end
 ```
-
-or
-
-```elixir
-def deps do
-  [{:temple, github: "mhanberg/temple"}]
-end
-```
-
 ## Goals
 
 Currently Temple has the following things on which it won't compromise.
@@ -140,7 +131,8 @@ config :phoenix, :template_engines,
   # you can enable Elixir syntax highlighting in your editor
   lexs: Temple.LiveViewEngine
 
-# If you're going to be using live_view, make sure to set the `:mode`
+# If you're going to be using live_view, make sure to set the `:mode` to `:live_view`.
+# This is necessary for Temple to emit markup that is compatible.
 config :temple, :mode, :live_view # defaults to normal
 
 # config/dev.exs
@@ -156,6 +148,7 @@ config :your_app, YourAppWeb.Endpoint,
 ```elixir
 # app.html.exs
 
+"<!DOCTYPE html>"
 html lang: "en" do
   head do
     meta charset: "utf-8"
@@ -163,7 +156,7 @@ html lang: "en" do
     meta name: "viewport", content: "width=device-width, initial-scale=1.0"
     title do: "YourApp · Phoenix Framework"
 
-    link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
+    _link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
   end
 
   body do
