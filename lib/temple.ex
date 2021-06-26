@@ -19,6 +19,14 @@ defmodule Temple do
       id
     end
 
+    # Attributes that result in boolean values will be emitted as a boolean attribute. Examples of boolean attributes are `disabled` and `checked`.
+
+    input type: "text", disabled: true
+    # <input type="text" disabled>
+
+    input type: "text", disabled: false
+    # <input type="text">
+
     # if and unless expressions can be used to conditionally render content
     if 5 > 0 do
       p do

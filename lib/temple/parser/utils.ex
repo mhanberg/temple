@@ -20,7 +20,7 @@ defmodule Temple.Parser.Utils do
 
         case value do
           {_, _, _} = macro ->
-            " " <> name <> "=\"<%= " <> Macro.to_string(macro) <> " %>\""
+            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(macro)})} %>|
 
           value ->
             " " <> name <> "=\"" <> to_string(value) <> "\""
@@ -37,8 +37,20 @@ defmodule Temple.Parser.Utils do
      for {name, value} <- attrs, name not in [:inner_block, :inner_content], into: "" do
        name = snake_to_kebab(name)
 
-       " " <> name <> "=\"" <> to_string(value) <> "\""
+       build_attr(name, value)
      end}
+  end
+
+  def build_attr(name, true) do
+    " " <> name
+  end
+
+  def build_attr(_name, false) do
+    ""
+  end
+
+  def build_attr(name, value) do
+    " " <> name <> "=\"" <> to_string(value) <> "\""
   end
 
   def split_args(not_what_i_want) when is_nil(not_what_i_want) or is_atom(not_what_i_want),

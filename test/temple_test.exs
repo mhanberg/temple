@@ -89,7 +89,8 @@ defmodule TempleTest do
         div class: foo <> " bar"
       end
 
-    assert result == ~s{<div class="<%= foo <> " bar" %>"></div>}
+    assert result ==
+             ~s|<div<%= {:safe, Temple.Parser.Utils.build_attr("class", foo <> " bar")} %>></div>|
   end
 
   test "renders an attribute on a div passed as a variable as eex" do
@@ -101,7 +102,7 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<div class="<%= Enum.map([:one, :two], fn x -> x end) %>"><div class="hi"></div></div>}
+             ~s|<div<%= {:safe, Temple.Parser.Utils.build_attr("class", Enum.map([:one, :two], fn x -> x end))} %>><div class="hi"></div></div>|
   end
 
   test "renders a for comprehension as eex" do
