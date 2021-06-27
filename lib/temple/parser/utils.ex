@@ -18,12 +18,13 @@ defmodule Temple.Parser.Utils do
       for {name, value} <- attrs, into: "" do
         name = snake_to_kebab(name)
 
-        cond do
-          (not is_binary(value) && Macro.quoted_literal?(value)) || match?({_, _, _}, value) ->
-            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(value)})} %>|
-
+        with false <- not is_binary(value) && Macro.quoted_literal?(value),
+             false <- match?({_, _, _}, value),
+             false <- is_list(value) do
+          " " <> name <> "=\"" <> to_string(value) <> "\""
+        else
           true ->
-            " " <> name <> "=\"" <> to_string(value) <> "\""
+            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(value)})} %>|
         end
       end
     else
@@ -47,6 +48,12 @@ defmodule Temple.Parser.Utils do
 
   def build_attr(_name, false) do
     ""
+  end
+
+  def build_attr("class", classes) when is_list(classes) do
+    value = String.trim_leading(for {class, true} <- classes, into: "", do: " #{class}")
+
+    " class" <> "=\"" <> value <> "\""
   end
 
   def build_attr(name, value) do

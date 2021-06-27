@@ -5,6 +5,7 @@
 ### Enhancements
 
 - [breaking] Attributes who values are boolean expressions will be emitted as boolean attributes.
+- Class "object" syntax. Conditionally add classes by passing a keyword list to the `class` attribute.
 
 ## 0.6.2
 
