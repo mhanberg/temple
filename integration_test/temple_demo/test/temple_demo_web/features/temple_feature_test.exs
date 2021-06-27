@@ -37,6 +37,7 @@ defmodule TempleDemoWeb.TempleFeatureTest do
       s |> click(Query.option("21"))
     end)
     |> fill_in(Query.text_field("Author"), with: "Mitchelob Ultra")
+    |> assert_has(Query.css("#disabled-input[disabled]"))
     |> click(Query.button("Save"))
     |> assert_text("Post created successfully.")
   end

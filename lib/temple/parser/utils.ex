@@ -18,11 +18,11 @@ defmodule Temple.Parser.Utils do
       for {name, value} <- attrs, into: "" do
         name = snake_to_kebab(name)
 
-        case value do
-          {_, _, _} = macro ->
-            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(macro)})} %>|
+        cond do
+          (not is_binary(value) && Macro.quoted_literal?(value)) || match?({_, _, _}, value) ->
+            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(value)})} %>|
 
-          value ->
+          true ->
             " " <> name <> "=\"" <> to_string(value) <> "\""
         end
       end

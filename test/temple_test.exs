@@ -336,4 +336,20 @@ defmodule TempleTest do
     assert evaluate_template(result, assigns) ==
              ~s{<div>foo</div><hr><div>foo</div><hr class="foofoo"><div>bar</div><hr class="foofoo"><div>bar</div>}
   end
+
+  test "boolean attributes" do
+    assigns = %{is_true: true, is_false: false}
+
+    result =
+      temple do
+        input type: "text", disabled: true
+        input type: "text", disabled: false
+
+        input type: "text", disabled: @is_true
+        input type: "text", disabled: @is_false
+      end
+
+    assert evaluate_template(result, assigns) ==
+             ~s{<input type="text" disabled>\n<input type="text">\n<input type="text" disabled>\n<input type="text">}
+  end
 end
