@@ -27,6 +27,14 @@ defmodule Temple do
     input type: "text", disabled: false
     # <input type="text">
 
+    # The class attribute also can take a keyword list of classes to conditionally render, based on the boolean result of the value.
+
+    div class: ["text-red-500": false, "text-green-500": true ] do
+      "Alert!"
+    end
+
+    # <div class="text-green-500">Alert!</div>
+
     # if and unless expressions can be used to conditionally render content
     if 5 > 0 do
       p do
