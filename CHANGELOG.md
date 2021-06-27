@@ -2,6 +2,8 @@
 
 ## Main
 
+## 0.7.0
+
 ### Enhancements
 
 - [breaking] Attributes who values are boolean expressions will be emitted as boolean attributes.

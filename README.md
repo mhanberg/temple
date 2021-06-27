@@ -16,9 +16,9 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.6.2"},
+    {:temple, "~> 0.7.0"},
     {:phoenix_view, github: "phoenixframework/phoenix_view"},
-    {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"} # currently requires an unreleased version of phoenix_live_view if you are using live view
+    {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"} # currently requires an unreleased version of phoenix_live_view if you are using live view. The function Temple uses should be released in v0.16.0
   ]
 end
 ```
