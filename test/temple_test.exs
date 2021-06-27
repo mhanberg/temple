@@ -352,4 +352,17 @@ defmodule TempleTest do
     assert evaluate_template(result, assigns) ==
              ~s{<input type="text" disabled>\n<input type="text">\n<input type="text" disabled>\n<input type="text">}
   end
+
+  test "class attribute can be pass a keyword list of class/boolean pairs" do
+    assigns = %{is_true: true, is_false: false}
+
+    result =
+      temple do
+        div class: ["text-blue": @is_false, "text-red": true] do
+          "foo"
+        end
+      end
+
+    assert evaluate_template(result, assigns) == ~s{<div class="text-red">\nfoo\n\n</div>}
+  end
 end

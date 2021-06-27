@@ -22,5 +22,11 @@ defmodule Temple.Parser.UtilsTest do
       assert {:safe, ~s| class="text-red" id="form1"|} == Utils.runtime_attrs(attrs_map)
       assert {:safe, ~s| class="text-red" id="form1" disabled|} == Utils.runtime_attrs(attrs_kw)
     end
+
+    test "class accepts a keyword list which conditionally emits classes" do
+      attrs = [class: ["text-red": false, "text-blue": true], id: "form1"]
+
+      assert {:safe, ~s| class="text-blue" id="form1"|} == Utils.runtime_attrs(attrs)
+    end
   end
 end
