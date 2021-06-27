@@ -22,6 +22,8 @@ c Form, changeset: @changeset, action: @action do
     text_input f, :author
     error_tag(f, :author)
 
+    input type: "text", disabled: true, id: "disabled-input"
+
     div do
       submit "Save"
     end

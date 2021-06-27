@@ -89,7 +89,8 @@ defmodule TempleTest do
         div class: foo <> " bar"
       end
 
-    assert result == ~s{<div class="<%= foo <> " bar" %>"></div>}
+    assert result ==
+             ~s|<div<%= {:safe, Temple.Parser.Utils.build_attr("class", foo <> " bar")} %>></div>|
   end
 
   test "renders an attribute on a div passed as a variable as eex" do
@@ -101,7 +102,7 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<div class="<%= Enum.map([:one, :two], fn x -> x end) %>"><div class="hi"></div></div>}
+             ~s|<div<%= {:safe, Temple.Parser.Utils.build_attr("class", Enum.map([:one, :two], fn x -> x end))} %>><div class="hi"></div></div>|
   end
 
   test "renders a for comprehension as eex" do
@@ -334,5 +335,21 @@ defmodule TempleTest do
 
     assert evaluate_template(result, assigns) ==
              ~s{<div>foo</div><hr><div>foo</div><hr class="foofoo"><div>bar</div><hr class="foofoo"><div>bar</div>}
+  end
+
+  test "boolean attributes" do
+    assigns = %{is_true: true, is_false: false}
+
+    result =
+      temple do
+        input type: "text", disabled: true
+        input type: "text", disabled: false
+
+        input type: "text", disabled: @is_true
+        input type: "text", disabled: @is_false
+      end
+
+    assert evaluate_template(result, assigns) ==
+             ~s{<input type="text" disabled>\n<input type="text">\n<input type="text" disabled>\n<input type="text">}
   end
 end

@@ -19,6 +19,14 @@ defmodule Temple do
       id
     end
 
+    # Attributes that result in boolean values will be emitted as a boolean attribute. Examples of boolean attributes are `disabled` and `checked`.
+
+    input type: "text", disabled: true
+    # <input type="text" disabled>
+
+    input type: "text", disabled: false
+    # <input type="text">
+
     # if and unless expressions can be used to conditionally render content
     if 5 > 0 do
       p do
@@ -61,7 +69,9 @@ defmodule Temple do
 
   There are two "modes", `:normal` (the default) and `:live_view`.
 
-  In `:live_view` mode, Temple emits markup that uses functions provided by Phoenix LiveView in order to be fully "diff trackable".
+  In `:live_view` mode, Temple emits markup that uses functions provided by Phoenix LiveView in order to be fully "diff trackable". These LiveView functions have not been released yet, so if you are going to combine Temple with LiveView, you need to use the latest unreleased default branch from GitHub.
+
+  You should use `:live_view` mode even if you only have a single LiveView.
 
   ```elixir
   config :temple, :mode, :normal # default
