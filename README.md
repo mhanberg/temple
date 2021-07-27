@@ -164,7 +164,9 @@ html lang: "en" do
       section class: "container" do
         nav role: "navigation" do
           ul do
-            li do: a("Get Started", href: "https://hexdocs.pm/phoenix/overview.html")
+            li do
+              a href: "https://hexdocs.pm/phoenix/overview.html"), do: "Get Started"
+            end
           end
         end
 
@@ -176,8 +178,8 @@ html lang: "en" do
     end
 
     main role: "main", class: "container" do
-      p class: "alert alert-info", role: "alert", compact: true, do: get_flash(@conn, :info)
-      p class: "alert alert-danger", role: "alert", compact: true, do: get_flash(@conn, :error)
+      p class: "alert alert-info", role: "alert", do: get_flash(@conn, :info)
+      p class: "alert alert-danger", role: "alert", do: get_flash(@conn, :error)
 
       render @view_module, @view_template, assigns
     end
