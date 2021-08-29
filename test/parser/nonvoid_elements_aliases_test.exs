@@ -96,7 +96,15 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>\n<select>\n<option>\nfoo\n\n</option>\n</select>\n</div>|
+               ~s"""
+               <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
+                 <select>
+                   <option>
+                     foo
+                   </option>
+                 </select>
+               </div>
+               """
     end
   end
 end

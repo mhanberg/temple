@@ -15,8 +15,8 @@ defmodule Temple.Parser.Default do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{elixir_ast: expression}) do
-      ["<%= ", Macro.to_string(expression), " %>\n"]
+    def to_eex(%{elixir_ast: expression}, indent \\ 0) do
+      ["#{Parser.Utils.indent(indent)}<%= ", Macro.to_string(expression), " %>\n"]
     end
   end
 end

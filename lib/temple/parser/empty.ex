@@ -16,7 +16,7 @@ defmodule Temple.Parser.Empty do
   end
 
   defimpl Temple.Generator do
-    def to_eex(_) do
+    def to_eex(_, _ \\ 0) do
       []
     end
   end

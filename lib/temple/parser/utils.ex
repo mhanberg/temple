@@ -113,4 +113,8 @@ defmodule Temple.Parser.Utils do
   def pop_compact?(args) do
     Keyword.pop(args, :compact, false)
   end
+
+  def indent(level) do
+    String.duplicate(" ", level * 2)
+  end
 end

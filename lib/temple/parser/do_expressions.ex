@@ -30,18 +30,21 @@ defmodule Temple.Parser.DoExpressions do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{elixir_ast: expression, children: [do_body, else_body]}) do
+    def to_eex(%{elixir_ast: expression, children: [do_body, else_body]}, indent \\ 0) do
       [
-        "<%= ",
+        "#{Parser.Utils.indent(indent)}<%= ",
         Macro.to_string(expression),
         " do %>",
         "\n",
-        for(child <- do_body, do: Temple.Generator.to_eex(child)),
+        for(child <- do_body, do: Temple.Generator.to_eex(child, indent + 1)),
         if(else_body != nil,
-          do: ["<% else %>\n", for(child <- else_body, do: Temple.Generator.to_eex(child))],
+          do: [
+            "#{Parser.Utils.indent(indent)}<% else %>\n",
+            for(child <- else_body, do: Temple.Generator.to_eex(child, indent + 1))
+          ],
           else: ""
         ),
-        "<% end %>"
+        "#{Parser.Utils.indent(indent)}<% end %>\n"
       ]
     end
   end

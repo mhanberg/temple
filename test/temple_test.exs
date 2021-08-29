@@ -11,7 +11,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<div class="hello"><div class="hi"></div></div>}
+    assert result == ~s"""
+           <div class="hello">
+             <div class="hi">
+             </div>
+           </div>
+           """
   end
 
   test "renders void element" do
@@ -32,7 +37,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<div class="hello">hifoo</div>}
+    assert result == ~s"""
+           <div class="hello">
+             hi
+             foo
+           </div>
+           """
   end
 
   test "renders a variable text node as eex" do
@@ -43,7 +53,11 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<div class="hello"><%= foo %></div>}
+    assert result == ~s"""
+           <div class="hello">
+             <%= foo %>
+           </div>
+           """
   end
 
   test "renders an assign text node as eex" do
@@ -54,7 +68,11 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<div class="hello"><%= @foo %></div>}
+    assert result == ~s"""
+           <div class="hello">
+             <%= @foo %>
+           </div>
+           """
   end
 
   test "renders a match expression" do
@@ -67,7 +85,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<% x = 420 %><div>blaze it</div>}
+    assert result == ~s"""
+           <% x = 420 %>
+           <div>
+             blaze it
+           </div>
+           """
   end
 
   test "renders a non-match expression" do
@@ -80,7 +103,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<%= IO.inspect(:foo) %><div>bar</div>}
+    assert result == ~s"""
+           <%= IO.inspect(:foo) %>
+           <div>
+             bar
+           </div>
+           """
   end
 
   test "renders an expression in attr as eex" do
@@ -102,7 +130,12 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s|<div<%= {:safe, Temple.Parser.Utils.build_attr("class", Enum.map([:one, :two], fn x -> x end))} %>><div class="hi"></div></div>|
+             ~s"""
+             <div<%= {:safe, Temple.Parser.Utils.build_attr("class", Enum.map([:one, :two], fn x -> x end))} %>>
+               <div class="hi">
+               </div>
+             </div>
+             """
   end
 
   test "renders a for comprehension as eex" do
@@ -113,7 +146,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<%= for(x <- 1..5) do %><div class="hi"></div><% end %>}
+    assert result == ~s"""
+           <%= for(x <- 1..5) do %>
+             <div class="hi">
+             </div>
+           <% end %>
+           """
   end
 
   test "renders an if expression as eex" do
@@ -124,7 +162,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<%= if(true == false) do %><div class="hi"></div><% end %>}
+    assert result == ~s"""
+           <%= if(true == false) do %>
+             <div class="hi">
+             </div>
+           <% end %>
+           """
   end
 
   test "renders an if/else expression as eex" do
@@ -138,7 +181,15 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= if(true == false) do %><div class="hi"></div><% else %><div class="haha"></div><% end %>}
+             ~s"""
+             <%= if(true == false) do %>
+               <div class="hi">
+               </div>
+             <% else %>
+               <div class="haha">
+               </div>
+             <% end %>
+             """
   end
 
   test "renders an unless expression as eex" do
@@ -149,7 +200,12 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<%= unless(true == false) do %><div class="hi"></div><% end %>}
+    assert result == ~s"""
+           <%= unless(true == false) do %>
+             <div class="hi">
+             </div>
+           <% end %>
+           """
   end
 
   test "renders a case expression as eex" do
@@ -161,14 +217,12 @@ defmodule TempleTest do
         end
       end
 
-    expected =
-      ~S"""
-      <%= case(@foo) do %>
+    expected = ~S"""
+    <%= case(@foo) do %>
       <% :baz -> %>
-      <%= some_component(form: @form) %>
-      <% end %>
-      """
-      |> String.trim()
+        <%= some_component(form: @form) %>
+    <% end %>
+    """
 
     assert result == expected
   end
@@ -183,7 +237,12 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= form_for Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+             ~s"""
+             <%= form_for Routes.user_path(@conn, :create), fn f -> %>
+               Name: 
+               <%= text_input(f, :name) %>
+             <% end %>
+             """
   end
 
   test "renders multiline anonymous functions with 2 args before the function" do
@@ -196,7 +255,12 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+             ~s"""
+             <%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>
+               Name: 
+               <%= text_input(f, :name) %>
+             <% end %>
+             """
   end
 
   test "renders multiline anonymous functions with complex nested children" do
@@ -211,7 +275,14 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %><div>Name: <%= text_input(f, :name) %></div><% end %>}
+             ~s"""
+             <%= form_for @changeset, Routes.user_path(@conn, :create), fn f -> %>
+               <div>
+                 Name: 
+                 <%= text_input(f, :name) %>
+               </div>
+             <% end %>
+             """
   end
 
   test "renders multiline anonymous function with 3 arg before the function" do
@@ -224,7 +295,12 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f -> %>Name: <%= text_input(f, :name) %><% end %>}
+             ~s"""
+             <%= form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f -> %>
+               Name: 
+               <%= text_input(f, :name) %>
+             <% end %>
+             """
   end
 
   test "renders multiline anonymous function with 1 arg before the function and 1 arg after" do
@@ -239,7 +315,12 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= form_for @changeset, fn f -> %>Name: <%= text_input(f, :name) %><% end, [foo: :bar] %>}
+             ~s"""
+             <%= form_for @changeset, fn f -> %>
+               Name: 
+               <%= text_input(f, :name) %>
+             <% end, [foo: :bar] %>
+             """
   end
 
   test "tags prefixed with Temple. should be interpreted as temple tags" do
@@ -252,7 +333,13 @@ defmodule TempleTest do
         end
       end
 
-    assert result == ~s{<div><span>bob</span></div>}
+    assert result == ~s"""
+           <div>
+             <span>
+               bob
+             </span>
+           </div>
+           """
   end
 
   test "can pass do as an arg instead of a block" do
@@ -267,7 +354,17 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<div class="font-bold">Hello, world</div><div class="font-bold">Hello, world</div><div>Hello, world</div>}
+             ~s"""
+             <div class="font-bold">
+               Hello, world
+             </div>
+             <div class="font-bold">
+               Hello, world
+             </div>
+             <div>
+               Hello, world
+             </div>
+             """
   end
 
   test "for with 2 generators" do
@@ -280,7 +377,16 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<%= for(x <- 1..5, y <- 6..10) do %><div><%= x %></div><div><%= y %></div><% end %>}
+             ~s"""
+             <%= for(x <- 1..5, y <- 6..10) do %>
+               <div>
+                 <%= x %>
+               </div>
+               <div>
+                 <%= y %>
+               </div>
+             <% end %>
+             """
   end
 
   test "can pass an expression as assigns" do
@@ -292,7 +398,15 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<fieldset<%= Temple.Parser.Utils.runtime_attrs(if(true == false) do  [disabled: true]else  []end) %>><input type="text"></fieldset>}
+             ~s"""
+             <fieldset<%= Temple.Parser.Utils.runtime_attrs(if(true == false) do
+               [disabled: true]
+             else
+               []
+             end) %>>
+               <input type="text">
+             </fieldset>
+             """
   end
 
   test "can pass a variable as assigns" do
@@ -304,7 +418,11 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<fieldset<%= Temple.Parser.Utils.runtime_attrs(foo_bar) %>><input type="text"></fieldset>}
+             ~s"""
+             <fieldset<%= Temple.Parser.Utils.runtime_attrs(foo_bar) %>>
+               <input type="text">
+             </fieldset>
+             """
   end
 
   test "can pass a function as assigns" do
@@ -316,7 +434,11 @@ defmodule TempleTest do
       end
 
     assert result ==
-             ~s{<fieldset<%= Temple.Parser.Utils.runtime_attrs(Foo.foo_bar()) %>><input type="text"></fieldset>}
+             ~s"""
+             <fieldset<%= Temple.Parser.Utils.runtime_attrs(Foo.foo_bar()) %>>
+               <input type="text">
+             </fieldset>
+             """
   end
 
   test "hr tag works" do
@@ -334,7 +456,23 @@ defmodule TempleTest do
       end
 
     assert evaluate_template(result, assigns) ==
-             ~s{<div>foo</div><hr><div>foo</div><hr class="foofoo"><div>bar</div><hr class="foofoo"><div>bar</div>}
+             ~s"""
+             <div>
+               foo
+             </div>
+             <hr>
+             <div>
+               foo
+             </div>
+             <hr class="foofoo">
+             <div>
+               bar
+             </div>
+             <hr class="foofoo">
+             <div>
+               bar
+             </div>
+             """
   end
 
   test "boolean attributes" do
@@ -363,6 +501,10 @@ defmodule TempleTest do
         end
       end
 
-    assert evaluate_template(result, assigns) == ~s{<div class="text-red">\nfoo\n\n</div>}
+    assert evaluate_template(result, assigns) == ~s"""
+           <div class="text-red">
+             foo
+           </div>
+           """
   end
 end

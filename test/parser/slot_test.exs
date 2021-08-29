@@ -42,7 +42,9 @@ defmodule Temple.Parser.SlotTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Temple.Component.__render_block__(@inner_block, {:header, Enum.into([value: Form.form_for(changeset, action)], %{})}) %>|
+               ~s"""
+               <%= Temple.Component.__render_block__(@inner_block, {:header, Enum.into([value: Form.form_for(changeset, action)], %{})}) %>
+               """
     end
   end
 end

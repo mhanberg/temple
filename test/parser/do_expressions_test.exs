@@ -49,7 +49,11 @@ defmodule Temple.Parser.DoExpressionsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= for(big <- boys) do %>\nbob\n<% end %>|
+               ~s"""
+               <%= for(big <- boys) do %>
+                 bob
+               <% end %>
+               """
     end
 
     test "emits eex for that includes in else clause" do
@@ -67,7 +71,14 @@ defmodule Temple.Parser.DoExpressionsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= if(foo?) do %>\nbob\nbobby\n<% else %>\ncarol\n<% end %>|
+               ~s"""
+               <%= if(foo?) do %>
+                 bob
+                 bobby
+               <% else %>
+                 carol
+               <% end %>
+               """
     end
 
     test "emits eex for a case expression" do
@@ -82,7 +93,12 @@ defmodule Temple.Parser.DoExpressionsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= case(foo?) do %>\n<% :bing -> %>\n<%= :bong %>\n<% end %>|
+               ~s"""
+               <%= case(foo?) do %>
+                 <% :bing -> %>
+                   <%= :bong %>
+               <% end %>
+               """
     end
   end
 end

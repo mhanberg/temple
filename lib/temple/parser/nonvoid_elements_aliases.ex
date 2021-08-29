@@ -27,16 +27,16 @@ defmodule Temple.Parser.NonvoidElementsAliases do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{name: name, attrs: attrs, children: children}) do
+    def to_eex(%{name: name, attrs: attrs, children: children}, indent \\ 0) do
       [
-        "<",
+        "#{Parser.Utils.indent(indent)}<",
         name,
         Temple.Parser.Utils.compile_attrs(attrs),
         ">\n",
-        for(child <- children, do: Temple.Generator.to_eex(child)),
-        "\n</",
+        for(child <- children, do: Temple.Generator.to_eex(child, indent + 1)),
+        "#{Parser.Utils.indent(indent)}</",
         name,
-        ">"
+        ">\n"
       ]
     end
   end

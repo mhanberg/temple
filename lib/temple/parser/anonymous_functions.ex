@@ -32,14 +32,14 @@ defmodule Temple.Parser.AnonymousFunctions do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{elixir_ast: {name, _, args}, children: children}) do
+    def to_eex(%{elixir_ast: {name, _, args}, children: children}, indent \\ 0) do
       {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
       {args, {func, _, [{arrow, _, [[{arg, _, _}], _block]}]}, args2} =
         Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
 
       [
-        "<%= ",
+        "#{Parser.Utils.indent(indent)}<%= ",
         to_string(name),
         " ",
         Enum.map(args, &Macro.to_string(&1)) |> Enum.join(", "),
@@ -51,16 +51,16 @@ defmodule Temple.Parser.AnonymousFunctions do
         to_string(arrow),
         " %>",
         "\n",
-        for(child <- children, do: Temple.Generator.to_eex(child)),
+        for(child <- children, do: Temple.Generator.to_eex(child, indent + 1)),
         if Enum.any?(args2) do
           [
-            "<% end, ",
+            "#{Parser.Utils.indent(indent)}<% end, ",
             Enum.map(args2, fn arg -> Macro.to_string(arg) end)
             |> Enum.join(", "),
             " %>"
           ]
         else
-          ["<% end %>", "\n"]
+          ["#{Parser.Utils.indent(indent)}<% end %>", "\n"]
         end
       ]
     end
