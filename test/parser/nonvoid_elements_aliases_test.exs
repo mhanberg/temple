@@ -2,6 +2,8 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.NonvoidElementsAliases
+  alias Temple.Parser.ElementList
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a nonvoid element or alias" do
@@ -63,19 +65,25 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
       assert %NonvoidElementsAliases{
                name: "div",
                attrs: [class: "foo", id: {:var, [], _}],
-               children: [
-                 %NonvoidElementsAliases{
-                   name: "select",
-                   children: [
-                     %NonvoidElementsAliases{
-                       name: "option",
+               children: %ElementList{
+                 children: [
+                   %NonvoidElementsAliases{
+                     name: "select",
+                     children: %ElementList{
                        children: [
-                         %Temple.Parser.Text{text: "foo"}
+                         %NonvoidElementsAliases{
+                           name: "option",
+                           children: %ElementList{
+                             children: [
+                               %Temple.Parser.Text{text: "foo"}
+                             ]
+                           }
+                         }
                        ]
                      }
-                   ]
-                 }
-               ]
+                   }
+                 ]
+               }
              } = ast
     end
   end
@@ -94,14 +102,41 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
         end
         |> NonvoidElementsAliases.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() ==
+      assert result ==
                ~s"""
                <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
                  <select>
                    <option>
                      foo
                    </option>
+                 </select>
+               </div>
+               """
+    end
+
+    test "produce 'tight' markup" do
+      result =
+        quote do
+          div class: "foo", id: var do
+            select__ do
+              option! do
+                "foo"
+              end
+            end
+          end
+        end
+        |> NonvoidElementsAliases.run()
+        |> Temple.Generator.to_eex()
+        |> :erlang.iolist_to_binary()
+        |> Kernel.<>("\n")
+
+      assert result ==
+               ~s"""
+               <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
+                 <select>
+                   <option>foo</option>
                  </select>
                </div>
                """

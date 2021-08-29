@@ -2,6 +2,7 @@ defmodule Temple.Parser.VoidElementsAliasesTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.VoidElementsAliases
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a nonvoid element or alias" do
@@ -63,8 +64,9 @@ defmodule Temple.Parser.VoidElementsAliasesTest do
         end
         |> VoidElementsAliases.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() == ~s|<meta content="foo">\n|
+      assert result == ~s|<meta content="foo">\n|
     end
   end
 end

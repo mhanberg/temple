@@ -119,7 +119,7 @@ defmodule Temple.Parser.Components do
                 for(child <- slot.content, do: Temple.Generator.to_eex(child, indent + 2))
               ]
             end,
-            "#{Parser.Utils.indent(indent)}<% end %>\n"
+            "\n#{Parser.Utils.indent(indent)}<% end %>"
           ]
         else
           " %>"

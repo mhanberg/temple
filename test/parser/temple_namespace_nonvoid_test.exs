@@ -3,6 +3,7 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
 
   alias Temple.Parser.NonvoidElementsAliases
   alias Temple.Parser.TempleNamespaceNonvoid
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a Temple aliased nonvoid element" do
@@ -50,7 +51,10 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
       assert %NonvoidElementsAliases{
                name: "div",
                attrs: [class: "foo", id: {:var, [], _}],
-               children: [%Temple.Parser.Text{text: "foo"}]
+               children: %Temple.Parser.ElementList{
+                 children: [%Temple.Parser.Text{text: "foo"}],
+                 whitespace: :loose
+               }
              } = ast
     end
   end
@@ -65,8 +69,9 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
         end
         |> TempleNamespaceNonvoid.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() ==
+      assert result ==
                ~s"""
                <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
                  foo

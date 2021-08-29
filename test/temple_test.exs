@@ -230,10 +230,10 @@ defmodule TempleTest do
   test "renders multiline anonymous function with 1 arg before the function" do
     result =
       temple do
-        form_for Routes.user_path(@conn, :create), fn f ->
+        form_for(Routes.user_path(@conn, :create), fn f ->
           "Name: "
-          text_input f, :name
-        end
+          text_input(f, :name)
+        end)
       end
 
     assert result ==
@@ -248,10 +248,10 @@ defmodule TempleTest do
   test "renders multiline anonymous functions with 2 args before the function" do
     result =
       temple do
-        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+        form_for(@changeset, Routes.user_path(@conn, :create), fn f ->
           "Name: "
-          text_input f, :name
-        end
+          text_input(f, :name)
+        end)
       end
 
     assert result ==
@@ -266,12 +266,12 @@ defmodule TempleTest do
   test "renders multiline anonymous functions with complex nested children" do
     result =
       temple do
-        form_for @changeset, Routes.user_path(@conn, :create), fn f ->
+        form_for(@changeset, Routes.user_path(@conn, :create), fn f ->
           div do
             "Name: "
-            text_input f, :name
+            text_input(f, :name)
           end
-        end
+        end)
       end
 
     assert result ==
@@ -288,10 +288,10 @@ defmodule TempleTest do
   test "renders multiline anonymous function with 3 arg before the function" do
     result =
       temple do
-        form_for @changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f ->
+        form_for(@changeset, Routes.user_path(@conn, :create), [foo: :bar], fn f ->
           "Name: "
-          text_input f, :name
-        end
+          text_input(f, :name)
+        end)
       end
 
     assert result ==
@@ -306,12 +306,14 @@ defmodule TempleTest do
   test "renders multiline anonymous function with 1 arg before the function and 1 arg after" do
     result =
       temple do
-        form_for @changeset,
-                 fn f ->
-                   "Name: "
-                   text_input f, :name
-                 end,
-                 foo: :bar
+        form_for(
+          @changeset,
+          fn f ->
+            "Name: "
+            text_input(f, :name)
+          end,
+          foo: :bar
+        )
       end
 
     assert result ==

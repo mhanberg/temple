@@ -3,6 +3,8 @@ defmodule Temple.WhitespaceTest do
 
   import Temple
 
+  alias Temple.Support.Utils
+
   test "only emits a single new line" do
     result =
       temple do
@@ -22,21 +24,23 @@ defmodule Temple.WhitespaceTest do
           end
         end
       end
+      |> Utils.append_new_line()
 
-    assert result ==
-             ~s"""
-             <div class="hello">
-               <span id="foo">
-                 Howdy, 
-               </span>
-               <div class="hi">
-                 Jim Bob
-               </div>
-               <%= Temple.Component.__component__ WhoaNelly, [foo: "bar"] do %>
-                 <% {:silver, %{}} -> %>
-                   esketit
-               <% end %>
-             </div>
-             """
+    expected = ~s"""
+    <div class="hello">
+      <span id="foo">
+        Howdy, 
+      </span>
+      <div class="hi">
+        Jim Bob
+      </div>
+      <%= Temple.Component.__component__ WhoaNelly, [foo: "bar"] do %>
+        <% {:silver, %{}} -> %>
+          esketit
+      <% end %>
+    </div>
+    """
+
+    assert result == expected
   end
 end

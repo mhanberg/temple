@@ -2,6 +2,7 @@ defmodule Temple.Parser.TextTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.Text
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a string literal" do
@@ -35,8 +36,9 @@ defmodule Temple.Parser.TextTest do
         "string literal"
         |> Text.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() == ~s|string literal\n|
+      assert result == ~s|string literal\n|
     end
   end
 end

@@ -35,7 +35,7 @@ defmodule Temple.Parser.VoidElementsAliases do
         "#{Utils.indent(indent)}<",
         to_string(name),
         Temple.Parser.Utils.compile_attrs(attrs),
-        ">\n"
+        ">"
       ]
     end
   end

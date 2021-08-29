@@ -17,7 +17,7 @@ defmodule Temple.Parser.Text do
 
   defimpl Temple.Generator do
     def to_eex(%{text: text}, indent \\ 0) do
-      [Parser.Utils.indent(indent), text, "\n"]
+      [Parser.Utils.indent(indent), text]
     end
   end
 end

@@ -33,4 +33,20 @@ defmodule Temple.Support.Utils do
     |> elem(0)
     |> Phoenix.HTML.safe_to_string()
   end
+
+  @doc """
+  Converts an iolist to a binary and appends a new line.
+  """
+  def iolist_to_binary(iolist) do
+    iolist
+    |> :erlang.iolist_to_binary()
+    |> append_new_line()
+  end
+
+  @doc """
+  Appends a new line to a string.
+  """
+  def append_new_line(string) do
+    string <> "\n"
+  end
 end

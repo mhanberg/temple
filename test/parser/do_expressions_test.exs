@@ -2,6 +2,7 @@ defmodule Temple.Parser.DoExpressionsTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.DoExpressions
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node contains a do expression" do
@@ -47,8 +48,9 @@ defmodule Temple.Parser.DoExpressionsTest do
         end
         |> DoExpressions.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() ==
+      assert result ==
                ~s"""
                <%= for(big <- boys) do %>
                  bob
@@ -69,8 +71,9 @@ defmodule Temple.Parser.DoExpressionsTest do
         end
         |> DoExpressions.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() ==
+      assert result ==
                ~s"""
                <%= if(foo?) do %>
                  bob
@@ -91,8 +94,9 @@ defmodule Temple.Parser.DoExpressionsTest do
         end
         |> DoExpressions.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() ==
+      assert result ==
                ~s"""
                <%= case(foo?) do %>
                  <% :bing -> %>

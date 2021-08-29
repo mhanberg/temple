@@ -36,15 +36,17 @@ defmodule Temple.Parser.DoExpressions do
         Macro.to_string(expression),
         " do %>",
         "\n",
-        for(child <- do_body, do: Temple.Generator.to_eex(child, indent + 1)),
+        for(child <- do_body, do: Temple.Generator.to_eex(child, indent + 1))
+        |> Enum.intersperse("\n"),
         if(else_body != nil,
           do: [
-            "#{Parser.Utils.indent(indent)}<% else %>\n",
+            "#{Parser.Utils.indent(indent)}\n<% else %>\n",
             for(child <- else_body, do: Temple.Generator.to_eex(child, indent + 1))
+            |> Enum.intersperse("\n")
           ],
           else: ""
         ),
-        "#{Parser.Utils.indent(indent)}<% end %>\n"
+        "\n#{Parser.Utils.indent(indent)}<% end %>"
       ]
     end
   end
