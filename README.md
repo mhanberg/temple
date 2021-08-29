@@ -3,7 +3,7 @@
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 
-> You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.6.1).
+> You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.8.0).
 
 Temple is a DSL for writing HTML and EEx using Elixir.
 
@@ -16,9 +16,8 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.7.0"},
-    {:phoenix_view, github: "phoenixframework/phoenix_view"},
-    {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"} # currently requires an unreleased version of phoenix_live_view if you are using live view. The function Temple uses should be released in v0.16.0
+    {:temple, "~> 0.8.0"},
+    {:phoenix_live_view, "~> 0.16"} # if you are using Phoenix LiveView
   ]
 end
 ```

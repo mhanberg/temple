@@ -2,6 +2,30 @@
 
 ## Main
 
+## 0.8.0
+
+### Enhancements
+
+- Better whitespace control
+
+  You can now use a "bang" version of any nonvoid tag to forgo the internal whitespace.
+
+  ```elixir
+  span do
+    "So much room for activities!"
+  end
+
+  # <span>
+  #   So much room for activities!
+  # </span>
+
+  span! do
+    "It's a little cramped in here!"
+  end
+
+  # <span>It's a little cramped in here!</span>
+  ```
+
 ## 0.7.0
 
 ### Enhancements
