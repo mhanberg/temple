@@ -2,7 +2,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct name: nil, attrs: [], children: []
+  defstruct name: nil, attrs: [], children: [], meta: %{}
 
   alias Temple.Parser
 
@@ -23,18 +23,34 @@ defmodule Temple.Parser.NonvoidElementsAliases do
 
     children = Temple.Parser.parse(do_and_else[:do])
 
-    Temple.Ast.new(__MODULE__, name: to_string(name), attrs: args, children: children)
+    Temple.Ast.new(__MODULE__,
+      name: to_string(name) |> String.replace_suffix("!", ""),
+      attrs: args,
+      children:
+        Temple.Ast.new(Temple.Parser.ElementList,
+          children: children,
+          whitespace: whitespace(to_string(name))
+        )
+    )
+  end
+
+  defp whitespace(name) do
+    if String.ends_with?(name, "!") do
+      :tight
+    else
+      :loose
+    end
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{name: name, attrs: attrs, children: children}) do
+    def to_eex(%{name: name, attrs: attrs, children: children}, indent \\ 0) do
       [
-        "<",
+        "#{Parser.Utils.indent(indent)}<",
         name,
         Temple.Parser.Utils.compile_attrs(attrs),
-        ">\n",
-        for(child <- children, do: Temple.Generator.to_eex(child)),
-        "\n</",
+        ">",
+        Temple.Generator.to_eex(children, indent),
+        "</",
         name,
         ">"
       ]

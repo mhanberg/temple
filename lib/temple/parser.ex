@@ -58,7 +58,7 @@ defmodule Temple.Parser do
     option textarea output progress meter
     details summary menuitem menu
     html
-  ]a
+  ]a |> Enum.flat_map(fn el -> [el, :"#{el}!"] end)
 
   @nonvoid_elements_aliases Enum.map(@nonvoid_elements, fn el ->
                               Keyword.get(@aliases, el, el)

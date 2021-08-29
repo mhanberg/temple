@@ -2,6 +2,7 @@ defmodule Temple.Parser.RightArrowTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.RightArrow
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node contains a right arrow" do
@@ -70,9 +71,13 @@ defmodule Temple.Parser.RightArrowTest do
         |> List.first()
         |> RightArrow.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() ==
-               ~s|<% :bing -> %>\n<%= :bong %>\n|
+      assert result ==
+               ~s"""
+               <% :bing -> %>
+                 <%= :bong %>
+               """
     end
   end
 end

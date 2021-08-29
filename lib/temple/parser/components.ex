@@ -2,6 +2,8 @@ defmodule Temple.Parser.Components do
   @moduledoc false
   @behaviour Temple.Parser
 
+  alias Temple.Parser
+
   defstruct module: nil, assigns: [], children: [], slots: []
 
   @impl Temple.Parser
@@ -88,12 +90,12 @@ defmodule Temple.Parser.Components do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{module: module, assigns: assigns, children: children, slots: slots}) do
+    def to_eex(%{module: module, assigns: assigns, children: children, slots: slots}, indent \\ 0) do
       component_function = Temple.Config.mode().component_function
       renderer = Temple.Config.mode().renderer.(module)
 
       [
-        "<%= #{component_function} ",
+        "#{Parser.Utils.indent(indent)}<%= #{component_function} ",
         renderer,
         ", ",
         Macro.to_string(assigns),
@@ -102,23 +104,22 @@ defmodule Temple.Parser.Components do
             " do %>\n",
             if not Enum.empty?(children) do
               [
-                "<% {:default, _} -> %>\n",
-                for(child <- children, do: Temple.Generator.to_eex(child)),
-                "\n"
+                "#{Parser.Utils.indent(indent + 1)}<% {:default, _} -> %>\n",
+                for(child <- children, do: Temple.Generator.to_eex(child, indent + 2))
               ]
             else
               ""
             end,
             for slot <- slots do
               [
-                "<% {:",
+                "#{Parser.Utils.indent(indent + 1)}<% {:",
                 to_string(slot.name),
                 ", ",
                 "#{Macro.to_string(slot.assigns)}} -> %>\n",
-                for(child <- slot.content, do: Temple.Generator.to_eex(child))
+                for(child <- slot.content, do: Temple.Generator.to_eex(child, indent + 2))
               ]
             end,
-            "<% end %>"
+            "\n#{Parser.Utils.indent(indent)}<% end %>"
           ]
         else
           " %>"

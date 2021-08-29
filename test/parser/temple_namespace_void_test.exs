@@ -3,6 +3,7 @@ defmodule Temple.Parser.TempleNamespaceVoidTest do
 
   alias Temple.Parser.TempleNamespaceVoid
   alias Temple.Parser.VoidElementsAliases
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a Temple aliased nonvoid element" do
@@ -58,8 +59,9 @@ defmodule Temple.Parser.TempleNamespaceVoidTest do
         end
         |> TempleNamespaceVoid.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() == ~s|<meta content="foo">\n|
+      assert result == ~s|<meta content="foo">\n|
     end
   end
 end

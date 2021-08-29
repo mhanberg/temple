@@ -18,7 +18,19 @@ defmodule Temple.ComponentTest do
       end
 
     assert evaluate_template(result) ==
-             ~s{<div class="font-bold">Hello, world</div><div><aside class="foobar">I'm a component!</aside></div>}
+             ~s"""
+             <div class="font-bold">
+               Hello, world
+             </div>
+             <div>
+               
+                 <aside class="foobar">
+                   I'm a component!
+                 </aside>
+
+             </div>
+
+             """
   end
 
   test "function components can accept local assigns" do
@@ -34,7 +46,16 @@ defmodule Temple.ComponentTest do
       end
 
     assert evaluate_template(result) ==
-             ~s{<div class="font-bold">Hello, world</div><div class="bg-red">I'm a component!</div>}
+             ~s"""
+             <div class="font-bold">
+               Hello, world
+             </div>
+             <div class="bg-red">
+
+                   I'm a component!
+
+             </div>
+             """
   end
 
   test "function components can use other components" do
@@ -50,8 +71,21 @@ defmodule Temple.ComponentTest do
       end
 
     assert evaluate_template(result) == ~s"""
-           <div id="inner" outer-id="from-outer">outer!</div>
-           <div id="inner" outer-id="set by root inner">inner!</div>
+           <div id="inner" outer-id="from-outer">
+             
+               
+               outer!
+
+
+           </div>
+
+
+           <div id="inner" outer-id="set by root inner">
+             
+               inner!
+
+           </div>
+
            """
   end
 
@@ -63,7 +97,14 @@ defmodule Temple.ComponentTest do
         end
       end
 
-    assert evaluate_template(result) == ~s{<div class="barbarbar">doo doo</div>}
+    assert evaluate_template(result) == ~s"""
+           <div class="barbarbar">
+             
+               doo doo
+
+           </div>
+
+           """
   end
 
   test "components can be void elements" do
@@ -72,7 +113,11 @@ defmodule Temple.ComponentTest do
         c Temple.Components.VoidComponent, foo: :bar
       end
 
-    assert evaluate_template(result) == ~s{<div class="void!!">bar</div>}
+    assert evaluate_template(result) == ~s"""
+           <div class="void!!">
+             bar
+           </div>
+           """
   end
 
   test "components can have named slots" do
@@ -94,6 +139,22 @@ defmodule Temple.ComponentTest do
       end
 
     assert evaluate_template(result, assigns) ==
-             ~s{<div><div>the value is Header</div><div class="wrapped"><button class="btn" phx-click="toggle">bob</button></div></div>}
+             ~s"""
+             <div>
+               
+                 <div>
+                   the value is Header
+                 </div>
+
+               <div class="wrapped">
+                 
+                 <button class="btn" phx-click="toggle">
+                   bob
+                 </button>
+               
+               </div>
+             </div>
+
+             """
   end
 end

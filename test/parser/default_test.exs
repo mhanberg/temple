@@ -2,6 +2,7 @@ defmodule Temple.Parser.DefaultTest do
   use ExUnit.Case, async: true
 
   alias Temple.Parser.Default
+  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is an elixir expression" do
@@ -35,8 +36,11 @@ defmodule Temple.Parser.DefaultTest do
         end
         |> Default.run()
         |> Temple.Generator.to_eex()
+        |> Utils.iolist_to_binary()
 
-      assert result |> :erlang.iolist_to_binary() == ~s|<%= Foo.bar!(baz) %>\n|
+      assert result == ~s"""
+             <%= Foo.bar!(baz) %>
+             """
     end
   end
 end

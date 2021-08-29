@@ -187,7 +187,12 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>\n<% {:default, _} -> %>\nI'm a component!\n<% end %>|
+               ~s"""
+               <%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>
+                 <% {:default, _} -> %>
+                   I'm a component!
+               <% end %>
+               """
     end
 
     test "emits eex for void component with slots" do
@@ -208,7 +213,14 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>\n<% {:foo, %{form: form}} -> %>\n<div>\nin the slot\n\n</div>\n<% end %>|
+               ~s"""
+               <%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>
+                 <% {:foo, %{form: form}} -> %>
+                   <div>
+                     in the slot
+                   </div>
+               <% end %>
+               """
     end
 
     test "emits eex for nonvoid component with slots" do
@@ -233,7 +245,18 @@ defmodule Temple.Parser.ComponentsTest do
         |> Temple.Generator.to_eex()
 
       assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>\n<% {:default, _} -> %>\n<div>\ninner content\n\n</div>\n<% {:foo, %{form: form}} -> %><div>\nin the slot\n\n</div><% end %>|
+               ~s"""
+               <%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>
+                 <% {:default, _} -> %>
+                   <div>
+                     inner content
+                   </div>
+                 <% {:foo, %{form: form}} -> %>
+                   <div>
+                     in the slot
+                   </div>
+               <% end %>
+               """
     end
 
     test "emits eex for void component" do

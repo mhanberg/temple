@@ -1,6 +1,7 @@
 defmodule Temple.Parser.Slot do
   @moduledoc false
   @behaviour Temple.Parser
+  alias Temple.Parser.Utils
 
   defstruct name: nil, args: []
 
@@ -26,15 +27,15 @@ defmodule Temple.Parser.Slot do
   end
 
   defimpl Temple.Generator do
-    def to_eex(%{name: name, args: args}) do
+    def to_eex(%{name: name, args: args}, indent \\ 0) do
       render_block_function = Temple.Config.mode().render_block_function
 
       [
-        "<%= #{render_block_function}(@inner_block, {:",
+        "#{Utils.indent(indent)}<%= #{render_block_function}(@inner_block, {:",
         to_string(name),
         ", ",
         Macro.to_string(quote(do: Enum.into(unquote(args), %{}))),
-        "}) %>"
+        "}) %>\n"
       ]
     end
   end

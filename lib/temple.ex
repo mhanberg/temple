@@ -29,7 +29,7 @@ defmodule Temple do
 
     # The class attribute also can take a keyword list of classes to conditionally render, based on the boolean result of the value.
 
-    div class: ["text-red-500": false, "text-green-500": true ] do
+    div class: ["text-red-500": false, "text-green-500": true] do
       "Alert!"
     end
 
@@ -69,6 +69,34 @@ defmodule Temple do
     # You can also pass children as a do key instead of a block
     div do: "Alice", class: "text-yellow"
   end
+  ```
+
+  ## Whitespace Control
+
+  By default, Temple will emit internal whitespace into tags, something like this.
+
+  ```elixir
+  span do
+    "Hello, world!"
+  end
+  ```
+
+  ```html
+  <span>
+    Hello, world!
+  </span>
+  ```
+
+  If you need to create a "tight" tag, you can call the "bang" version of the desired tag.
+
+  ```elixir
+  span! do
+    "Hello, world!"
+  end
+  ```
+
+  ```html
+  <span>Hello, world!</span>
   ```
 
   ## Configuration
@@ -151,7 +179,8 @@ defmodule Temple do
     markup =
       block
       |> Parser.parse()
-      |> Enum.map(&Temple.Generator.to_eex/1)
+      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
+      |> Enum.intersperse("\n")
       |> :erlang.iolist_to_binary()
 
     quote location: :keep do
@@ -163,7 +192,8 @@ defmodule Temple do
     quote location: :keep do
       unquote(block)
       |> Parser.parse()
-      |> Enum.map(&Temple.Generator.to_eex/1)
+      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
+      |> Enum.intersperse("\n")
       |> :erlang.iolist_to_binary()
     end
   end
@@ -190,7 +220,8 @@ defmodule Temple do
     markup =
       block
       |> Parser.parse()
-      |> Enum.map(&Temple.Generator.to_eex/1)
+      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
+      |> Enum.intersperse("\n")
       |> :erlang.iolist_to_binary()
 
     EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)

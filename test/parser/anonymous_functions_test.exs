@@ -7,9 +7,9 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
     test "returns true when the node contains an anonymous function as an argument to a function" do
       raw_asts = [
         quote do
-          form_for changeset, Routes.foo_path(conn, :create), fn form ->
+          form_for(changeset, Routes.foo_path(conn, :create), fn form ->
             Does.something!(form)
-          end
+          end)
         end
       ]
 
@@ -47,9 +47,9 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
 
       raw_ast =
         quote do
-          form_for changeset, Routes.foo_path(conn, :create), fn form ->
+          form_for(changeset, Routes.foo_path(conn, :create), fn form ->
             unquote(expected_child)
-          end
+          end)
         end
 
       ast = AnonymousFunctions.run(raw_ast)
@@ -69,9 +69,9 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
     test "emits eex" do
       raw_ast =
         quote do
-          form_for changeset, Routes.foo_path(conn, :create), fn form ->
+          form_for(changeset, Routes.foo_path(conn, :create), fn form ->
             Does.something!(form)
-          end
+          end)
         end
 
       result =
