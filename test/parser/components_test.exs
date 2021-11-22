@@ -170,6 +170,32 @@ defmodule Temple.Parser.ComponentsTest do
                ]
              } = ast
     end
+
+    test "renders tight whitespace correctly" do
+      quote do
+        c Temple.Components.Link, href: "/home" do
+          "link text"
+        end
+      end
+      |> Temple.Parser.parse()
+      |> IO.inspect()
+      |> Enum.map(&Temple.Generator.to_eex(&1, 0))
+      |> :erlang.iolist_to_binary()
+      |> IO.puts()
+
+      quote do
+        a! class: "text-blue-400 hover:underline", href: "/home" do
+          slot :default
+        end
+      end
+      |> Temple.Parser.parse()
+      |> IO.inspect()
+      |> Enum.map(&Temple.Generator.to_eex(&1, 0))
+      |> :erlang.iolist_to_binary()
+      |> IO.puts()
+
+      assert false
+    end
   end
 
   describe "Temple.Generator.to_eex/1" do

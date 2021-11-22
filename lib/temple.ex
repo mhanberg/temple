@@ -224,6 +224,6 @@ defmodule Temple do
       |> Enum.intersperse("\n")
       |> :erlang.iolist_to_binary()
 
-    EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
+    EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file, trim: true)
   end
 end

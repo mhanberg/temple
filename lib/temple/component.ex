@@ -163,9 +163,7 @@ defmodule Temple.Component do
 
   defp rewrite_do(do_block) do
     quote do
-      fn _ ->
-        unquote(do_block)
-      end
+      fn _ -> unquote(do_block) end
     end
   end
 

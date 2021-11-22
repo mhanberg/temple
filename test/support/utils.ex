@@ -28,7 +28,7 @@ defmodule Temple.Support.Utils do
 
   def evaluate_template(template, assigns \\ %{}) do
     template
-    |> EEx.compile_string(engine: Phoenix.HTML.Engine)
+    |> EEx.compile_string(engine: Phoenix.HTML.Engine, trim: true)
     |> Code.eval_quoted([assigns: assigns], env())
     |> elem(0)
     |> Phoenix.HTML.safe_to_string()

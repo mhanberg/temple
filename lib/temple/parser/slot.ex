@@ -35,7 +35,7 @@ defmodule Temple.Parser.Slot do
         to_string(name),
         ", ",
         Macro.to_string(quote(do: Enum.into(unquote(args), %{}))),
-        "}) %>\n"
+        "}) %>"
       ]
     end
   end

@@ -3,7 +3,7 @@ defmodule Temple.ComponentTest do
   use Temple
   use Temple.Support.Utils
 
-  test "renders components using Phoenix.View.render_layout" do
+  test "renders components" do
     result =
       temple do
         div class: "font-bold" do
@@ -24,12 +24,11 @@ defmodule Temple.ComponentTest do
              </div>
              <div>
                
-                 <aside class="foobar">
+               <aside class="foobar">
                    I'm a component!
                  </aside>
 
              </div>
-
              """
   end
 
@@ -52,7 +51,7 @@ defmodule Temple.ComponentTest do
              </div>
              <div class="bg-red">
 
-                   I'm a component!
+                 I'm a component!
 
              </div>
              """
@@ -99,11 +98,10 @@ defmodule Temple.ComponentTest do
 
     assert evaluate_template(result) == ~s"""
            <div class="barbarbar">
-             
+
                doo doo
 
            </div>
-
            """
   end
 
@@ -138,23 +136,80 @@ defmodule Temple.ComponentTest do
         end
       end
 
+      result
+      |> IO.puts()
+
     assert evaluate_template(result, assigns) ==
              ~s"""
              <div>
-               
+
                  <div>
-                   the value is Header
+             the value is Header
                  </div>
 
                <div class="wrapped">
-                 
+
                  <button class="btn" phx-click="toggle">
-                   bob
+             bob
                  </button>
                
                </div>
              </div>
 
              """
+
+    assert false
+  end
+
+  test "new test" do
+    use Phoenix.HTML
+
+    ~E"""
+    <%= Temple.Component.__component__ Temple.Components.Link, [href: "/home"] do %><% {:default, _} -> %>link text<% {:foo, _} -> %>foo<% end %>
+    """
+    |> elem(1)
+    |> :erlang.iolist_to_binary()
+    |> IO.puts()
+
+    # result =
+    #   temple do
+    #     c Temple.Components.Link, href: "/home" do
+    #       "link text"
+
+    #       slot :foo do
+    #         "foo"
+    #       end
+    #     end
+
+    #     a! class: "text-blue-400 hover:underline", href: "/home" do
+    #       "link text"
+    #     end
+    #   end
+
+    # # IO.puts(result)
+    # result = result |> evaluate_template()
+    # IO.puts(result)
+    result = nil
+
+    assert result ==
+             """
+             <div class="border-4 border-green-500">
+               <section>
+                 <a class="text-blue-400 hover:underline" href="/">Home</a>
+                 <a class="text-blue-400 hover:underline" href="/about">About</a>
+                 <a class="text-blue-400 hover:underline" href="/posts">Posts</a>
+                 <a class="text-blue-400 hover:underline" href="/jokes">Dad Jokes</a>
+                 <a class="text-blue-400 hover:underline" href="/bookshelf">Bookshelf</a>
+               </section>
+
+               <div>
+                 right side of the panel
+               </div>
+
+
+             </div>
+             """
+
+    assert false
   end
 end
