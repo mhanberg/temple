@@ -14,7 +14,7 @@ defmodule Temple.Parser.NonvoidElementsAliases do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({name, _, args}) do
+  def run({name, meta, args}) do
     name = Parser.nonvoid_elements_lookup()[name]
 
     {do_and_else, args} = Temple.Parser.Utils.split_args(args)
@@ -26,19 +26,20 @@ defmodule Temple.Parser.NonvoidElementsAliases do
     Temple.Ast.new(__MODULE__,
       name: to_string(name) |> String.replace_suffix("!", ""),
       attrs: args,
+      meta: %{whitespace: whitespace(meta)},
       children:
         Temple.Ast.new(Temple.Parser.ElementList,
           children: children,
-          whitespace: whitespace(to_string(name))
+          whitespace: whitespace(meta)
         )
     )
   end
 
-  defp whitespace(name) do
-    if String.ends_with?(name, "!") do
-      :tight
-    else
+  defp whitespace(meta) do
+    if Keyword.has_key?(meta, :end) do
       :loose
+    else
+      :tight
     end
   end
 

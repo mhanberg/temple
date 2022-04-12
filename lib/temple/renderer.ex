@@ -65,11 +65,14 @@ defmodule Temple.Renderer do
   def render(buffer, state, %NonvoidElementsAliases{} = ast) do
     current_indent = Utils.indent(state.indentation)
 
+    inside_new_lines = if ast.meta.whitespace == :tight, do: "", else: "\n"
+    new_indent = if ast.meta.whitespace == :tight, do: nil, else: state.indentation + 1
+
     buffer =
       state.engine.handle_text(
         buffer,
         [],
-        "#{current_indent}<#{ast.name}#{Utils.compile_attrs(ast.attrs)}>\n"
+        "#{current_indent}<#{ast.name}#{Utils.compile_attrs(ast.attrs)}>#{inside_new_lines}"
       )
 
     buffer =
@@ -80,7 +83,7 @@ defmodule Temple.Renderer do
               buffer,
               %{
                 state
-                | indentation: state.indentation + 1,
+                | indentation: new_indent,
                   terminal_node: index == length(children(ast.children))
               },
               child
@@ -90,7 +93,11 @@ defmodule Temple.Renderer do
         buffer
       end
 
-    state.engine.handle_text(buffer, [], "\n#{current_indent}</#{ast.name}>#{new_line(state)}")
+    state.engine.handle_text(
+      buffer,
+      [],
+      "#{inside_new_lines}#{Utils.indent(if(ast.meta.whitespace == :loose, do: state.indentation, else: nil))}</#{ast.name}>#{new_line(state)}"
+    )
   end
 
   def render(buffer, state, %VoidElementsAliases{} = ast) do

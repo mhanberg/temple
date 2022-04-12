@@ -27,9 +27,7 @@ defmodule Temple.RendererTest do
       expected = """
       <div class="hello world">
         hello world
-        <span id="name">
-          bob
-        </span>
+        <span id="name">bob</span>
       </div>
       """
 
