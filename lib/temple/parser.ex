@@ -36,7 +36,7 @@ defmodule Temple.Parser do
   @doc """
   Processes the given AST, adding the markup to the given buffer.
 
-  Should return `:ok` if the parsing pass is over, or `{:component_applied, ast}` if the pass should be restarted.
+  Should return Temple.AST.
   """
   @callback run(ast :: Macro.t()) :: ast()
 

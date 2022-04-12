@@ -1,2 +1,2 @@
-elixir 1.11.3
-erlang 23.2.6
+elixir ref:v1.13.4
+erlang 25.0-rc2

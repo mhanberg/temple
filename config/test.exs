@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # this is to make the warning go away,
 # Temple does not use a json_library
