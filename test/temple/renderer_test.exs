@@ -24,10 +24,56 @@ defmodule Temple.RendererTest do
           end
         end
 
+      # html 
       expected = """
       <div class="hello world">
         hello world
         <span id="name">bob</span>
+      </div>
+      """
+
+      assert expected == result
+    end
+
+    test "handles simple expression with @ assign" do
+      assigns = %{statement: "hello world"}
+
+      result =
+        Renderer.compile do
+          div do
+            @statement
+          end
+        end
+
+      # html
+      expected = """
+      <div>
+        hello world
+      </div>
+      """
+
+      assert expected == result
+    end
+
+    test "handles multi line expression" do
+      assigns = %{names: ["alice", "bob", "carol"]}
+
+      result =
+        Renderer.compile do
+          div do
+            for name <- @names do
+              span class: "name", do: name
+            end
+          end
+        end
+
+      # html
+      expected = """
+      <div>
+        <span class="name">alice</span>
+        <span class="name">bob</span>
+        <span class="name">carol</span>
+
       </div>
       """
 

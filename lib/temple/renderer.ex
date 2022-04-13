@@ -53,6 +53,10 @@ defmodule Temple.Renderer do
     )
   end
 
+  def render(buffer, state, [ast]) do
+    render(buffer, state, ast)
+  end
+
   def render(buffer, state, %Components{} = ast) do
   end
 
@@ -60,6 +64,7 @@ defmodule Temple.Renderer do
   end
 
   def render(buffer, state, %ElementList{} = ast) do
+    render(buffer, state, ast.children)
   end
 
   def render(buffer, state, %NonvoidElementsAliases{} = ast) do
@@ -110,12 +115,43 @@ defmodule Temple.Renderer do
   end
 
   def render(buffer, state, %DoExpressions{} = ast) do
+    new_buffer = state.engine.handle_begin(buffer)
+
+    new_buffer =
+      for child <- children(ast.children), child != nil, reduce: new_buffer do
+        new_buffer ->
+          render(new_buffer, state, child)
+      end
+
+    new_buffer = state.engine.handle_text(new_buffer, [], "\n")
+
+    inner_quoted = state.engine.handle_end(new_buffer)
+
+    {func, meta, args} = ast.elixir_ast
+
+    full_ast = {func, meta, args ++ [[do: inner_quoted]]}
+
+    state.engine.handle_expr(buffer, "=", full_ast)
   end
 
   def render(buffer, state, %Match{} = ast) do
   end
 
-  def render(buffer, state, %Default{} = ast) do
+  def render(buffer, state, %Default{elixir_ast: elixir_ast}) do
+    buffer =
+      if state.indentation do
+        state.engine.handle_text(buffer, [], Utils.indent(state.indentation))
+      else
+        buffer
+      end
+
+    buffer = state.engine.handle_expr(buffer, "=", elixir_ast)
+
+    if not state.terminal_node do
+      state.engine.handle_text(buffer, [], "\n")
+    else
+      buffer
+    end
   end
 
   defp children(%ElementList{children: children}), do: children
