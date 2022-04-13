@@ -105,14 +105,35 @@ defmodule Temple.Renderer do
     )
   end
 
-  def render(buffer, state, %VoidElementsAliases{} = ast) do
-  end
+  # def render(buffer, state, %VoidElementsAliases{} = ast) do
+  # end
 
   def render(buffer, state, %AnonymousFunctions{} = ast) do
+    IO.inspect(ast)
+    new_buffer = state.engine.handle_begin(buffer)
+
+    new_buffer =
+      for child <- children(ast.children), child != nil, reduce: new_buffer do
+        new_buffer ->
+          render(new_buffer, state, child)
+      end
+
+    new_buffer = state.engine.handle_text(new_buffer, [], "\n")
+
+    inner_quoted = state.engine.handle_end(new_buffer)
+
+    {name, meta, args} = ast.elixir_ast
+
+    {args, {func, fmeta, [{arrow, arrowmeta, [first, _block]}]}, args2} =
+      Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
+
+    full_ast = {name, meta, args ++ [{func, fmeta, [{arrow, arrowmeta, [first, inner_quoted]}]}] ++ args2}
+
+    state.engine.handle_expr(buffer, "=", full_ast)
   end
 
-  def render(buffer, state, %RightArrow{} = ast) do
-  end
+  # def render(buffer, state, %RightArrow{} = ast) do
+  # end
 
   def render(buffer, state, %DoExpressions{} = ast) do
     new_buffer = state.engine.handle_begin(buffer)

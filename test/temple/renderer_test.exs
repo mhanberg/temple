@@ -79,5 +79,59 @@ defmodule Temple.RendererTest do
 
       assert expected == result
     end
+
+    test "handles anonymous functions" do
+      assigns = %{names: ["alice", "bob", "carol"]}
+
+      result =
+        Renderer.compile do
+          div do
+            Enum.map(@names, fn name ->
+              span class: "name", do: name
+            end)
+          end
+        end
+
+      # html
+      expected = """
+      <div>
+        <span class="name">alice</span>
+        <span class="name">bob</span>
+        <span class="name">carol</span>
+
+      </div>
+      """
+
+      assert expected == result
+    end
+
+    def super_map(enumerable, func, _extra_args) do
+      Enum.map(enumerable, func)
+    end
+
+    test "handles anonymous functions with subsequent args" do
+      assigns = %{names: ["alice", "bob", "carol"]}
+
+      result =
+        Renderer.compile do
+          div do
+            super_map(@names, fn name ->
+              span class: "name", do: name
+            end, "hello world")
+          end
+        end
+
+      # html
+      expected = """
+      <div>
+        <span class="name">alice</span>
+        <span class="name">bob</span>
+        <span class="name">carol</span>
+
+      </div>
+      """
+
+      assert expected == result
+    end
   end
 end
