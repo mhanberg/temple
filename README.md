@@ -213,3 +213,4 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
 
 - [Introducing Temple: An elegant HTML library for Elixir and Phoenix](https://www.mitchellhanberg.com/introducing-temple-an-elegant-html-library-for-elixir-and-phoenix/)
 - [Temple, AST, and Protocols](https://www.mitchellhanberg.com/temple-ast-and-protocols/)
+- [How EEx Turns Your Template Into HTML](https://www.mitchellhanberg.com/how-eex-turns-your-template-into-html/)
