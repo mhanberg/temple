@@ -193,11 +193,13 @@ defmodule Temple.Renderer do
   end
 
   def render(buffer, state, %DoExpressions{} = ast) do
-    {func, meta, args} = ast.elixir_ast |> IO.inspect(label: "elixir ast")
+    {func, meta, args} = ast.elixir_ast
     new_buffer = state.engine.handle_begin(buffer)
 
-    inner_quoted =
-      case List.first(ast.children) do
+    [do_block, else_block] = ast.children
+
+    do_inner_quoted =
+      case do_block do
         [%RightArrow{} | _] = bodies ->
           for b <- bodies do
             new_buffer = state.engine.handle_begin(buffer)
@@ -208,15 +210,46 @@ defmodule Temple.Renderer do
             quoted
           end
 
-        _ ->
-          for child <- children(List.first(ast.children)), child != nil, reduce: new_buffer do
+        block ->
+          for child <- children(block), child != nil, reduce: new_buffer do
             new_buffer ->
               render(new_buffer, state, child)
           end
           |> state.engine.handle_end()
       end
 
-    full_ast = {func, meta, args ++ [[do: inner_quoted]]}
+    else_inner_quoted =
+      if else_block do
+        case else_block do
+          [%RightArrow{} | _] = bodies ->
+            for b <- bodies do
+              new_buffer = state.engine.handle_begin(buffer)
+
+              new_buffer = render(new_buffer, state, b)
+
+              {:__block__, _, [quoted | _]} = state.engine.handle_end(new_buffer)
+              quoted
+            end
+
+          block ->
+            for child <- children(block), child != nil, reduce: new_buffer do
+              new_buffer ->
+                render(new_buffer, state, child)
+            end
+            |> state.engine.handle_end()
+        end
+      end
+
+    new_args =
+      then([do: do_inner_quoted], fn args ->
+        if else_inner_quoted do
+          Keyword.put(args, :else, else_inner_quoted) |> Enum.reverse()
+        else
+          args
+        end
+      end)
+
+    full_ast = {func, meta, args ++ [new_args]}
 
     state.engine.handle_expr(buffer, "=", full_ast)
   end
@@ -226,17 +259,9 @@ defmodule Temple.Renderer do
   end
 
   def render(buffer, state, %Default{elixir_ast: elixir_ast}) do
-    IO.inspect(elixir_ast, label: "default ast")
-
     buffer =
       if state.indentation && state.indentation > 0 do
-        IO.inspect(state.indentation)
-
-        state.engine.handle_text(
-          buffer,
-          [],
-          IO.inspect(Utils.indent(state.indentation), label: "indent")
-        )
+        state.engine.handle_text(buffer, [], Utils.indent(state.indentation))
       else
         buffer
       end

@@ -173,49 +173,69 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
+    test "if expression" do
+      for val <- [true, false] do
+        assigns = %{value: val}
+
+        result =
+          Renderer.compile do
+            div do
+              if val do
+                span do: "true"
+              else
+                span do: "false"
+              end
+            end
+          end
+
+        # html
+        expected = """
+        <div>
+          <span>#{val}</span>
+
+        </div>
+
+        """
+
+        assert expected == result
+      end
+    end
+
+    test "with expression" do
+      for val <- [true, false, "bobby"] do
+        assigns = %{value: val}
+
+        result =
+          Renderer.compile do
+            div do
+              with false <- @value,
+                   true <- "motch" not in ["lame", "not funny"] do
+                span do: "false"
+              else
+                true ->
+                  span do: true
+
+                _ ->
+                  span do: "bobby"
+              end
+            end
+          end
+
+        # html
+        expected = """
+        <div>
+          <span>#{val}</span>
+
+        </div>
+
+        """
+
+        assert expected == result
+      end
+    end
+
     test "handles case expression" do
       assigns = %{name: "alice"}
-
-      eex_ast =
-        EEx.Compiler.compile(
-          """
-          <div>
-            <%= case @name do %>
-              <% "bob" -> %>
-                <span>bob is cool</span>
-
-              <% "alice" -> %>
-                <span>alice is the best</span>
-
-              <% _ -> %>
-                <span>everyone is lame</span>
-            <% end %>
-          </div>
-          """,
-          parser_options: [token_metadata: true],
-          line: 192
-        )
-        # |> IO.inspect(label: "EEx ast")
-
-      # result =
-      #   quote do
-      #     div do
-      #       case @name do
-      #         "bob" ->
-      #           span do: "bob is cool"
-
-      #         "alice" ->
-      #           span do: "alice is the best"
-
-      #         _ ->
-      #           span do: "everyone is lame"
-      #       end
-      #     end
-      #   end
-      #   |> Temple.Parser.parse()
-      #   |> Temple.Renderer.render()
-
-      # assert eex_ast == result
 
       # html
       expected = """
