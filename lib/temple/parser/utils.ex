@@ -7,7 +7,7 @@ defmodule Temple.Parser.Utils do
   def kebab_to_snake(stringable),
     do: stringable |> to_string() |> String.replace("-", "_")
 
-  def compile_attrs([]), do: ""
+  def compile_attrs([]), do: nil
 
   def compile_attrs([attrs]) when is_list(attrs) do
     compile_attrs(attrs)
@@ -15,31 +15,35 @@ defmodule Temple.Parser.Utils do
 
   def compile_attrs(attrs) when is_list(attrs) do
     if Keyword.keyword?(attrs) do
-      for {name, value} <- attrs, into: "" do
+      for {name, value} <- attrs do
         name = snake_to_kebab(name)
 
         with false <- not is_binary(value) && Macro.quoted_literal?(value),
              false <- match?({_, _, _}, value),
              false <- is_list(value) do
-          " " <> name <> "=\"" <> to_string(value) <> "\""
+          quote do
+            <<" ", unquote(name)::binary, "=\"", unquote(to_string(value))::binary, "\"">>
+          end
         else
           true ->
-            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(value)})} %>|
+            quote do
+              Temple.Parser.Utils.build_attr(unquote(name), unquote(value))
+            end
         end
       end
     else
-      "<%= Temple.Parser.Utils.runtime_attrs(" <>
-        (attrs |> List.first() |> Macro.to_string()) <> ") %>"
+      quote do
+        Temple.Parser.Utils.runtime_attrs(unquote(List.first(attrs)))
+      end
     end
   end
 
   def runtime_attrs(attrs) do
-    {:safe,
-     for {name, value} <- attrs, name not in [:inner_block, :inner_content], into: "" do
-       name = snake_to_kebab(name)
+    for {name, value} <- attrs, name not in [:inner_block, :inner_content], into: "" do
+      name = snake_to_kebab(name)
 
-       build_attr(name, value)
-     end}
+      build_attr(name, value)
+    end
   end
 
   def build_attr(name, true) do

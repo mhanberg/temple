@@ -11,10 +11,10 @@ defmodule Temple.Parser.RightArrow do
   def applicable?(_), do: false
 
   @impl Parser
-  def run({_, _, [[pattern], args]}) do
+  def run({func, meta, [pattern, args]}) do
     children = Parser.parse(args)
 
-    Temple.Ast.new(__MODULE__, elixir_ast: pattern, children: children)
+    Temple.Ast.new(__MODULE__, elixir_ast: {func, meta, [pattern]}, children: children)
   end
 
   defimpl Temple.Generator do
