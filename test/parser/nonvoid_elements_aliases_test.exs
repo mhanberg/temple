@@ -3,7 +3,6 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
 
   alias Temple.Parser.NonvoidElementsAliases
   alias Temple.Parser.ElementList
-  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a nonvoid element or alias" do
@@ -85,61 +84,6 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
                  ]
                }
              } = ast
-    end
-  end
-
-  describe "to_eex/1" do
-    test "emits eex" do
-      result =
-        quote do
-          div class: "foo", id: var do
-            select__ do
-              option do
-                "foo"
-              end
-            end
-          end
-        end
-        |> NonvoidElementsAliases.run()
-        |> Temple.Generator.to_eex()
-        |> Utils.iolist_to_binary()
-
-      assert result ==
-               ~s"""
-               <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
-                 <select>
-                   <option>
-                     foo
-                   </option>
-                 </select>
-               </div>
-               """
-    end
-
-    test "produce 'tight' markup" do
-      result =
-        quote do
-          div class: "foo", id: var do
-            select__ do
-              option! do
-                "foo"
-              end
-            end
-          end
-        end
-        |> NonvoidElementsAliases.run()
-        |> Temple.Generator.to_eex()
-        |> :erlang.iolist_to_binary()
-        |> Kernel.<>("\n")
-
-      assert result ==
-               ~s"""
-               <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
-                 <select>
-                   <option>foo</option>
-                 </select>
-               </div>
-               """
     end
   end
 end

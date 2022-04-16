@@ -2,8 +2,6 @@ defmodule Temple.Parser.VoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
-  alias Temple.Parser.Utils
-
   defstruct name: nil, attrs: []
 
   @impl Temple.Parser
@@ -27,16 +25,5 @@ defmodule Temple.Parser.VoidElementsAliases do
     name = Temple.Parser.void_elements_lookup()[name]
 
     Temple.Ast.new(__MODULE__, name: name, attrs: args)
-  end
-
-  defimpl Temple.Generator do
-    def to_eex(%{name: name, attrs: attrs}, indent \\ 0) do
-      [
-        "#{Utils.indent(indent)}<",
-        to_string(name),
-        Temple.Parser.Utils.compile_attrs(attrs),
-        ">"
-      ]
-    end
   end
 end

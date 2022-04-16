@@ -16,15 +16,4 @@ defmodule Temple.Parser.RightArrow do
 
     Temple.Ast.new(__MODULE__, elixir_ast: {func, meta, [pattern]}, children: children)
   end
-
-  defimpl Temple.Generator do
-    def to_eex(%{elixir_ast: elixir_ast, children: children}, indent \\ 0) do
-      [
-        "#{Parser.Utils.indent(indent)}<% ",
-        Macro.to_string(elixir_ast),
-        " -> %>\n",
-        for(child <- children, do: Temple.Generator.to_eex(child, indent + 1))
-      ]
-    end
-  end
 end

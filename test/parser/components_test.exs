@@ -51,7 +51,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: SomeModule,
+               module: {:__aliases__, _, [:SomeModule]},
                assigns: [],
                children: _
              } = ast
@@ -66,7 +66,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(ast)
 
       assert %Components{
-               module: SomeModule,
+               module: {:__aliases__, _, [:SomeModule]},
                assigns: [foo: :bar],
                children: _
              } = ast
@@ -85,7 +85,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: SomeModule,
+               module: {:__aliases__, _, [:SomeModule]},
                assigns: [foo: :bar],
                children: _
              } = ast
@@ -100,7 +100,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: SomeModule,
+               module: {:__aliases__, _, [:SomeModule]},
                assigns: [foo: :bar],
                children: []
              } = ast
@@ -119,7 +119,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: SomeModule,
+               module: {:__aliases__, _, [:SomeModule]},
                assigns: [foo: :bar],
                slots: [
                  %Slottable{
@@ -169,109 +169,6 @@ defmodule Temple.Parser.ComponentsTest do
                  }
                ]
              } = ast
-    end
-  end
-
-  describe "Temple.Generator.to_eex/1" do
-    test "emits eex for non void component" do
-      raw_ast =
-        quote do
-          c SomeModule, foo: :bar do
-            "I'm a component!"
-          end
-        end
-
-      result =
-        raw_ast
-        |> Components.run()
-        |> Temple.Generator.to_eex()
-
-      assert result |> :erlang.iolist_to_binary() ==
-               ~s"""
-               <%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>
-                 <% {:default, _} -> %>
-                   I'm a component!
-               <% end %>
-               """
-    end
-
-    test "emits eex for void component with slots" do
-      raw_ast =
-        quote do
-          c SomeModule, foo: :bar do
-            slot :foo, %{form: form} do
-              div do
-                "in the slot"
-              end
-            end
-          end
-        end
-
-      result =
-        raw_ast
-        |> Components.run()
-        |> Temple.Generator.to_eex()
-
-      assert result |> :erlang.iolist_to_binary() ==
-               ~s"""
-               <%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>
-                 <% {:foo, %{form: form}} -> %>
-                   <div>
-                     in the slot
-                   </div>
-               <% end %>
-               """
-    end
-
-    test "emits eex for nonvoid component with slots" do
-      raw_ast =
-        quote do
-          c SomeModule, foo: :bar do
-            slot :foo, %{form: form} do
-              div do
-                "in the slot"
-              end
-            end
-
-            div do
-              "inner content"
-            end
-          end
-        end
-
-      result =
-        raw_ast
-        |> Components.run()
-        |> Temple.Generator.to_eex()
-
-      assert result |> :erlang.iolist_to_binary() ==
-               ~s"""
-               <%= Temple.Component.__component__ SomeModule, [foo: :bar] do %>
-                 <% {:default, _} -> %>
-                   <div>
-                     inner content
-                   </div>
-                 <% {:foo, %{form: form}} -> %>
-                   <div>
-                     in the slot
-                   </div>
-               <% end %>
-               """
-    end
-
-    test "emits eex for void component" do
-      raw_ast =
-        quote do
-          c SomeModule, foo: :bar
-        end
-
-      result =
-        raw_ast
-        |> Components.run()
-        |> Temple.Generator.to_eex()
-
-      assert result |> :erlang.iolist_to_binary() ==
-               ~s|<%= Temple.Component.__component__ SomeModule, [foo: :bar] %>|
     end
   end
 end

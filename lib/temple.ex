@@ -175,26 +175,10 @@ defmodule Temple do
   # </div>
   ```
   """
-  defmacro temple([do: block] = _block) do
-    markup =
-      block
-      |> Parser.parse()
-      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
-      |> Enum.intersperse("\n")
-      |> :erlang.iolist_to_binary()
-
-    quote location: :keep do
-      unquote(markup)
-    end
-  end
-
-  defmacro temple(block) do
-    quote location: :keep do
-      unquote(block)
-      |> Parser.parse()
-      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
-      |> Enum.intersperse("\n")
-      |> :erlang.iolist_to_binary()
+  defmacro temple(opts \\ [],block) do
+    quote do
+      require Temple.Renderer
+      Temple.Renderer.compile(unquote(opts), unquote(block))
     end
   end
 

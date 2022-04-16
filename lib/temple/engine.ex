@@ -34,11 +34,12 @@ defmodule Temple.Engine do
   """
 
   def compile(path, _name) do
-    require Temple
+    require Temple.Renderer
 
     template = path |> File.read!() |> Code.string_to_quoted!(file: path)
 
-    Temple.temple(template)
-    |> EEx.compile_string(engine: Phoenix.HTML.Engine, file: path, line: 1)
+    template
+    |> Temple.Parser.parse()
+    |> Temple.Renderer.render([])
   end
 end

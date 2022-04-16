@@ -42,19 +42,4 @@ defmodule Temple.Parser.NonvoidElementsAliases do
       :tight
     end
   end
-
-  defimpl Temple.Generator do
-    def to_eex(%{name: name, attrs: attrs, children: children}, indent \\ 0) do
-      [
-        "#{Parser.Utils.indent(indent)}<",
-        name,
-        Temple.Parser.Utils.compile_attrs(attrs),
-        ">",
-        Temple.Generator.to_eex(children, indent),
-        "</",
-        name,
-        ">"
-      ]
-    end
-  end
 end

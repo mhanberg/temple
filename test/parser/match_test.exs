@@ -36,37 +36,4 @@ defmodule Temple.Parser.MatchTest do
       assert %Match{elixir_ast: expression} == ast
     end
   end
-
-  describe "Temple.Generator.to_eex/1" do
-    test "emits eex" do
-      raw_ast =
-        quote do
-          yolo = :synergy
-        end
-
-      result =
-        raw_ast
-        |> Match.run()
-        |> Temple.Generator.to_eex()
-
-      assert result |> :erlang.iolist_to_binary() == ~s|<% yolo = :synergy %>|
-    end
-
-    test "emits eex big boy" do
-      raw_ast =
-        quote do
-          yolo =
-            if true do
-              :synergy
-            end
-        end
-
-      result =
-        raw_ast
-        |> Match.run()
-        |> Temple.Generator.to_eex()
-
-      assert result |> :erlang.iolist_to_binary() == ~s|<% yolo = if(true) do\n  :synergy\nend %>|
-    end
-  end
 end

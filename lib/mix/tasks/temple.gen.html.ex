@@ -183,13 +183,9 @@ if Code.ensure_loaded?(Mix.Phoenix) do
       if schema.web_namespace do
         Mix.shell().info("""
 
-        Add the resource to your #{schema.web_namespace} :browser scope in #{
-          Mix.Phoenix.web_path(ctx_app)
-        }/router.ex:
+        Add the resource to your #{schema.web_namespace} :browser scope in #{Mix.Phoenix.web_path(ctx_app)}/router.ex:
 
-            scope "/#{schema.web_path}", #{
-          inspect(Module.concat(context.web_module, schema.web_namespace))
-        }, as: :#{schema.web_path} do
+            scope "/#{schema.web_path}", #{inspect(Module.concat(context.web_module, schema.web_namespace))}, as: :#{schema.web_path} do
               pipe_through :browser
               ...
               resources "/#{schema.plural}", #{inspect(schema.alias)}Controller

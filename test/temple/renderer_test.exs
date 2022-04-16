@@ -497,6 +497,7 @@ defmodule Temple.RendererTest do
 
       assert expected == result
     end
+
     test "boolean attributes don't emit with falsy values" do
       result =
         Renderer.compile do
