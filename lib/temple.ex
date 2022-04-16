@@ -175,7 +175,7 @@ defmodule Temple do
   # </div>
   ```
   """
-  defmacro temple(opts \\ [],block) do
+  defmacro temple(opts \\ [], block) do
     quote do
       require Temple.Renderer
       Temple.Renderer.compile(unquote(opts), unquote(block))
