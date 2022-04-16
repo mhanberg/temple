@@ -1,5 +1,5 @@
 defmodule Temple.Component do
-  @moduledoc """
+  @moduledoc ~S'''
   API for defining components.
 
   Component modules are basically normal Phoenix View modules. The contents of the `render` macro are compiled into a `render/2` function. This means that you can define functions in your component module and use them in your component markup.
@@ -20,7 +20,7 @@ defmodule Temple.Component do
     def border_class(:success), do: "border-green-500"
 
     render do
-      div class: "border rounded p-2 #\{assigns[:class]} #\{border_class(@message_type)}" do
+      div class: "border rounded p-2 #{assigns[:class]} #{border_class(@message_type)}" do
         slot :default
       end
     end
@@ -31,7 +31,7 @@ defmodule Temple.Component do
 
   `c` is a _**compile time keyword**_, not a function or a macro, so you won't see it in the generated documention.
 
-  ```
+  ```elixir
   c MyAppWeb.Components.Flash, class: "font-bold", message_type: :info do
     ul do
       for info <- infos do
@@ -45,7 +45,7 @@ defmodule Temple.Component do
 
   Since components are just modules, if you alias your module, you can use them more ergonomically.
 
-  ```
+  ```elixir
   # lib/my_app_web/views/page_view.ex
   alias MyAppWeb.Components.Flex
 
@@ -72,7 +72,7 @@ defmodule Temple.Component do
     import Temple.Component
 
     render do
-      div class: "flex #\{@class}" do
+      div class: "flex #{@class}" do
         slot :default
       end
     end
@@ -124,7 +124,7 @@ defmodule Temple.Component do
     end
   end
   ```
-  """
+  '''
 
   @doc false
   defmacro __component__(module, assigns \\ [], block \\ []) do
@@ -169,7 +169,7 @@ defmodule Temple.Component do
     end
   end
 
-  @doc """
+  @doc ~S'''
   Defines a component template.
 
   ## Usage
@@ -184,35 +184,44 @@ defmodule Temple.Component do
     def border_class(:success), do: "border-green-500"
 
     render do
-      div class: "border rounded p-2 #\{assigns[:class]} #\{border_class(@message_type)}" do
+      div class: "border rounded p-2 #{assigns[:class]} #{border_class(@message_type)}" do
         slot :default
       end
     end
   end
   ```
-
-  """
+  '''
   defmacro render(block) do
+    block =
+      case block do
+        [do: block] ->
+          block
+
+        _ ->
+          block
+      end
+
+    ast =
+      block
+      |> Temple.Parser.parse()
+      |> Temple.Renderer.render()
+
     quote do
       def render(var!(assigns)) do
-        require Temple
-
         _ = var!(assigns)
 
-        Temple.compile(unquote(Temple.Component.__engine__()), unquote(block))
+        unquote(ast)
       end
 
       def render(:self, var!(assigns)) do
-        require Temple
-
         _ = var!(assigns)
 
-        Temple.compile(unquote(Temple.Component.__engine__()), unquote(block))
+        unquote(ast)
       end
     end
   end
 
-  @doc """
+  @doc ~S'''
   Defines a component module.
 
   This macro makes it easy to define components without creating a separate file. It literally inlines a component module.
@@ -232,7 +241,7 @@ defmodule Temple.Component do
     # define a component
     defcomp Button do
       button id: SomeView.foobar(), # `MyAppWeb.SomeView` is aliased for you.
-             class: "text-sm px-3 py-2 rounded #\{assigns[:extra_classes]}",
+             class: "text-sm px-3 py-2 rounded #{assigns[:extra_classes]}",
              type: "submit" do
         slot :default
       end
@@ -244,7 +253,7 @@ defmodule Temple.Component do
     "Submit!"
   end
   ```
-  """
+  '''
   defmacro defcomp(module, [do: block] = _block) do
     quote location: :keep do
       defmodule unquote(module) do

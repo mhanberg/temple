@@ -180,7 +180,7 @@ defmodule Temple.RendererTest do
         result =
           Renderer.compile do
             div do
-              if val do
+              if @value do
                 span do: "true"
               else
                 span do: "false"
@@ -326,6 +326,186 @@ defmodule Temple.RendererTest do
 
       </div>
 
+      """
+
+      assert expected == result
+    end
+
+    defmodule BasicComponent do
+      import Temple.Component
+
+      render do
+        div do
+          "I am a basic component"
+        end
+      end
+    end
+
+    alias __MODULE__.BasicComponent
+
+    test "basic component" do
+      result =
+        Renderer.compile do
+          div do
+            c BasicComponent
+          end
+        end
+
+      # html
+      expected = """
+      <div>
+      <div>
+        I am a basic component
+      </div>
+
+
+      </div>
+
+      """
+
+      assert expected == result
+    end
+
+    defmodule DefaultSlotComponent do
+      import Temple.Component
+
+      render do
+        div do
+          "I am above the slot"
+          slot :default
+        end
+      end
+    end
+
+    alias __MODULE__.DefaultSlotComponent
+
+    test "component with default slot" do
+      result =
+        Renderer.compile do
+          div do
+            c DefaultSlotComponent do
+              span do: "i'm a slot"
+            end
+          end
+        end
+
+      # html
+      expected = """
+      <div>
+      <div>
+        I am above the slot
+        <span>i'm a slot</span>
+
+      </div>
+
+
+      </div>
+
+      """
+
+      assert expected == result
+    end
+
+    defmodule NamedSlotComponent do
+      import Temple.Component
+
+      render do
+        div do
+          "#{@name} is above the slot"
+          slot :default
+        end
+
+        footer do
+          slot :footer, %{name: @name}
+        end
+      end
+    end
+
+    alias __MODULE__.NamedSlotComponent
+
+    test "component with a named slot" do
+      result =
+        Renderer.compile do
+          div do
+            c NamedSlotComponent, name: "motchy boi" do
+              span do: "i'm a slot"
+
+              slot :footer, %{name: name} do
+                p do
+                  "#{name}'s in the footer!"
+                end
+              end
+            end
+          end
+        end
+
+      # heex
+      expected = """
+      <div>
+      <div>
+        motchy boi is above the slot
+        <span>i'm a slot</span>
+
+      </div>
+
+      <footer>
+        <p>
+          motchy boi's in the footer!
+        </p>
+
+      </footer>
+
+
+      </div>
+
+      """
+
+      assert expected == result
+    end
+  end
+
+  describe "special attribute stuff" do
+    test "class object syntax" do
+      result =
+        Renderer.compile do
+          div class: ["hello world": false, "text-red": true] do
+            "hello world"
+          end
+        end
+
+      # html
+      expected = """
+      <div class="text-red">
+        hello world
+      </div>
+
+      """
+
+      assert expected == result
+    end
+
+    test "boolean attributes only emit correctly with truthy values" do
+      result =
+        Renderer.compile do
+          input type: "text", disabled: true, placeholder: "Enter some text..."
+        end
+
+      # html
+      expected = """
+      <input type="text" disabled placeholder="Enter some text...">
+      """
+
+      assert expected == result
+    end
+    test "boolean attributes don't emit with falsy values" do
+      result =
+        Renderer.compile do
+          input type: "text", disabled: false, placeholder: "Enter some text..."
+        end
+
+      # html
+      expected = """
+      <input type="text" placeholder="Enter some text...">
       """
 
       assert expected == result

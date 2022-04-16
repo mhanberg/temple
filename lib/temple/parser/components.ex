@@ -66,7 +66,7 @@ defmodule Temple.Parser.Components do
       end
 
     Temple.Ast.new(__MODULE__,
-      module: Macro.expand_once(component_module, __ENV__),
+      module: component_module,
       assigns: assigns,
       slots: slots,
       children: children

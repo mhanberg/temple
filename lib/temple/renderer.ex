@@ -10,18 +10,17 @@ defmodule Temple.Renderer do
   alias Temple.Parser.DoExpressions
   alias Temple.Parser.Match
   alias Temple.Parser.Default
+  alias Temple.Parser.Empty
 
   alias Temple.Parser.Utils
 
   @default_engine EEx.SmartEngine
 
-  alias Temple.Parser
-
-  defmacro compile(do: block) do
+  defmacro compile(opts \\ [], do: block) do
     ast =
       block
-      |> Parser.parse()
-      |> Temple.Renderer.render()
+      |> Temple.Parser.parse()
+      |> Temple.Renderer.render(opts)
 
     # IO.inspect(ast, label: "ast")
     # ast |> Macro.to_string() |> IO.puts()
@@ -69,10 +68,72 @@ defmodule Temple.Renderer do
     end
   end
 
-  def render(buffer, state, %Components{} = ast) do
+  def render(buffer, state, %Components{
+        module: module,
+        assigns: assigns,
+        children: children,
+        slots: slots
+      }) do
+    child_quoted =
+      if Enum.any?(children) do
+        children_buffer = state.engine.handle_begin(buffer)
+
+        children_buffer =
+          for child <- children(children), reduce: children_buffer do
+            children_buffer ->
+              render(children_buffer, state, child)
+          end
+
+        state.engine.handle_end(children_buffer)
+      end
+
+    slot_quotes =
+      for slot <- slots do
+        slot_buffer = state.engine.handle_begin(buffer)
+
+        slot_buffer =
+          for child <- children(slot.content), reduce: slot_buffer do
+            slot_buffer ->
+              render(slot_buffer, state, child)
+          end
+
+        ast = state.engine.handle_end(slot_buffer)
+
+        [quoted] =
+          quote do
+            {unquote(slot.name), unquote(slot.assigns)} ->
+              unquote(ast)
+          end
+
+        quoted
+      end
+
+    {:fn, meta, clauses} =
+      quote do
+        fn
+          {:default, _} -> unquote(child_quoted)
+        end
+      end
+
+    slot_func = {:fn, meta, clauses ++ slot_quotes}
+
+    expr =
+      quote do
+        alias!(unquote(module)).render(
+          Map.put(Map.new(unquote(assigns)), :__slots__, unquote(slot_func))
+        )
+      end
+
+    state.engine.handle_expr(buffer, "=", expr)
   end
 
   def render(buffer, state, %Slot{} = ast) do
+    render_slot_func =
+      quote do
+        var!(assigns).__slots__.({unquote(ast.name), Map.new(unquote(ast.args))})
+      end
+
+    state.engine.handle_expr(buffer, "=", render_slot_func)
   end
 
   def render(buffer, state, %ElementList{} = ast) do
@@ -274,6 +335,8 @@ defmodule Temple.Renderer do
       buffer
     end
   end
+
+  def render(buffer, _state, %Empty{}), do: buffer
 
   defp children(%ElementList{children: children}), do: children
   defp children(list) when is_list(list), do: list
