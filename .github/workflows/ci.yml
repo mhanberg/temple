@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         otp: [23.x, 24.x]
-        elixir: [1.10.x, 1.12.x]
+        elixir: [1.13.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -43,11 +43,6 @@ jobs:
       run:
         working-directory: "./integration_test/temple_demo"
 
-    strategy:
-      matrix:
-        otp: [23.x]
-        elixir: [1.9.x, 1.11.x]
-
     services:
       db:
         image: postgres:12
@@ -62,8 +57,8 @@ jobs:
     - uses: actions/checkout@v2
     - uses: erlef/setup-beam@v1
       with:
-        otp-version: ${{matrix.otp}}
-        elixir-version: ${{matrix.elixir}}
+        otp-version: 24.x
+        elixir-version: 1.13.x
 
     - uses: actions/cache@v2
       with:
@@ -91,14 +86,14 @@ jobs:
 
   formatter:
     runs-on: ubuntu-latest
-    name: Formatter (1.11.x.x/23.x)
+    name: Formatter (1.13.x.x/24.x)
 
     steps:
     - uses: actions/checkout@v2
     - uses: erlef/setup-beam@v1
       with:
-        otp-version: 23.x
-        elixir-version: 1.11.x
+        otp-version: 24.x
+        elixir-version: 1.13.x
     - uses: actions/cache@v2
       with:
         path: |
