@@ -40,6 +40,10 @@ defmodule Temple.Engine do
 
     template
     |> Temple.Parser.parse()
-    |> Temple.Renderer.render([])
+    |> Temple.Renderer.render(engine: engine())
+  end
+
+  defp engine() do
+    Application.get_env(:temple, :engine, EEx.SmartEngine)
   end
 end

@@ -126,49 +126,6 @@ defmodule Temple.Component do
   ```
   '''
 
-  @doc false
-  defmacro __component__(module, assigns \\ [], block \\ []) do
-    {inner_block, assigns} =
-      case {block, assigns} do
-        {[do: do_block], _} -> {rewrite_do(do_block), assigns}
-        {_, [do: do_block]} -> {rewrite_do(do_block), []}
-        {_, _} -> {nil, assigns}
-      end
-
-    if is_nil(inner_block) do
-      quote do
-        Phoenix.View.render(unquote(module), :self, unquote(assigns))
-      end
-    else
-      quote do
-        Phoenix.View.render(
-          unquote(module),
-          :self,
-          Map.put(Map.new(unquote(assigns)), :inner_block, unquote(inner_block))
-        )
-      end
-    end
-  end
-
-  @doc false
-  defmacro __render_block__(inner_block, argument \\ []) do
-    quote do
-      unquote(inner_block).(unquote(argument))
-    end
-  end
-
-  defp rewrite_do([{:->, meta, _} | _] = do_block) do
-    {:fn, meta, do_block}
-  end
-
-  defp rewrite_do(do_block) do
-    quote do
-      fn _ ->
-        unquote(do_block)
-      end
-    end
-  end
-
   @doc ~S'''
   Defines a component template.
 
@@ -264,20 +221,6 @@ defmodule Temple.Component do
           unquote(block)
         end
       end
-    end
-  end
-
-  @doc false
-  def __engine__() do
-    cond do
-      Code.ensure_loaded?(Phoenix.LiveView.Engine) ->
-        Phoenix.LiveView.Engine
-
-      Code.ensure_loaded?(Phoenix.HTML.Engine) ->
-        Phoenix.HTML.Engine
-
-      true ->
-        nil
     end
   end
 end
