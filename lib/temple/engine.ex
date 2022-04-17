@@ -41,6 +41,7 @@ defmodule Temple.Engine do
     template
     |> Temple.Parser.parse()
     |> Temple.Renderer.render(engine: Temple.engine())
+
     # |> Temple.Parser.Utils.inspect_ast()
   end
 end
