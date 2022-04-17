@@ -1,6 +1,6 @@
 h1 do: "Listing Posts"
 
-table do
+table class: "border border-black" do
   c Headers do
     th do: "Title"
     th do: "Body"

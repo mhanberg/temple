@@ -10,7 +10,6 @@ defmodule TempleDemo.Application do
       # Start the Ecto repository
       TempleDemo.Repo,
       # Start the Telemetry supervisor
-      TempleDemoWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: TempleDemo.PubSub},
       # Start the Endpoint (http/https)
