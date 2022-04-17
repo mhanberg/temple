@@ -3,4 +3,4 @@ Code.put_compiler_option(
   Keyword.put(Code.get_compiler_option(:parser_options), :token_metadata, true)
 )
 
-ExUnit.start()
+ExUnit.start(exclude: [skip: true])

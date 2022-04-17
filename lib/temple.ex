@@ -1,5 +1,5 @@
 defmodule Temple do
-  alias Temple.Parser
+  @engine Application.compile_env(:temple, :engine, EEx.SmartEngine)
 
   @moduledoc """
   Temple syntax is available inside the `temple`, and is compiled into EEx at build time.
@@ -182,32 +182,5 @@ defmodule Temple do
     end
   end
 
-  @doc """
-  Compiles temple markup into a quoted expression using the given EEx Engine.
-
-  Returns the same output that Phoenix templates output into the `render/1` function of their view modules.
-
-  ## Usage
-
-  ```elixir
-  require Temple
-
-  Temple.compile Phoenix.HTML.Engine do
-    div class: @class do
-      "Hello, world!"
-    end
-  end
-
-  ```
-  """
-  defmacro compile(engine, [do: block] = _block) do
-    markup =
-      block
-      |> Parser.parse()
-      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
-      |> Enum.intersperse("\n")
-      |> :erlang.iolist_to_binary()
-
-    EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
-  end
+  def engine(), do: @engine
 end

@@ -105,26 +105,26 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
-    test "handles simple expression are the entire attributes" do
-      assigns = %{statement: "hello world", attributes: [class: "green"]}
+    # test "handles simple expression are the entire attributes" do
+    #   assigns = %{statement: "hello world", attributes: [class: "green"]}
 
-      result =
-        Renderer.compile do
-          div @attributes do
-            @statement
-          end
-        end
+    #   result =
+    #     Renderer.compile do
+    #       div @attributes do
+    #         @statement
+    #       end
+    #     end
 
-      # html
-      expected = """
-      <div class="green">
-        hello world
-      </div>
+    #   # html
+    #   expected = """
+    #   <div class="green">
+    #     hello world
+    #   </div>
 
-      """
+    #   """
 
-      assert expected == result
-    end
+    #   assert expected == result
+    # end
 
     test "handles simple expression with @ assign" do
       assigns = %{statement: "hello world"}

@@ -161,7 +161,7 @@ defmodule Temple.Component do
     ast =
       block
       |> Temple.Parser.parse()
-      |> Temple.Renderer.render()
+      |> Temple.Renderer.render(engine: Temple.engine())
 
     quote do
       def render(var!(assigns)) do

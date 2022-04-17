@@ -42,9 +42,7 @@ defmodule Temple.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.28.3", only: :dev, runtime: false},
-      {:phoenix_view, "~> 1.0"},
-      {:phoenix_live_view, ">= 0.0.0", only: :test}
+      {:ex_doc, "~> 0.28.3", only: :dev, runtime: false}
     ]
   end
 end

@@ -2,7 +2,6 @@ defmodule Temple.Parser.ComponentsTest do
   use ExUnit.Case, async: false
   alias Temple.Parser.Components
   alias Temple.Parser.Slottable
-  use Temple.Support.Utils
 
   describe "applicable?/1" do
     test "runs when using the `c` ast with a block" do

@@ -17,14 +17,11 @@ defmodule Temple.Renderer do
   @default_engine EEx.SmartEngine
 
   defmacro compile(opts \\ [], do: block) do
-    ast =
-      block
-      |> Temple.Parser.parse()
-      |> Temple.Renderer.render(opts)
+    block
+    |> Temple.Parser.parse()
+    |> Temple.Renderer.render(opts)
 
-    # IO.inspect(ast, label: "ast")
-    # ast |> Macro.to_string() |> IO.puts()
-    ast
+    # |> Temple.Parser.Utils.inspect_ast()
   end
 
   def render(asts, opts \\ [])
@@ -154,10 +151,15 @@ defmodule Temple.Renderer do
       )
 
     buffer =
-      if attrs = Utils.compile_attrs(ast.attrs) do
-        state.engine.handle_expr(buffer, "=", attrs)
-      else
-        buffer
+      for node <- Utils.compile_attrs(ast.attrs), reduce: buffer do
+        buffer ->
+          case node do
+            {:text, text} ->
+              state.engine.handle_text(buffer, [], text)
+
+            {:expr, expr} ->
+              state.engine.handle_expr(buffer, "=", expr)
+          end
       end
 
     buffer =
@@ -203,9 +205,15 @@ defmodule Temple.Renderer do
       )
 
     buffer =
-      for a <- Utils.compile_attrs(ast.attrs), reduce: buffer do
+      for node <- Utils.compile_attrs(ast.attrs), reduce: buffer do
         buffer ->
-          state.engine.handle_expr(buffer, "=", a)
+          case node do
+            {:text, text} ->
+              state.engine.handle_text(buffer, [], text)
+
+            {:expr, expr} ->
+              state.engine.handle_expr(buffer, "=", expr)
+          end
       end
 
     state.engine.handle_text(buffer, [], ">\n")
