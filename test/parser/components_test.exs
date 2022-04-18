@@ -7,7 +7,7 @@ defmodule Temple.Parser.ComponentsTest do
     test "runs when using the `c` ast with a block" do
       ast =
         quote do
-          c SomeModule, foo: :bar do
+          c &SomeModule.render/1, foo: :bar do
             div do
               "hello"
             end
@@ -20,7 +20,9 @@ defmodule Temple.Parser.ComponentsTest do
     test "runs when using the `c` ast with an inline block" do
       ast =
         quote do
-          c SomeModule, foo: :bar, do: "hello"
+          c &SomeModule.render/1, foo: :bar do
+            "hello"
+          end
         end
 
       assert Components.applicable?(ast)
@@ -29,7 +31,7 @@ defmodule Temple.Parser.ComponentsTest do
     test "runs when using the `c` ast without a block" do
       ast =
         quote do
-          c(SomeModule, foo: :bar)
+          c &SomeModule.render/1, foo: :bar
         end
 
       assert Components.applicable?(ast)
@@ -37,10 +39,14 @@ defmodule Temple.Parser.ComponentsTest do
   end
 
   describe "run/2" do
-    test "adds a node to the buffer" do
+    setup do
+      [func: quote(do: &SomeModule.render/1)]
+    end
+
+    test "adds a node to the buffer", %{func: func} do
       raw_ast =
         quote do
-          c SomeModule do
+          c unquote(func) do
             aside class: "foobar" do
               "I'm a component!"
             end
@@ -50,31 +56,31 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: {:__aliases__, _, [:SomeModule]},
+               function: ^func,
                assigns: [],
                children: _
              } = ast
     end
 
-    test "runs when using the `c` ast with an inline block" do
+    test "runs when using the `c` ast with an inline block", %{func: func} do
       ast =
         quote do
-          c SomeModule, foo: :bar, do: "hello"
+          c unquote(func), foo: :bar, do: "hello"
         end
 
       ast = Components.run(ast)
 
       assert %Components{
-               module: {:__aliases__, _, [:SomeModule]},
+               function: ^func,
                assigns: [foo: :bar],
                children: _
              } = ast
     end
 
-    test "adds a node to the buffer that takes args" do
+    test "adds a node to the buffer that takes args", %{func: func} do
       raw_ast =
         quote do
-          c SomeModule, foo: :bar do
+          c unquote(func), foo: :bar do
             aside class: "foobar" do
               "I'm a component!"
             end
@@ -84,31 +90,31 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: {:__aliases__, _, [:SomeModule]},
+               function: ^func,
                assigns: [foo: :bar],
                children: _
              } = ast
     end
 
-    test "adds a node to the buffer that without a block" do
+    test "adds a node to the buffer that without a block", %{func: func} do
       raw_ast =
         quote do
-          c SomeModule, foo: :bar
+          c unquote(func), foo: :bar
         end
 
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: {:__aliases__, _, [:SomeModule]},
+               function: ^func,
                assigns: [foo: :bar],
                children: []
              } = ast
     end
 
-    test "gathers all slots" do
+    test "gathers all slots", %{func: func} do
       raw_ast =
         quote do
-          c SomeModule, foo: :bar do
+          c unquote(func), foo: :bar do
             slot :foo, %{form: form} do
               "in the slot"
             end
@@ -118,7 +124,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert %Components{
-               module: {:__aliases__, _, [:SomeModule]},
+               function: ^func,
                assigns: [foo: :bar],
                slots: [
                  %Slottable{
@@ -132,11 +138,15 @@ defmodule Temple.Parser.ComponentsTest do
     end
 
     test "slots should only be assigned to the component root" do
+      card = quote do: &Card.render/1
+      footer = quote do: &Card.Footer.render/1
+      list = quote do: &LinkList.render/1
+
       raw_ast =
         quote do
-          c Card do
-            c Card.Footer do
-              c LinkList, socials: @user.socials do
+          c unquote(card) do
+            c unquote(footer) do
+              c unquote(list), socials: @user.socials do
                 "hello"
 
                 slot :default, %{text: text, url: url} do

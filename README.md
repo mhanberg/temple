@@ -16,8 +16,7 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.8.0"},
-    {:phoenix_live_view, "~> 0.16"} # if you are using Phoenix LiveView
+    {:temple, "~> 0.8.0"}
   ]
 end
 ```
@@ -26,7 +25,7 @@ end
 Currently Temple has the following things on which it won't compromise.
 
 - Will only work with valid Elixir syntax.
-- Should always work with normal EEx, as well as Phoenix and Phoenix LiveView.
+- Should work in all web environments such as Plug, Aino, Phoenix, and Phoenix LiveView.
 
 ## Usage
 
@@ -71,21 +70,23 @@ Temple components provide an ergonomic API for creating flexible and reusable vi
 For example, if I were to define a `Card` component, I would create the following module.
 
 ```elixir
-defmodule MyAppWeb.Components.Card do
-  import Temple.Component
+defmodule MyAppWeb.Component do
+  use Temple
 
-  render do
-    section do
-      div do
-        slot :header
-      end
+  def card(assigns) do
+    temple do
+      section do
+        div do
+          slot :header
+        end
 
-      div do
-        slot :default
-      end
+        div do
+          slot :default
+        end
 
-      div do
-        slot :footer
+        div do
+          slot :footer
+        end
       end
     end
   end
@@ -96,10 +97,10 @@ And we could use the component like so
 
 ```elixir
 # lib/my_app_web/views/page_view.ex
-alias MyAppWeb.Components.Card
+import MyAppWeb.Component
 
 # lib/my_app_web/templates/page/index.html.exs
-c Card do
+c &card/1 do
   slot :header do
     @user.full_name
   end
@@ -124,15 +125,15 @@ To use temple as a Phoenix Template engine, you'll need to configure the right f
 ```elixir
 # config.exs
 config :phoenix, :template_engines,
-  exs: Temple.Engine
+  exs: Temple.Engine,
   # or for LiveView support
   # this will work for files named like `index.html.lexs`
   # you can enable Elixir syntax highlighting in your editor
-  lexs: Temple.LiveViewEngine
+  lexs: Temple.Engine
 
 # If you're going to be using live_view, make sure to set the `:mode` to `:live_view`.
 # This is necessary for Temple to emit markup that is compatible.
-config :temple, :mode, :live_view # defaults to normal
+config :temple, :engine, Phoenix.LiveView.Engine # defaults to `EEx.SmartEngine`
 
 # config/dev.exs
 config :your_app, YourAppWeb.Endpoint,
@@ -180,7 +181,7 @@ html lang: "en" do
       p class: "alert alert-info", role: "alert", do: get_flash(@conn, :info)
       p class: "alert alert-danger", role: "alert", do: get_flash(@conn, :error)
 
-      render @view_module, @view_template, assigns
+      @inner_content
     end
 
     script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
@@ -213,4 +214,5 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
 
 - [Introducing Temple: An elegant HTML library for Elixir and Phoenix](https://www.mitchellhanberg.com/introducing-temple-an-elegant-html-library-for-elixir-and-phoenix/)
 - [Temple, AST, and Protocols](https://www.mitchellhanberg.com/temple-ast-and-protocols/)
+- [Thinking Elixir Episode 92: Temple with Mitchell Hanberg](https://podcast.thinkingelixir.com/92)
 - [How EEx Turns Your Template Into HTML](https://www.mitchellhanberg.com/how-eex-turns-your-template-into-html/)

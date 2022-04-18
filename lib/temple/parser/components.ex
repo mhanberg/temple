@@ -2,7 +2,7 @@ defmodule Temple.Parser.Components do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct module: nil, assigns: [], children: [], slots: []
+  defstruct function: nil, assigns: [], children: [], slots: []
 
   @impl Temple.Parser
   def applicable?({:c, _, _}) do
@@ -12,7 +12,7 @@ defmodule Temple.Parser.Components do
   def applicable?(_), do: false
 
   @impl Temple.Parser
-  def run({:c, _meta, [component_module | args]}) do
+  def run({:c, _meta, [component_function | args]}) do
     {do_and_else, args} =
       args
       |> Temple.Parser.Utils.split_args()
@@ -23,19 +23,19 @@ defmodule Temple.Parser.Components do
       if children = do_and_else[:do] do
         Macro.prewalk(
           children,
-          {component_module, %{}},
+          {component_function, %{}},
           fn
             {:c, _, [name | _]} = node, {_, named_slots} ->
               {node, {name, named_slots}}
 
-            {:slot, _, [name | args]} = node, {^component_module, named_slots} ->
+            {:slot, _, [name | args]} = node, {^component_function, named_slots} ->
               {assigns, slot} = split_assigns_and_children(args, Macro.escape(%{}))
 
               if is_nil(slot) do
-                {node, {component_module, named_slots}}
+                {node, {component_function, named_slots}}
               else
                 {nil,
-                 {component_module, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}}
+                 {component_function, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}}
               end
 
             node, acc ->
@@ -64,7 +64,7 @@ defmodule Temple.Parser.Components do
       end
 
     Temple.Ast.new(__MODULE__,
-      module: component_module,
+      function: component_function,
       assigns: assigns,
       slots: slots,
       children: children

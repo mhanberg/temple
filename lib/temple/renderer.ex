@@ -70,7 +70,7 @@ defmodule Temple.Renderer do
   end
 
   def render(buffer, state, %Components{
-        module: module,
+        function: function,
         assigns: assigns,
         children: children,
         slots: slots
@@ -116,12 +116,12 @@ defmodule Temple.Renderer do
         end
       end
 
-    slot_func = {:fn, meta, clauses ++ slot_quotes}
+    slot_func = {:fn, meta, slot_quotes ++ clauses}
 
     expr =
       quote do
         component(
-          &unquote(module).render/1,
+          unquote(function),
           Map.put(Map.new(unquote(assigns)), :__slots__, unquote(slot_func))
         )
       end

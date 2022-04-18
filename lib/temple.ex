@@ -87,12 +87,10 @@ defmodule Temple do
   </span>
   ```
 
-  If you need to create a "tight" tag, you can call the "bang" version of the desired tag.
+  If you need to create a "tight" tag, you can use the keyword list style invocation of the `do` block.
 
   ```elixir
-  span! do
-    "Hello, world!"
-  end
+  span do: "Hello, world!"
   ```
 
   ```html
@@ -101,20 +99,12 @@ defmodule Temple do
 
   ## Configuration
 
-  ### Mode
+  ### Engine
 
-  There are two "modes", `:normal` (the default) and `:live_view`.
-
-  In `:live_view` mode, Temple emits markup that uses functions provided by Phoenix LiveView in order to be fully "diff trackable". These LiveView functions have not been released yet, so if you are going to combine Temple with LiveView, you need to use the latest unreleased default branch from GitHub.
-
-  You should use `:live_view` mode even if you only have a single LiveView.
+  By default Temple wil use the `EEx.SmartEngine`, but you can configure it to use any other engine. Examples could be `Phoenix.HTML.Engine` or `Phoenix.LiveView.Engine`.
 
   ```elixir
-  config :temple, :mode, :normal # default
-
-  # or
-
-  config :temple, :mode, :live_view
+  config :temple, engine: Phoenix.HTML.Engine
   ```
 
   ### Aliases
@@ -150,7 +140,6 @@ defmodule Temple do
   defmacro __using__(_) do
     quote location: :keep do
       import Temple
-      require Temple.Component
     end
   end
 
@@ -185,9 +174,11 @@ defmodule Temple do
     end
   end
 
+  @doc false
   def component(func, assigns) do
     apply(func, [assigns])
   end
 
+  @doc false
   def engine(), do: @engine
 end

@@ -333,26 +333,19 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
-    defmodule BasicComponent do
-      import Temple
-      import Temple.Component
-
-      def render(_assigns) do
-        temple do
-          div do
-            "I am a basic component"
-          end
+    def basic_component(_assigns) do
+      temple do
+        div do
+          "I am a basic component"
         end
       end
     end
-
-    alias __MODULE__.BasicComponent
 
     test "basic component" do
       result =
         Renderer.compile do
           div do
-            c BasicComponent
+            c &basic_component/1
           end
         end
 
@@ -371,27 +364,20 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
-    defmodule DefaultSlotComponent do
-      import Temple
-      import Temple.Component
-
-      def render(assigns) do
-        temple do
-          div do
-            "I am above the slot"
-            slot :default
-          end
+    def default_slot(assigns) do
+      temple do
+        div do
+          "I am above the slot"
+          slot :default
         end
       end
     end
-
-    alias __MODULE__.DefaultSlotComponent
 
     test "component with default slot" do
       result =
         Renderer.compile do
           div do
-            c DefaultSlotComponent do
+            c &default_slot/1 do
               span do: "i'm a slot"
             end
           end
@@ -414,31 +400,24 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
-    defmodule NamedSlotComponent do
-      import Temple
-      import Temple.Component, warn: false
+    def named_slot(assigns) do
+      temple do
+        div do
+          "#{@name} is above the slot"
+          slot :default
+        end
 
-      def render(assigns) do
-        temple do
-          div do
-            "#{@name} is above the slot"
-            slot :default
-          end
-
-          footer do
-            slot :footer, %{name: @name}
-          end
+        footer do
+          slot :footer, %{name: @name}
         end
       end
     end
-
-    alias __MODULE__.NamedSlotComponent
 
     test "component with a named slot" do
       result =
         Renderer.compile do
           div do
-            c NamedSlotComponent, name: "motchy boi" do
+            c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
               slot :footer, %{name: name} do
