@@ -1,7 +1,7 @@
-c Form, changeset: @changeset, action: @action do
+c &Form.render/1, changeset: @changeset, action: @action do
   slot :f, %{f: f} do
     if @changeset.action do
-      c Flash, type: :info do
+      c &Flash.render/1, type: :info do
         p do: "Oops, something went wrong! Please check the errors below."
       end
     end

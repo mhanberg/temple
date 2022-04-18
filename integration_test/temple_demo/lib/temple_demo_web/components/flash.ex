@@ -1,10 +1,11 @@
 defmodule TempleDemoWeb.Component.Flash do
-  import Temple, only: [component: 2], warn: false
-  import Temple.Component
+  import Temple
 
-  render do
-    div class: "alert alert-#{@type}", style: "border: solid 5px pink" do
-      slot :default
+  def render(assigns) do
+    temple do
+      div class: "alert alert-#{@type}", style: "border: solid 5px pink" do
+        slot :default
+      end
     end
   end
 end

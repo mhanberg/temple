@@ -1,13 +1,15 @@
 defmodule TempleDemoWeb.Component.Form do
-  import Temple.Component
+  import Temple
 
-  render do
-    f = Phoenix.HTML.Form.form_for(@changeset, @action)
+  def render(assigns) do
+    temple do
+      f = Phoenix.HTML.Form.form_for(@changeset, @action)
 
-    f
+      f
 
-    slot :f, f: f
+      slot :f, f: f
 
-    "</form>"
+      "</form>"
+    end
   end
 end

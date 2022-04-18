@@ -3,10 +3,12 @@ defmodule TempleDemoWeb.PostView do
 
   def thing(), do: "foobar"
 
-  defcomp Headers do
-    thead id: PostView.thing() do
-      tr do
-        slot :default
+  def headers(assigns) do
+    temple do
+      thead id: thing() do
+        tr do
+          slot :default
+        end
       end
     end
   end

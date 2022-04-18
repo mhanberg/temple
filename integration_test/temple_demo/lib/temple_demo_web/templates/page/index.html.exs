@@ -3,7 +3,7 @@ section class: "phx-hero" do
     gettext("Welcome to %{name}!", name: "Phoenix")
   end
 
-  c Outer, outer_id: "hello" do
+  c &Outer.render/1, outer_id: "hello" do
     "inner content of outer"
   end
 

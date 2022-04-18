@@ -7,7 +7,7 @@ span id: "non-empty-tag" do
 end
 
 table class: "border border-black" do
-  c Headers do
+  c &headers/1 do
     th do: "Title"
     th do: "Body"
     th do: "Published at"
