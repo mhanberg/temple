@@ -20,14 +20,14 @@ jobs:
       with:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: |
           deps
           _build
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-${{matrix.otp}}-${{matrix.elixir}}-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-mix-
+          ${{ runner.os }}-mix-${{matrix.otp}}-${{matrix.elixir}}-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -60,14 +60,14 @@ jobs:
         otp-version: 24.x
         elixir-version: 1.13.x
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: |
           deps
           _build
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-24-1.13-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-mix-
+          ${{ runner.os }}-mix-24-1.13-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -94,14 +94,14 @@ jobs:
       with:
         otp-version: 24.x
         elixir-version: 1.13.x
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: |
           deps
           _build
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-24-1.13-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-mix-
+          ${{ runner.os }}-mix-24-1.13-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
