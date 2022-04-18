@@ -1,4 +1,5 @@
 defmodule TempleDemoWeb.Component.Outer do
+  import Temple, only: [component: 2]
   import Temple.Component
   alias TempleDemoWeb.Component.Inner
 

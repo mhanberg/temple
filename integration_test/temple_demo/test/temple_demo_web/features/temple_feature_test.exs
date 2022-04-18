@@ -41,4 +41,12 @@ defmodule TempleDemoWeb.TempleFeatureTest do
     |> click(Query.button("Save"))
     |> assert_text("Post created successfully.")
   end
+
+  feature "can create empty tags", %{session: session} do
+    one_empty_span = Query.css("span:empty", visible: false)
+
+    session
+    |> visit(Routes.post_path(@endpoint, :index))
+    |> assert_has(one_empty_span)
+  end
 end

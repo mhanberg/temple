@@ -8,19 +8,27 @@ defmodule TemplePlugDemo.Router do
   plug :match
   plug :dispatch
 
-  get "/hello" do
+  get "/" do
+    assigns = %{title: "Motch App"}
+
     response =
       temple do
         "<!DOCTYPE html>"
 
         html do
           head do
-            title do: "Bandit App"
+            title do: @title
 
             link rel: "stylesheet", href: "/static/assets/app.css"
           end
 
           body class: "font-sans container mx-auto" do
+            span do
+              "loose"
+            end
+
+            span do: "tight"
+
             div do
               "world"
             end

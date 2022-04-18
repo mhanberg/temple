@@ -7,7 +7,7 @@ defmodule TempleDemo.MixProject do
       version: "0.1.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:gettext, :temple] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -44,7 +44,7 @@ defmodule TempleDemo.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:wallaby, "~> 0.29.1", only: :test},
       {:tzdata, "~> 1.0.3"},
-      {:temple, path: "../../"},
+      {:temple, path: "../../"}
     ]
   end
 

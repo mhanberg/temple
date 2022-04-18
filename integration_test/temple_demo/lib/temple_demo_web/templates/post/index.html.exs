@@ -1,5 +1,11 @@
 h1 do: "Listing Posts"
 
+span id: "empty-tag"
+
+span id: "non-empty-tag" do
+  "got something in here"
+end
+
 table class: "border border-black" do
   c Headers do
     th do: "Title"
