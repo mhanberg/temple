@@ -1,6 +1,8 @@
 defmodule Temple.RendererTest do
   use ExUnit.Case, async: true
 
+  import Temple
+
   require Temple.Renderer
   alias Temple.Renderer
 
@@ -332,11 +334,14 @@ defmodule Temple.RendererTest do
     end
 
     defmodule BasicComponent do
+      import Temple
       import Temple.Component
 
-      render do
-        div do
-          "I am a basic component"
+      def render(_assigns) do
+        temple do
+          div do
+            "I am a basic component"
+          end
         end
       end
     end
@@ -367,12 +372,15 @@ defmodule Temple.RendererTest do
     end
 
     defmodule DefaultSlotComponent do
+      import Temple
       import Temple.Component
 
-      render do
-        div do
-          "I am above the slot"
-          slot :default
+      def render(assigns) do
+        temple do
+          div do
+            "I am above the slot"
+            slot :default
+          end
         end
       end
     end
@@ -407,16 +415,19 @@ defmodule Temple.RendererTest do
     end
 
     defmodule NamedSlotComponent do
-      import Temple.Component
+      import Temple
+      import Temple.Component, warn: false
 
-      render do
-        div do
-          "#{@name} is above the slot"
-          slot :default
-        end
+      def render(assigns) do
+        temple do
+          div do
+            "#{@name} is above the slot"
+            slot :default
+          end
 
-        footer do
-          slot :footer, %{name: @name}
+          footer do
+            slot :footer, %{name: @name}
+          end
         end
       end
     end

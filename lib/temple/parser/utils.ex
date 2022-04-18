@@ -34,17 +34,9 @@ defmodule Temple.Parser.Utils do
       [
         {:expr,
          quote do
-           Temple.Parser.Utils.runtime_attrs(unquote(List.first(attrs)))
+           unquote(List.first(attrs))
          end}
       ]
-    end
-  end
-
-  def runtime_attrs(attrs) do
-    for {name, value} <- attrs, name not in [:inner_block, :inner_content], into: "" do
-      name = snake_to_kebab(name)
-
-      build_attr(name, value)
     end
   end
 
@@ -56,6 +48,10 @@ defmodule Temple.Parser.Utils do
     []
   end
 
+  def build_attr(name, {_, _, _} = value) do
+    [{:text, ~s' #{name}="'}, {:expr, value}, {:text, ~s'"'}]
+  end
+
   def build_attr("class", classes) when is_list(classes) do
     value =
       quote do
@@ -65,12 +61,8 @@ defmodule Temple.Parser.Utils do
     [{:text, ~s' class="'}, {:expr, value}, {:text, ~s'"'}]
   end
 
-  def build_attr(name, value) when is_binary(value) do
+  def build_attr(name, value) do
     [{:text, ~s' #{name}="' <> to_string(value) <> ~s'"'}]
-  end
-
-  def build_attr(name, {_, _, _} = value) do
-    [{:text, ~s' #{name}="'}, {:expr, value}, {:text, ~s'"'}]
   end
 
   def split_args(not_what_i_want) when is_nil(not_what_i_want) or is_atom(not_what_i_want),

@@ -163,14 +163,10 @@ defmodule Temple.Component do
       |> Temple.Parser.parse()
       |> Temple.Renderer.render(engine: Temple.engine())
 
+    # |> Temple.Parser.Utils.inspect_ast()
+
     quote do
       def render(var!(assigns)) do
-        _ = var!(assigns)
-
-        unquote(ast)
-      end
-
-      def render(:self, var!(assigns)) do
         _ = var!(assigns)
 
         unquote(ast)

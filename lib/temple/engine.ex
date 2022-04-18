@@ -33,10 +33,14 @@ defmodule Temple.Engine do
   Now you can get started by writing `exs` files in the templates directory and they will be compiled as you would expect.
   """
 
+  @impl true
   def compile(path, _name) do
     require Temple.Renderer
 
-    template = path |> File.read!() |> Code.string_to_quoted!(file: path)
+    template =
+      path
+      |> File.read!()
+      |> Code.string_to_quoted!(file: path, token_metadata: true)
 
     template
     |> Temple.Parser.parse()

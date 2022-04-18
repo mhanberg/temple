@@ -2,8 +2,6 @@ defmodule Temple.Parser.Components do
   @moduledoc false
   @behaviour Temple.Parser
 
-  alias Temple.Parser
-
   defstruct module: nil, assigns: [], children: [], slots: []
 
   @impl Temple.Parser

@@ -3,42 +3,17 @@ defmodule Temple.Parser.UtilsTest do
 
   alias Temple.Parser.Utils
 
-  describe "runtime_attrs/1" do
-    test "compiles keyword lists and maps into html attributes" do
-      attrs_map = %{
-        class: "text-red",
-        id: "form1",
-        disabled: false,
-        inner_block: %{}
-      }
-
-      attrs_kw = [
-        class: "text-red",
-        id: "form1",
-        disabled: true,
-        inner_block: %{}
-      ]
-
-      assert ~s| class="text-red" id="form1"| == Utils.runtime_attrs(attrs_map)
-      assert ~s| class="text-red" id="form1" disabled| == Utils.runtime_attrs(attrs_kw)
-    end
-
-    test "class accepts a keyword list which conditionally emits classes" do
-      attrs = [class: ["text-red": false, "text-blue": true], id: "form1"]
-
-      assert ~s| class="text-blue" id="form1"| == Utils.runtime_attrs(attrs)
-    end
-  end
-
   describe "compile_attrs/1" do
     test "returns a list of text nodes for static attributes" do
-      attrs = [class: "text-red", id: "error"]
+      attrs = [class: "text-red", id: "error", phx_submit: :save, data_number: 99]
 
       actual = Utils.compile_attrs(attrs)
 
       assert [
                {:text, ~s' class="text-red"'},
-               {:text, ~s' id="error"'}
+               {:text, ~s' id="error"'},
+               {:text, ~s' phx-submit="save"'},
+               {:text, ~s' data-number="99"'}
              ] == actual
     end
 

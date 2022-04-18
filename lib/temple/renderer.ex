@@ -43,7 +43,11 @@ defmodule Temple.Renderer do
           render(buffer, state, ast)
       end
 
-    engine.handle_body(buffer)
+    if function_exported?(engine, :handle_body, 2) do
+      engine.handle_body(buffer, root: length(asts) == 1)
+    else
+      engine.handle_body(buffer)
+    end
   end
 
   def render(buffer, state, %Text{text: text}) do
@@ -116,7 +120,8 @@ defmodule Temple.Renderer do
 
     expr =
       quote do
-        alias!(unquote(module)).render(
+        component(
+          &unquote(module).render/1,
           Map.put(Map.new(unquote(assigns)), :__slots__, unquote(slot_func))
         )
       end

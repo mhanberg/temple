@@ -175,11 +175,18 @@ defmodule Temple do
   # </div>
   ```
   """
-  defmacro temple(opts \\ [], block) do
+
+  defmacro temple(block) do
+    opts = [engine: engine()]
+
     quote do
       require Temple.Renderer
       Temple.Renderer.compile(unquote(opts), unquote(block))
     end
+  end
+
+  def component(func, assigns) do
+    apply(func, [assigns])
   end
 
   def engine(), do: @engine
