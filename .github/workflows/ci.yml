@@ -36,53 +36,53 @@ jobs:
     - name: Run Tests
       run: mix test
 
-  integration_tests:
-    runs-on: ubuntu-latest
-    name: Integration Test (${{matrix.elixir}}/${{matrix.otp}})
-    defaults:
-      run:
-        working-directory: "./integration_test/temple_demo"
+  # integration_tests:
+  #   runs-on: ubuntu-latest
+  #   name: Integration Test (${{matrix.elixir}}/${{matrix.otp}})
+  #   defaults:
+  #     run:
+  #       working-directory: "./integration_test/temple_demo"
 
-    services:
-      db:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: temple_demo_test
-        ports: ['5432:5432']
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+  #   services:
+  #     db:
+  #       image: postgres:12
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: postgres
+  #         POSTGRES_DB: temple_demo_test
+  #       ports: ['5432:5432']
+  #       options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    steps:
-    - uses: actions/checkout@v2
-    - uses: erlef/setup-beam@v1
-      with:
-        otp-version: 24.x
-        elixir-version: 1.13.x
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: erlef/setup-beam@v1
+  #     with:
+  #       otp-version: 24.x
+  #       elixir-version: 1.13.x
 
-    - uses: actions/cache@v3
-      with:
-        path: |
-          deps
-          _build
-        key: ${{ runner.os }}-mix-24-1.13-${{ hashFiles('**/mix.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-mix-24-1.13-
+  #   - uses: actions/cache@v3
+  #     with:
+  #       path: |
+  #         deps
+  #         _build
+  #       key: ${{ runner.os }}-mix-24-1.13-${{ hashFiles('**/mix.lock') }}
+  #       restore-keys: |
+  #         ${{ runner.os }}-mix-24-1.13-
 
-    - name: Install Dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: mix deps.get
+  #   - name: Install Dependencies
+  #     if: steps.cache.outputs.cache-hit != 'true'
+  #     run: mix deps.get
 
-    - name: Run Tests
-      run: mix test || mix test --failed || mix test --failed
-      env:
-        MIX_ENV: test
+  #   - name: Run Tests
+  #     run: mix test || mix test --failed || mix test --failed
+  #     env:
+  #       MIX_ENV: test
 
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: screenshots
-        path: screenshots/
+  #   - uses: actions/upload-artifact@v2
+  #     if: failure()
+  #     with:
+  #       name: screenshots
+  #       path: screenshots/
 
   formatter:
     runs-on: ubuntu-latest
