@@ -1,6 +1,6 @@
 defmodule TempleTest do
   use ExUnit.Case, async: true
-  use Temple
+  import Temple
 
   describe "temple/1" do
     test "works" do
