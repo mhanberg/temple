@@ -35,7 +35,8 @@ defmodule Temple.MixProject do
         "README.md",
         "guides/getting-started.md",
         "guides/your-first-template.md",
-        "guides/components.md"
+        "guides/components.md",
+        "guides/migrating/0.8-to-0.9.md",
       ],
       groups_for_extras: groups_for_extras()
     ]
@@ -43,7 +44,8 @@ defmodule Temple.MixProject do
 
   defp groups_for_extras do
     [
-      Guides: ~r/guides\/[^\/]+\.md/
+      Guides: ~r/guides\/[^\/]+\.md/,
+      Migrating: ~r/guides\/migrating\/.?/,
     ]
   end
 
