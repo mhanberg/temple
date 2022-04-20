@@ -6,7 +6,7 @@ defmodule Temple.MixProject do
       app: :temple,
       name: "Temple",
       description: "An HTML DSL for Elixir and Phoenix",
-      version: "0.8.0",
+      version: "0.9.0-rc.0",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       elixir: "~> 1.13",
@@ -36,7 +36,7 @@ defmodule Temple.MixProject do
         "guides/getting-started.md",
         "guides/your-first-template.md",
         "guides/components.md",
-        "guides/migrating/0.8-to-0.9.md",
+        "guides/migrating/0.8-to-0.9.md"
       ],
       groups_for_extras: groups_for_extras()
     ]
@@ -45,7 +45,7 @@ defmodule Temple.MixProject do
   defp groups_for_extras do
     [
       Guides: ~r/guides\/[^\/]+\.md/,
-      Migrating: ~r/guides\/migrating\/.?/,
+      Migrating: ~r/guides\/migrating\/.?/
     ]
   end
 

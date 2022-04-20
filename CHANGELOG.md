@@ -6,6 +6,7 @@
 
 ### Breaking Changes
 
+- Requires Elixir 1.13+
 - Whitespace control is now controlled by whether you use `do/end` or `:do` syntax. The `:do` syntax will render "tight" markup.
 - Components are no longer module based. Any function can now be a component. Now to render a component, you pass a function reference `c &my_component/1`.
     - Temple.Component has been removed, which removes the `render/1` macro for defining a component. Now all you need to do is define a function and have it take an `assigns` parameter and call the `temple/1` macro that is imported from `Temple`.

@@ -25,7 +25,7 @@ locals_without_parens = ~w[
   marker mask mesh meshgradient meshpatch meshrow metadata mpath path pattern polygon
   polyline radialGradient rect set solidcolor stop svg switch symbol text
   textPath tspan unknown use view
-]a
+]a |> Enum.map(fn e -> {e, :*} end)
 
 [
   inputs: ["*.{ex,exs}", "{config,lib,test}/**/*.{ex,exs}"],
