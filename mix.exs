@@ -13,10 +13,7 @@ defmodule Temple.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/mhanberg/temple",
-      docs: [
-        main: "Temple",
-        extras: ["README.md"]
-      ]
+      docs: docs()
     ]
   end
 
@@ -28,6 +25,25 @@ defmodule Temple.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp docs() do
+    [
+      main: "Temple",
+      extras: [
+        "README.md",
+        "guides/getting-started.md",
+        "guides/your-first-template.md",
+        "guides/components.md"
+      ],
+      groups_for_extras: groups_for_extras()
+    ]
+  end
+
+  defp groups_for_extras do
+    [
+      Guides: ~r/guides\/[^\/]+\.md/
     ]
   end
 

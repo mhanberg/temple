@@ -1,4 +1,6 @@
 defmodule Temple.Renderer do
+  @moduledoc false
+
   alias Temple.Parser.ElementList
   alias Temple.Parser.Text
   alias Temple.Parser.Components

@@ -2,99 +2,56 @@ defmodule Temple do
   @engine Application.compile_env(:temple, :engine, EEx.SmartEngine)
 
   @moduledoc """
-  Temple syntax is available inside the `temple`, and is compiled into EEx at build time.
+  Temple syntax is available inside the `temple`, and is compiled into efficient Elixir code at compile time using the configured `EEx.Engine`.
+
+  You should checkout the [guides](https://hexdocs.pm/temple/your-first-template.html) for a more in depth explanation.
 
   ## Usage
 
   ```elixir
-  temple do
-    # You can define attributes by passing a keyword list to the element, the values can be literals or variables.
-    class = "text-blue"
-    id = "jumbotron"
+  defmodule MyApp.HomePage do
+    import Temple
 
-    div class: class, id: id do
-      # Text nodes can be emitted as string literals or variables.
-      "Bob"
+    def render() do
+      assigns = %{title: "My Site | Sign Up", logged_in: false}
 
-      id
-    end
+      temple do
+        "<!DOCTYPE html>"
 
-    # Attributes that result in boolean values will be emitted as a boolean attribute. Examples of boolean attributes are `disabled` and `checked`.
+        html do
+          head do
+            meta charset: "utf-8"
+            meta http_equiv: "X-UA-Compatible", content: "IE=edge"
+            meta name: "viewport", content: "width=device-width, initial-scale=1.0"
+            link rel: "stylesheet", href: "/css/app.css"
 
-    input type: "text", disabled: true
-    # <input type="text" disabled>
+            title do: @title
+          end
 
-    input type: "text", disabled: false
-    # <input type="text">
+          body do
+            header class: "header" do
+              ul do
+                li do
+                  a href: "/", do: "Home"
+                end
+                li do
+                  if @logged_in do
+                    a href: "/logout", do: "Logout"
+                  else
+                    a href: "/login", do: "Login"
+                  end
+                end
+              end
+            end
 
-    # The class attribute also can take a keyword list of classes to conditionally render, based on the boolean result of the value.
-
-    div class: ["text-red-500": false, "text-green-500": true] do
-      "Alert!"
-    end
-
-    # <div class="text-green-500">Alert!</div>
-
-    # if and unless expressions can be used to conditionally render content
-    if 5 > 0 do
-      p do
-        "Greater than 0!"
+            main do
+              "Hi! Welcome to my website."
+            end
+          end
+        end
       end
     end
-
-    unless 5 > 0 do
-      p do
-        "Less than 0!"
-      end
-    end
-
-    # You can loop over items using for comprehensions
-    for x <- 0..5 do
-      div do
-        x
-      end
-    end
-
-    # You can use multiline anonymous functions, like if you're building a form in Phoenix
-    form_for @changeset, Routes.user_path(@conn, :create), fn f ->
-      "Name: "
-      text_input f, :name
-    end
-
-    # You can explicitly emit a tag by prefixing with the Temple module
-    Temple.div do
-      "Foo"
-    end
-
-    # You can also pass children as a do key instead of a block
-    div do: "Alice", class: "text-yellow"
   end
-  ```
-
-  ## Whitespace Control
-
-  By default, Temple will emit internal whitespace into tags, something like this.
-
-  ```elixir
-  span do
-    "Hello, world!"
-  end
-  ```
-
-  ```html
-  <span>
-    Hello, world!
-  </span>
-  ```
-
-  If you need to create a "tight" tag, you can use the keyword list style invocation of the `do` block.
-
-  ```elixir
-  span do: "Hello, world!"
-  ```
-
-  ```html
-  <span>Hello, world!</span>
   ```
 
   ## Configuration
@@ -134,34 +91,6 @@ defmodule Temple do
   </label>
 
   <link href="/css/site.css">
-  ```
-  """
-
-  defmacro __using__(_) do
-    quote location: :keep do
-      import Temple
-    end
-  end
-
-  @doc """
-  Context for temple markup.
-
-  Returns an EEx string that can be passed into an EEx template engine.
-
-  ## Usage
-
-  ```elixir
-  import Temple
-
-  temple do
-    div class: @class do
-      "Hello, world!"
-    end
-  end
-
-  # <div class="<%= @class %>">
-  #   Hello, world!
-  # </div>
   ```
   """
 
