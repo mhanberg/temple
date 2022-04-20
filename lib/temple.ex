@@ -70,16 +70,16 @@ defmodule Temple do
 
   ```elixir
   config :temple, :aliases,
-    label: :_label,
-    link: :_link,
-    select: :_select
+    label: :label_tag,
+    link: :link_tag,
+    select: :select_tag
 
   temple do
-    _label do
+    label_tag do
       "Email"
     end
 
-    _link href: "/css/site.css"
+    link_tag href: "/css/site.css"
   end
   ```
 
