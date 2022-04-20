@@ -2,6 +2,20 @@
 
 ## Main
 
+### 0.9.0-rc.0
+
+### Breaking Changes
+
+- Requires Elixir 1.13+
+- Whitespace control is now controlled by whether you use `do/end` or `:do` syntax. The `:do` syntax will render "tight" markup.
+- Components are no longer module based. Any function can now be a component. Now to render a component, you pass a function reference `c &my_component/1`.
+    - Temple.Component has been removed, which removes the `render/1` macro for defining a component. Now all you need to do is define a function and have it take an `assigns` parameter and call the `temple/1` macro that is imported from `Temple`.
+    - The `defcomp` macro has been removed, since now all you need is a function.
+- All Phoenix related things and dependencies have been removed. If you are going to use Temple with Phoenix, now use the [temple_phoenix](https://github.com/mhanberg/temple_phoenix) package instead.
+- Config options have changed. Now all you can configure are the aliases (unchanged from before) and now you can configure the EEx.Engine to use. By default it uses `EEx.SmartEngine`.
+
+Please see the guides for more in depth migration information.
+
 ## 0.8.0
 
 ### Enhancements

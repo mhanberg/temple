@@ -36,7 +36,7 @@ defmodule Temple.Parser do
   @doc """
   Processes the given AST, adding the markup to the given buffer.
 
-  Should return `:ok` if the parsing pass is over, or `{:component_applied, ast}` if the pass should be restarted.
+  Should return Temple.AST.
   """
   @callback run(ast :: Macro.t()) :: ast()
 
@@ -58,7 +58,7 @@ defmodule Temple.Parser do
     option textarea output progress meter
     details summary menuitem menu
     html
-  ]a |> Enum.flat_map(fn el -> [el, :"#{el}!"] end)
+  ]a
 
   @nonvoid_elements_aliases Enum.map(@nonvoid_elements, fn el ->
                               Keyword.get(@aliases, el, el)
@@ -125,7 +125,7 @@ defmodule Temple.Parser do
          {_, false} <- {DoExpressions, DoExpressions.applicable?(ast)},
          {_, false} <- {Match, Match.applicable?(ast)},
          {_, false} <- {Default, Default.applicable?(ast)} do
-      raise "No parsers applicable!!"
+      raise "No parsers applicable!"
     else
       {parser, true} ->
         ast

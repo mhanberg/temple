@@ -6,17 +6,14 @@ defmodule Temple.MixProject do
       app: :temple,
       name: "Temple",
       description: "An HTML DSL for Elixir and Phoenix",
-      version: "0.8.0",
+      version: "0.9.0-rc.0",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
-      elixir: "~> 1.9",
+      elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/mhanberg/temple",
-      docs: [
-        main: "Temple",
-        extras: ["README.md"]
-      ]
+      docs: docs()
     ]
   end
 
@@ -28,6 +25,27 @@ defmodule Temple.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp docs() do
+    [
+      main: "Temple",
+      extras: [
+        "README.md",
+        "guides/getting-started.md",
+        "guides/your-first-template.md",
+        "guides/components.md",
+        "guides/migrating/0.8-to-0.9.md"
+      ],
+      groups_for_extras: groups_for_extras()
+    ]
+  end
+
+  defp groups_for_extras do
+    [
+      Guides: ~r/guides\/[^\/]+\.md/,
+      Migrating: ~r/guides\/migrating\/.?/
     ]
   end
 
@@ -43,8 +61,8 @@ defmodule Temple.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.28.3", only: :dev, runtime: false},
-      {:phoenix_view, "~> 1.0"},
-      {:phoenix_live_view, ">= 0.0.0", only: :test}
+      {:phoenix_view, "~> 1.1.2", optional: true},
+      {:phoenix, "~> 1.6", optional: true}
     ]
   end
 end

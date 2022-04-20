@@ -1,120 +1,67 @@
 defmodule Temple do
-  alias Temple.Parser
+  @engine Application.compile_env(:temple, :engine, EEx.SmartEngine)
 
   @moduledoc """
-  Temple syntax is available inside the `temple`, and is compiled into EEx at build time.
+  Temple syntax is available inside the `temple`, and is compiled into efficient Elixir code at compile time using the configured `EEx.Engine`.
+
+  You should checkout the [guides](https://hexdocs.pm/temple/your-first-template.html) for a more in depth explanation.
 
   ## Usage
 
   ```elixir
-  temple do
-    # You can define attributes by passing a keyword list to the element, the values can be literals or variables.
-    class = "text-blue"
-    id = "jumbotron"
+  defmodule MyApp.HomePage do
+    import Temple
 
-    div class: class, id: id do
-      # Text nodes can be emitted as string literals or variables.
-      "Bob"
+    def render() do
+      assigns = %{title: "My Site | Sign Up", logged_in: false}
 
-      id
-    end
+      temple do
+        "<!DOCTYPE html>"
 
-    # Attributes that result in boolean values will be emitted as a boolean attribute. Examples of boolean attributes are `disabled` and `checked`.
+        html do
+          head do
+            meta charset: "utf-8"
+            meta http_equiv: "X-UA-Compatible", content: "IE=edge"
+            meta name: "viewport", content: "width=device-width, initial-scale=1.0"
+            link rel: "stylesheet", href: "/css/app.css"
 
-    input type: "text", disabled: true
-    # <input type="text" disabled>
+            title do: @title
+          end
 
-    input type: "text", disabled: false
-    # <input type="text">
+          body do
+            header class: "header" do
+              ul do
+                li do
+                  a href: "/", do: "Home"
+                end
+                li do
+                  if @logged_in do
+                    a href: "/logout", do: "Logout"
+                  else
+                    a href: "/login", do: "Login"
+                  end
+                end
+              end
+            end
 
-    # The class attribute also can take a keyword list of classes to conditionally render, based on the boolean result of the value.
-
-    div class: ["text-red-500": false, "text-green-500": true] do
-      "Alert!"
-    end
-
-    # <div class="text-green-500">Alert!</div>
-
-    # if and unless expressions can be used to conditionally render content
-    if 5 > 0 do
-      p do
-        "Greater than 0!"
+            main do
+              "Hi! Welcome to my website."
+            end
+          end
+        end
       end
     end
-
-    unless 5 > 0 do
-      p do
-        "Less than 0!"
-      end
-    end
-
-    # You can loop over items using for comprehensions
-    for x <- 0..5 do
-      div do
-        x
-      end
-    end
-
-    # You can use multiline anonymous functions, like if you're building a form in Phoenix
-    form_for @changeset, Routes.user_path(@conn, :create), fn f ->
-      "Name: "
-      text_input f, :name
-    end
-
-    # You can explicitly emit a tag by prefixing with the Temple module
-    Temple.div do
-      "Foo"
-    end
-
-    # You can also pass children as a do key instead of a block
-    div do: "Alice", class: "text-yellow"
   end
-  ```
-
-  ## Whitespace Control
-
-  By default, Temple will emit internal whitespace into tags, something like this.
-
-  ```elixir
-  span do
-    "Hello, world!"
-  end
-  ```
-
-  ```html
-  <span>
-    Hello, world!
-  </span>
-  ```
-
-  If you need to create a "tight" tag, you can call the "bang" version of the desired tag.
-
-  ```elixir
-  span! do
-    "Hello, world!"
-  end
-  ```
-
-  ```html
-  <span>Hello, world!</span>
   ```
 
   ## Configuration
 
-  ### Mode
+  ### Engine
 
-  There are two "modes", `:normal` (the default) and `:live_view`.
-
-  In `:live_view` mode, Temple emits markup that uses functions provided by Phoenix LiveView in order to be fully "diff trackable". These LiveView functions have not been released yet, so if you are going to combine Temple with LiveView, you need to use the latest unreleased default branch from GitHub.
-
-  You should use `:live_view` mode even if you only have a single LiveView.
+  By default Temple wil use the `EEx.SmartEngine`, but you can configure it to use any other engine. Examples could be `Phoenix.HTML.Engine` or `Phoenix.LiveView.Engine`.
 
   ```elixir
-  config :temple, :mode, :normal # default
-
-  # or
-
-  config :temple, :mode, :live_view
+  config :temple, engine: Phoenix.HTML.Engine
   ```
 
   ### Aliases
@@ -123,16 +70,16 @@ defmodule Temple do
 
   ```elixir
   config :temple, :aliases,
-    label: :_label,
-    link: :_link,
-    select: :_select
+    label: :label_tag,
+    link: :link_tag,
+    select: :select_tag
 
   temple do
-    _label do
+    label_tag do
       "Email"
     end
 
-    _link href: "/css/site.css"
+    link_tag href: "/css/site.css"
   end
   ```
 
@@ -147,83 +94,20 @@ defmodule Temple do
   ```
   """
 
-  defmacro __using__(_) do
-    quote location: :keep do
-      import Temple
-      require Temple.Component
-    end
-  end
-
-  @doc """
-  Context for temple markup.
-
-  Returns an EEx string that can be passed into an EEx template engine.
-
-  ## Usage
-
-  ```elixir
-  import Temple
-
-  temple do
-    div class: @class do
-      "Hello, world!"
-    end
-  end
-
-  # <div class="<%= @class %>">
-  #   Hello, world!
-  # </div>
-  ```
-  """
-  defmacro temple([do: block] = _block) do
-    markup =
-      block
-      |> Parser.parse()
-      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
-      |> Enum.intersperse("\n")
-      |> :erlang.iolist_to_binary()
-
-    quote location: :keep do
-      unquote(markup)
-    end
-  end
-
   defmacro temple(block) do
-    quote location: :keep do
-      unquote(block)
-      |> Parser.parse()
-      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
-      |> Enum.intersperse("\n")
-      |> :erlang.iolist_to_binary()
+    opts = [engine: engine()]
+
+    quote do
+      require Temple.Renderer
+      Temple.Renderer.compile(unquote(opts), unquote(block))
     end
   end
 
-  @doc """
-  Compiles temple markup into a quoted expression using the given EEx Engine.
-
-  Returns the same output that Phoenix templates output into the `render/1` function of their view modules.
-
-  ## Usage
-
-  ```elixir
-  require Temple
-
-  Temple.compile Phoenix.HTML.Engine do
-    div class: @class do
-      "Hello, world!"
-    end
+  @doc false
+  def component(func, assigns) do
+    apply(func, [assigns])
   end
 
-  ```
-  """
-  defmacro compile(engine, [do: block] = _block) do
-    markup =
-      block
-      |> Parser.parse()
-      |> Enum.map(fn parsed -> Temple.Generator.to_eex(parsed, 0) end)
-      |> Enum.intersperse("\n")
-      |> :erlang.iolist_to_binary()
-
-    EEx.compile_string(markup, engine: engine, line: __CALLER__.line, file: __CALLER__.file)
-  end
+  @doc false
+  def engine(), do: @engine
 end

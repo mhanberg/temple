@@ -1,13 +1,11 @@
-# ![](temple.png)
+# ![](temple-github-image.png)
 
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 
-> You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.8.0).
+> You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.9.0).
 
-Temple is a DSL for writing HTML and EEx using Elixir.
-
-You're probably here because you want to use Temple to write Phoenix templates, which is why Temple includes a [Phoenix template engine](#phoenix-templates).
+Temple is an Elixir DSL for writing HTML.
 
 ## Installation
 
@@ -16,8 +14,7 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.8.0"},
-    {:phoenix_live_view, "~> 0.16"} # if you are using Phoenix LiveView
+    {:temple, "~> 0.9.0-rc.0"}
   ]
 end
 ```
@@ -26,16 +23,16 @@ end
 Currently Temple has the following things on which it won't compromise.
 
 - Will only work with valid Elixir syntax.
-- Should always work with normal EEx, as well as Phoenix and Phoenix LiveView.
+- Should work in all web environments such as Plug, Aino, Phoenix, and Phoenix LiveView.
 
 ## Usage
 
-Using Temple is as simple as using the DSL inside of an `temple/1` block. This returns an EEx string at compile time.
+Using Temple is as simple as using the DSL inside of an `temple/1` block. The runtime result of the macro is your HTML.
 
-See the [documentation](https://hexdocs.pm/temple/Temple.html) for more details.
+See the [guides](https://hexdocs.pm/temple/your-first-template.html) for more details.
 
 ```elixir
-use Temple
+import Temple
 
 temple do
   h2 do: "todos"
@@ -66,40 +63,43 @@ end
 
 ### Components
 
-Temple components provide an ergonomic API for creating flexible and reusable views. Unlike normal partials, Temple components can take slots, which are similar [Vue](https://v3.vuejs.org/guide/component-slots.html#named-slots).
+Temple components are simple to write and easy to use.
 
-For example, if I were to define a `Card` component, I would create the following module.
+Unlike normal partials, Temple components have the concept of "slots", which are similar [Vue](https://v3.vuejs.org/guide/component-slots.html#named-slots). You can also refer to HEEx and Surface for examples of templates that have the "slot" concept.
+
+Please see the [guides](https://hexdocs.pm/temple/components.html) for more details.
 
 ```elixir
-defmodule MyAppWeb.Components.Card do
-  import Temple.Component
+defmodule MyAppWeb.Component do
+  import Temple
 
-  render do
-    section do
-      div do
-        slot :header
-      end
+  def card(assigns) do
+    temple do
+      section do
+        div do
+          slot :header
+        end
 
-      div do
-        slot :default
-      end
+        div do
+          slot :default
+        end
 
-      div do
-        slot :footer
+        div do
+          slot :footer
+        end
       end
     end
   end
 end
 ```
 
-And we could use the component like so
+Using components is as simple as passing a reference to your component function to the `c` keyword.
 
 ```elixir
-# lib/my_app_web/views/page_view.ex
-alias MyAppWeb.Components.Card
+import MyAppWeb.Component
 
 # lib/my_app_web/templates/page/index.html.exs
-c Card do
+c &card/1 do
   slot :header do
     @user.full_name
   end
@@ -117,86 +117,16 @@ c Card do
 end
 ```
 
-### Phoenix templates
+### Engine
 
-To use temple as a Phoenix Template engine, you'll need to configure the right file extensions with the right Temple engine.
-
-```elixir
-# config.exs
-config :phoenix, :template_engines,
-  exs: Temple.Engine
-  # or for LiveView support
-  # this will work for files named like `index.html.lexs`
-  # you can enable Elixir syntax highlighting in your editor
-  lexs: Temple.LiveViewEngine
-
-# If you're going to be using live_view, make sure to set the `:mode` to `:live_view`.
-# This is necessary for Temple to emit markup that is compatible.
-config :temple, :mode, :live_view # defaults to normal
-
-# config/dev.exs
-config :your_app, YourAppWeb.Endpoint,
-  live_reload: [
-    patterns: [
-      ~r"lib/myapp_web/(live|views)/.*(ex|exs|lexs)$",
-      ~r"lib/myapp_web/templates/.*(eex|exs|lexs)$"
-    ]
-  ]
-```
+By default, Temple will use the `EEx.SmartEngine` that is built into the Elixir standard library. If you are a web framework that uses it's own template engine (such as [Aino](https://github.com/oestrich/aino) and Phoenix/LiveView, you can configure Temple to it!
 
 ```elixir
-# app.html.exs
+# config/config.exs
 
-"<!DOCTYPE html>"
-html lang: "en" do
-  head do
-    meta charset: "utf-8"
-    meta http_equiv: "X-UA-Compatible", content: "IE=edge"
-    meta name: "viewport", content: "width=device-width, initial-scale=1.0"
-    title do: "YourApp · Phoenix Framework"
-
-    _link rel: "stylesheet", href: Routes.static_path(@conn, "/css/app.css")
-  end
-
-  body do
-    header do
-      section class: "container" do
-        nav role: "navigation" do
-          ul do
-            li do
-              a href: "https://hexdocs.pm/phoenix/overview.html"), do: "Get Started"
-            end
-          end
-        end
-
-        a href: "http://phoenixframework.org/", class: "phx-logo" do
-          img src: Routes.static_path(@conn, "/images/phoenix.png"),
-              alt: "Phoenix Framework Logo"
-        end
-      end
-    end
-
-    main role: "main", class: "container" do
-      p class: "alert alert-info", role: "alert", do: get_flash(@conn, :info)
-      p class: "alert alert-danger", role: "alert", do: get_flash(@conn, :error)
-
-      render @view_module, @view_template, assigns
-    end
-
-    script type: "text/javascript", src: Routes.static_path(@conn, "/js/app.js")
-  end
-end
+config :temple,
+  engine: Aino.View.Engine # or Phoenix.HTML.Engine or Phoenix.LiveView.Engine
 ```
-
-### Tasks
-
-#### temple.gen.layout
-
-Generates the app layout.
-
-#### temple.gen.html
-
-Generates the templates for a resource.
 
 ### Formatter
 
@@ -209,7 +139,13 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
 ]
 ```
 
+## Phoenix
+
+To use with [Phoenix](https://github.com/phoenixframework/phoenix), please use the [temple_phoenix](https://github.com/mhanberg/temple_phoenix) package! This bundles up some useful helpers as well as the Phoenix Template engine.
+
 ## Related
 
 - [Introducing Temple: An elegant HTML library for Elixir and Phoenix](https://www.mitchellhanberg.com/introducing-temple-an-elegant-html-library-for-elixir-and-phoenix/)
 - [Temple, AST, and Protocols](https://www.mitchellhanberg.com/temple-ast-and-protocols/)
+- [Thinking Elixir Episode 92: Temple with Mitchell Hanberg](https://podcast.thinkingelixir.com/92)
+- [How EEx Turns Your Template Into HTML](https://www.mitchellhanberg.com/how-eex-turns-your-template-into-html/)

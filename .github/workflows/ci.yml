@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         otp: [23.x, 24.x]
-        elixir: [1.10.x, 1.12.x]
+        elixir: [1.13.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -20,14 +20,14 @@ jobs:
       with:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: |
           deps
           _build
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-${{matrix.otp}}-${{matrix.elixir}}-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-mix-
+          ${{ runner.os }}-mix-${{matrix.otp}}-${{matrix.elixir}}-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -36,77 +36,72 @@ jobs:
     - name: Run Tests
       run: mix test
 
-  integration_tests:
-    runs-on: ubuntu-latest
-    name: Integration Test (${{matrix.elixir}}/${{matrix.otp}})
-    defaults:
-      run:
-        working-directory: "./integration_test/temple_demo"
+  # integration_tests:
+  #   runs-on: ubuntu-latest
+  #   name: Integration Test (${{matrix.elixir}}/${{matrix.otp}})
+  #   defaults:
+  #     run:
+  #       working-directory: "./integration_test/temple_demo"
 
-    strategy:
-      matrix:
-        otp: [23.x]
-        elixir: [1.9.x, 1.11.x]
+  #   services:
+  #     db:
+  #       image: postgres:12
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: postgres
+  #         POSTGRES_DB: temple_demo_test
+  #       ports: ['5432:5432']
+  #       options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    services:
-      db:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: temple_demo_test
-        ports: ['5432:5432']
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: erlef/setup-beam@v1
+  #     with:
+  #       otp-version: 24.x
+  #       elixir-version: 1.13.x
 
-    steps:
-    - uses: actions/checkout@v2
-    - uses: erlef/setup-beam@v1
-      with:
-        otp-version: ${{matrix.otp}}
-        elixir-version: ${{matrix.elixir}}
+  #   - uses: actions/cache@v3
+  #     with:
+  #       path: |
+  #         deps
+  #         _build
+  #       key: ${{ runner.os }}-mix-24-1.13-${{ hashFiles('**/mix.lock') }}
+  #       restore-keys: |
+  #         ${{ runner.os }}-mix-24-1.13-
 
-    - uses: actions/cache@v2
-      with:
-        path: |
-          deps
-          _build
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-mix-
+  #   - name: Install Dependencies
+  #     if: steps.cache.outputs.cache-hit != 'true'
+  #     run: mix deps.get
 
-    - name: Install Dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: mix deps.get
+  #   - name: Run Tests
+  #     run: mix test || mix test --failed || mix test --failed
+  #     env:
+  #       MIX_ENV: test
 
-    - name: Run Tests
-      run: mix test || mix test --failed || mix test --failed
-      env:
-        MIX_ENV: test
-
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: screenshots
-        path: screenshots/
+  #   - uses: actions/upload-artifact@v2
+  #     if: failure()
+  #     with:
+  #       name: screenshots
+  #       path: screenshots/
 
   formatter:
     runs-on: ubuntu-latest
-    name: Formatter (1.11.x.x/23.x)
+    name: Formatter (1.13.x.x/24.x)
 
     steps:
     - uses: actions/checkout@v2
     - uses: erlef/setup-beam@v1
       with:
-        otp-version: 23.x
-        elixir-version: 1.11.x
-    - uses: actions/cache@v2
+        otp-version: 24.x
+        elixir-version: 1.13.x
+    - uses: actions/cache@v3
       with:
         path: |
           deps
           _build
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-24-1.13-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-mix-
+          ${{ runner.os }}-mix-24-1.13-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'

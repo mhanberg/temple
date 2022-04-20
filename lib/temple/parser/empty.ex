@@ -14,10 +14,4 @@ defmodule Temple.Parser.Empty do
   def run(_ast) do
     Temple.Ast.new(__MODULE__)
   end
-
-  defimpl Temple.Generator do
-    def to_eex(_, _ \\ 0) do
-      []
-    end
-  end
 end

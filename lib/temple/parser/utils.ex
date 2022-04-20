@@ -7,7 +7,7 @@ defmodule Temple.Parser.Utils do
   def kebab_to_snake(stringable),
     do: stringable |> to_string() |> String.replace("-", "_")
 
-  def compile_attrs([]), do: ""
+  def compile_attrs([]), do: []
 
   def compile_attrs([attrs]) when is_list(attrs) do
     compile_attrs(attrs)
@@ -15,49 +15,54 @@ defmodule Temple.Parser.Utils do
 
   def compile_attrs(attrs) when is_list(attrs) do
     if Keyword.keyword?(attrs) do
-      for {name, value} <- attrs, into: "" do
-        name = snake_to_kebab(name)
+      for {name, value} <- attrs, reduce: [] do
+        acc ->
+          name = snake_to_kebab(name)
 
-        with false <- not is_binary(value) && Macro.quoted_literal?(value),
-             false <- match?({_, _, _}, value),
-             false <- is_list(value) do
-          " " <> name <> "=\"" <> to_string(value) <> "\""
-        else
-          true ->
-            ~s|<%= {:safe, Temple.Parser.Utils.build_attr("#{name}", #{Macro.to_string(value)})} %>|
-        end
+          with false <- not is_binary(value) && Macro.quoted_literal?(value),
+               false <- match?({_, _, _}, value),
+               false <- is_list(value) do
+            [{:text, " " <> name <> "=\"" <> to_string(value) <> "\""} | acc]
+          else
+            true ->
+              nodes = Temple.Parser.Utils.build_attr(name, value)
+              Enum.reverse(nodes) ++ acc
+          end
       end
+      |> Enum.reverse()
     else
-      "<%= Temple.Parser.Utils.runtime_attrs(" <>
-        (attrs |> List.first() |> Macro.to_string()) <> ") %>"
+      [
+        {:expr,
+         quote do
+           unquote(List.first(attrs))
+         end}
+      ]
     end
   end
 
-  def runtime_attrs(attrs) do
-    {:safe,
-     for {name, value} <- attrs, name not in [:inner_block, :inner_content], into: "" do
-       name = snake_to_kebab(name)
-
-       build_attr(name, value)
-     end}
-  end
-
   def build_attr(name, true) do
-    " " <> name
+    [{:text, " " <> name}]
   end
 
   def build_attr(_name, false) do
-    ""
+    []
+  end
+
+  def build_attr(name, {_, _, _} = value) do
+    [{:text, ~s' #{name}="'}, {:expr, value}, {:text, ~s'"'}]
   end
 
   def build_attr("class", classes) when is_list(classes) do
-    value = String.trim_leading(for {class, true} <- classes, into: "", do: " #{class}")
+    value =
+      quote do
+        String.trim_leading(for {class, true} <- unquote(classes), into: "", do: " #{class}")
+      end
 
-    " class" <> "=\"" <> value <> "\""
+    [{:text, ~s' class="'}, {:expr, value}, {:text, ~s'"'}]
   end
 
   def build_attr(name, value) do
-    " " <> name <> "=\"" <> to_string(value) <> "\""
+    [{:text, ~s' #{name}="' <> to_string(value) <> ~s'"'}]
   end
 
   def split_args(not_what_i_want) when is_nil(not_what_i_want) or is_atom(not_what_i_want),
@@ -114,7 +119,19 @@ defmodule Temple.Parser.Utils do
     Keyword.pop(args, :compact, false)
   end
 
+  def indent(nil) do
+    ""
+  end
+
   def indent(level) do
     String.duplicate(" ", level * 2)
+  end
+
+  def inspect_ast(ast) do
+    ast
+    |> Macro.to_string()
+    |> IO.puts()
+
+    ast
   end
 end

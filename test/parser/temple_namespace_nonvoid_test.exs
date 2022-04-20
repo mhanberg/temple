@@ -3,7 +3,6 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
 
   alias Temple.Parser.NonvoidElementsAliases
   alias Temple.Parser.TempleNamespaceNonvoid
-  alias Temple.Support.Utils
 
   describe "applicable?/1" do
     test "returns true when the node is a Temple aliased nonvoid element" do
@@ -56,27 +55,6 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
                  whitespace: :loose
                }
              } = ast
-    end
-  end
-
-  describe "to_eex/1" do
-    test "emits eex" do
-      result =
-        quote do
-          Temple.div class: "foo", id: var do
-            "foo"
-          end
-        end
-        |> TempleNamespaceNonvoid.run()
-        |> Temple.Generator.to_eex()
-        |> Utils.iolist_to_binary()
-
-      assert result ==
-               ~s"""
-               <div class="foo"<%= {:safe, Temple.Parser.Utils.build_attr("id", var)} %>>
-                 foo
-               </div>
-               """
     end
   end
 end
