@@ -98,7 +98,6 @@ Using components is as simple as passing a reference to your component function 
 ```elixir
 import MyAppWeb.Component
 
-# lib/my_app_web/templates/page/index.html.exs
 c &card/1 do
   slot :header do
     @user.full_name
