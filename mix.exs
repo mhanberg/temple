@@ -5,7 +5,7 @@ defmodule Temple.MixProject do
     [
       app: :temple,
       name: "Temple",
-      description: "An HTML DSL for Elixir and Phoenix",
+      description: "An HTML DSL for Elixir",
       version: "0.9.0-rc.0",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -60,9 +60,7 @@ defmodule Temple.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.28.3", only: :dev, runtime: false},
-      {:phoenix_view, "~> 1.1.2", optional: true},
-      {:phoenix, "~> 1.6", optional: true}
+      {:ex_doc, "~> 0.28.3", only: :dev, runtime: false}
     ]
   end
 end
