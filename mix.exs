@@ -36,6 +36,7 @@ defmodule Temple.MixProject do
         "guides/getting-started.md",
         "guides/your-first-template.md",
         "guides/components.md",
+        "guides/converting-html.md",
         "guides/migrating/0.8-to-0.9.md"
       ],
       groups_for_extras: groups_for_extras()
@@ -60,6 +61,7 @@ defmodule Temple.MixProject do
 
   defp deps do
     [
+      {:floki, ">= 0.0.0"},
       {:ex_doc, "~> 0.28.3", only: :dev, runtime: false}
     ]
   end
