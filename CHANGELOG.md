@@ -2,7 +2,11 @@
 
 ## Main
 
-### 0.9.0-rc.0
+### Enhancements
+
+- mix temple.convert task to convert HTML into Temple syntax.
+
+### 0.9.0
 
 ### Breaking Changes
 
