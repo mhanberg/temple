@@ -1,6 +1,6 @@
 defmodule Temple.Parser.Slot do
   @moduledoc false
-  @behaviour Temple.Parser
+  @behaviour Temple.Ast
 
   defstruct name: nil, args: []
 

@@ -1,19 +1,19 @@
 defmodule Temple.Parser.NonvoidElementsAliases do
   @moduledoc false
-  @behaviour Temple.Parser
+  @behaviour Temple.Ast
 
   defstruct name: nil, attrs: [], children: [], meta: %{}
 
   alias Temple.Parser
 
-  @impl Parser
+  @impl true
   def applicable?({name, _, _}) do
     name in Parser.nonvoid_elements_aliases()
   end
 
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run({name, meta, args}) do
     name = Parser.nonvoid_elements_lookup()[name]
 

@@ -1,16 +1,14 @@
 defmodule Temple.Parser.Text do
   @moduledoc false
-  @behaviour Temple.Parser
+  @behaviour Temple.Ast
 
   defstruct text: nil
 
-  alias Temple.Parser
-
-  @impl Parser
+  @impl true
   def applicable?(text) when is_binary(text), do: true
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run(text) do
     Temple.Ast.new(__MODULE__, text: text)
   end

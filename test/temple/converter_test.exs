@@ -61,7 +61,7 @@ defmodule Temple.ConverterTest do
         </style>
       """
 
-      assert Converter.convert(html) |> tap(&IO.puts/1) ===
+      assert Converter.convert(html) ===
                """
                script do
                  "console.log(\\"ayy yoo\\");"

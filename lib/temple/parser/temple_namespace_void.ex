@@ -1,15 +1,15 @@
 defmodule Temple.Parser.TempleNamespaceVoid do
   @moduledoc false
-  @behaviour Temple.Parser
+  @behaviour Temple.Ast
 
-  @impl Temple.Parser
+  @impl true
   def applicable?({{:., _, [{:__aliases__, _, [:Temple]}, name]}, _meta, _args}) do
     name in Temple.Parser.void_elements_aliases()
   end
 
   def applicable?(_), do: false
 
-  @impl Temple.Parser
+  @impl true
   def run({name, meta, args}) do
     {:., _, [{:__aliases__, _, [:Temple]}, name]} = name
 

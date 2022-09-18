@@ -1,14 +1,14 @@
 defmodule Temple.Parser.ElementList do
   @moduledoc false
 
-  @behaviour Temple.Parser
+  @behaviour Temple.Ast
 
   defstruct children: [], whitespace: :loose
 
-  @impl Temple.Parser
+  @impl true
   def applicable?(asts), do: is_list(asts)
 
-  @impl Temple.Parser
+  @impl true
   def run(asts) do
     children = Enum.flat_map(asts, &Temple.Parser.parse/1)
 

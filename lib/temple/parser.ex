@@ -1,46 +1,126 @@
 defmodule Temple.Parser do
   @moduledoc false
 
+  alias Temple.Parser.AnonymousFunctions
+  alias Temple.Parser.Components
+  alias Temple.Parser.Default
+  alias Temple.Parser.DoExpressions
   alias Temple.Parser.Empty
-  alias Temple.Parser.Text
+  alias Temple.Parser.Match
+  alias Temple.Parser.NonvoidElementsAliases
+  alias Temple.Parser.RightArrow
+  alias Temple.Parser.Slot
   alias Temple.Parser.TempleNamespaceNonvoid
   alias Temple.Parser.TempleNamespaceVoid
-  alias Temple.Parser.Components
-  alias Temple.Parser.Slot
-  alias Temple.Parser.NonvoidElementsAliases
+  alias Temple.Parser.Text
   alias Temple.Parser.VoidElementsAliases
-  alias Temple.Parser.AnonymousFunctions
-  alias Temple.Parser.RightArrow
-  alias Temple.Parser.DoExpressions
-  alias Temple.Parser.Match
-  alias Temple.Parser.Default
 
-  @type ast ::
-          %Empty{}
-          | %Text{}
-          | %Components{}
-          | %Slot{}
-          | %NonvoidElementsAliases{}
-          | %VoidElementsAliases{}
-          | %AnonymousFunctions{}
-          | %RightArrow{}
-          | %DoExpressions{}
-          | %Match{}
-          | %Default{}
+  @aliases Application.compile_env(:temple, :aliases, [])
 
-  @doc """
-  Should return true if the parser should apply for the given AST.
-  """
-  @callback applicable?(ast :: Macro.t()) :: boolean()
+  # void tags
+  # 'circle',
+  #   'ellipse',
+  #   'line',
+  #   'path',
+  #   'polygon',
+  #   'polyline',
+  #   'rect',
+  #   'stop',
+  #   'use'
 
-  @doc """
-  Processes the given AST, adding the markup to the given buffer.
-
-  Should return Temple.AST.
-  """
-  @callback run(ast :: Macro.t()) :: ast()
-
-  @aliases Application.get_env(:temple, :aliases, [])
+  # nonvoid tags
+  # 'a',
+  #   'altGlyph',
+  #   'altGlyphDef',
+  #   'altGlyphItem',
+  #   'animate',
+  #   'animateColor',
+  #   'animateMotion',
+  #   'animateTransform',
+  #   'animation',
+  #   'audio',
+  #   'canvas',
+  #   'clipPath',
+  #   'color-profile',
+  #   'cursor',
+  #   'defs',
+  #   'desc',
+  #   'discard',
+  #   'feBlend',
+  #   'feColorMatrix',
+  #   'feComponentTransfer',
+  #   'feComposite',
+  #   'feConvolveMatrix',
+  #   'feDiffuseLighting',
+  #   'feDisplacementMap',
+  #   'feDistantLight',
+  #   'feDropShadow',
+  #   'feFlood',
+  #   'feFuncA',
+  #   'feFuncB',
+  #   'feFuncG',
+  #   'feFuncR',
+  #   'feGaussianBlur',
+  #   'feImage',
+  #   'feMerge',
+  #   'feMergeNode',
+  #   'feMorphology',
+  #   'feOffset',
+  #   'fePointLight',
+  #   'feSpecularLighting',
+  #   'feSpotLight',
+  #   'feTile',
+  #   'feTurbulence',
+  #   'filter',
+  #   'font',
+  #   'font-face',
+  #   'font-face-format',
+  #   'font-face-name',
+  #   'font-face-src',
+  #   'font-face-uri',
+  #   'foreignObject',
+  #   'g',
+  #   'glyph',
+  #   'glyphRef',
+  #   'handler',
+  #   'hatch',
+  #   'hatchpath',
+  #   'hkern',
+  #   'iframe',
+  #   'image',
+  #   'linearGradient',
+  #   'listener',
+  #   'marker',
+  #   'mask',
+  #   'mesh',
+  #   'meshgradient',
+  #   'meshpatch',
+  #   'meshrow',
+  #   'metadata',
+  #   'missing-glyph',
+  #   'mpath',
+  #   'pattern',
+  #   'prefetch',
+  #   'radialGradient',
+  #   'script',
+  #   'set',
+  #   'solidColor',
+  #   'solidcolor',
+  #   'style',
+  #   'svg',
+  #   'switch',
+  #   'symbol',
+  #   'tbreak',
+  #   'text',
+  #   'textArea',
+  #   'textPath',
+  #   'title',
+  #   'tref',
+  #   'tspan',
+  #   'unknown',
+  #   'video',
+  #   'view',
+  #   'vkern'
 
   @nonvoid_elements ~w[
     head title style script

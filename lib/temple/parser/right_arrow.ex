@@ -1,18 +1,17 @@
 defmodule Temple.Parser.RightArrow do
   @moduledoc false
-  alias Temple.Parser
 
-  @behaviour Parser
+  @behaviour Temple.Ast
 
   defstruct elixir_ast: nil, children: []
 
-  @impl Parser
+  @impl true
   def applicable?({:->, _, _}), do: true
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run({func, meta, [pattern, args]}) do
-    children = Parser.parse(args)
+    children = Temple.Parser.parse(args)
 
     Temple.Ast.new(__MODULE__, elixir_ast: {func, meta, [pattern]}, children: children)
   end
