@@ -17,16 +17,6 @@ defmodule Temple.Parser do
 
   @aliases Application.compile_env(:temple, :aliases, [])
 
-  # void tags
-  # 'circle',
-  #   'ellipse',
-  #   'line',
-  #   'path',
-  #   'polygon',
-  #   'polyline',
-  #   'rect',
-  #   'stop',
-  #   'use'
   @doc """
   Should return true if the parser should apply for the given AST.
   """
@@ -39,99 +29,118 @@ defmodule Temple.Parser do
   """
   @callback run(ast :: Macro.t()) :: Temple.Ast.t()
 
+  @void_svg_lookup [
+    circle: "circle",
+    ellipse: "ellipse",
+    line: "line",
+    path: "path",
+    polygon: "polygon",
+    polyline: "polyline",
+    rect: "rect",
+    stop: "stop",
+    use: "use"
+  ]
+
+  @void_svg_aliases Keyword.keys(@void_svg_lookup)
+
+  @nonvoid_svg_lookup [
+    a: "a",
+    altGlyph: "altGlyph",
+    altGlyphDef: "altGlyphDef",
+    altGlyphItem: "altGlyphItem",
+    animate: "animate",
+    animateColor: "animateColor",
+    animateMotion: "animateMotion",
+    animateTransform: "animateTransform",
+    animation: "animation",
+    audio: "audio",
+    canvas: "canvas",
+    clipPath: "clipPath",
+    color_profile: "color-profile",
+    cursor: "cursor",
+    defs: "defs",
+    desc: "desc",
+    discard: "discard",
+    feBlend: "feBlend",
+    feColorMatrix: "feColorMatrix",
+    feComponentTransfer: "feComponentTransfer",
+    feComposite: "feComposite",
+    feConvolveMatrix: "feConvolveMatrix",
+    feDiffuseLighting: "feDiffuseLighting",
+    feDisplacementMap: "feDisplacementMap",
+    feDistantLight: "feDistantLight",
+    feDropShadow: "feDropShadow",
+    feFlood: "feFlood",
+    feFuncA: "feFuncA",
+    feFuncB: "feFuncB",
+    feFuncG: "feFuncG",
+    feFuncR: "feFuncR",
+    feGaussianBlur: "feGaussianBlur",
+    feImage: "feImage",
+    feMerge: "feMerge",
+    feMergeNode: "feMergeNode",
+    feMorphology: "feMorphology",
+    feOffset: "feOffset",
+    fePointLight: "fePointLight",
+    feSpecularLighting: "feSpecularLighting",
+    feSpotLight: "feSpotLight",
+    feTile: "feTile",
+    feTurbulence: "feTurbulence",
+    filter: "filter",
+    font: "font",
+    font_face: "font-face",
+    font_face_format: "font-face-format",
+    font_face_name: "font-face-name",
+    font_face_src: "font-face-src",
+    font_face_uri: "font-face-uri",
+    foreignObject: "foreignObject",
+    g: "g",
+    glyph: "glyph",
+    glyphRef: "glyphRef",
+    handler: "handler",
+    hatch: "hatch",
+    hatchpath: "hatchpath",
+    hkern: "hkern",
+    iframe: "iframe",
+    image: "image",
+    linearGradient: "linearGradient",
+    listener: "listener",
+    marker: "marker",
+    mask: "mask",
+    mesh: "mesh",
+    meshgradient: "meshgradient",
+    meshpatch: "meshpatch",
+    meshrow: "meshrow",
+    metadata: "metadata",
+    missing_glyph: "missing-glyph",
+    mpath: "mpath",
+    pattern: "pattern",
+    prefetch: "prefetch",
+    radialGradient: "radialGradient",
+    script: "script",
+    set: "set",
+    solidColor: "solidColor",
+    solidcolor: "solidcolor",
+    style: "style",
+    svg: "svg",
+    switch: "switch",
+    symbol: "symbol",
+    tbreak: "tbreak",
+    text: "text",
+    textArea: "textArea",
+    textPath: "textPath",
+    title: "title",
+    tref: "tref",
+    tspan: "tspan",
+    unknown: "unknown",
+    video: "video",
+    view: "view",
+    vkern: "vkern"
+  ]
+
+  @nonvoid_svg_aliases Keyword.keys(@nonvoid_svg_lookup)
+
   # nonvoid tags
-  # 'a',
-  #   'altGlyph',
-  #   'altGlyphDef',
-  #   'altGlyphItem',
-  #   'animate',
-  #   'animateColor',
-  #   'animateMotion',
-  #   'animateTransform',
-  #   'animation',
-  #   'audio',
-  #   'canvas',
-  #   'clipPath',
-  #   'color-profile',
-  #   'cursor',
-  #   'defs',
-  #   'desc',
-  #   'discard',
-  #   'feBlend',
-  #   'feColorMatrix',
-  #   'feComponentTransfer',
-  #   'feComposite',
-  #   'feConvolveMatrix',
-  #   'feDiffuseLighting',
-  #   'feDisplacementMap',
-  #   'feDistantLight',
-  #   'feDropShadow',
-  #   'feFlood',
-  #   'feFuncA',
-  #   'feFuncB',
-  #   'feFuncG',
-  #   'feFuncR',
-  #   'feGaussianBlur',
-  #   'feImage',
-  #   'feMerge',
-  #   'feMergeNode',
-  #   'feMorphology',
-  #   'feOffset',
-  #   'fePointLight',
-  #   'feSpecularLighting',
-  #   'feSpotLight',
-  #   'feTile',
-  #   'feTurbulence',
-  #   'filter',
-  #   'font',
-  #   'font-face',
-  #   'font-face-format',
-  #   'font-face-name',
-  #   'font-face-src',
-  #   'font-face-uri',
-  #   'foreignObject',
-  #   'g',
-  #   'glyph',
-  #   'glyphRef',
-  #   'handler',
-  #   'hatch',
-  #   'hatchpath',
-  #   'hkern',
-  #   'iframe',
-  #   'image',
-  #   'linearGradient',
-  #   'listener',
-  #   'marker',
-  #   'mask',
-  #   'mesh',
-  #   'meshgradient',
-  #   'meshpatch',
-  #   'meshrow',
-  #   'metadata',
-  #   'missing-glyph',
-  #   'mpath',
-  #   'pattern',
-  #   'prefetch',
-  #   'radialGradient',
-  #   'script',
-  #   'set',
-  #   'solidColor',
-  #   'solidcolor',
-  #   'style',
-  #   'svg',
-  #   'switch',
-  #   'symbol',
-  #   'tbreak',
-  #   'text',
-  #   'textArea',
-  #   'textPath',
-  #   'title',
-  #   'tref',
-  #   'tspan',
-  #   'unknown',
-  #   'video',
-  #   'view',
-  #   'vkern'
 
   @nonvoid_elements ~w[
     head title style script
@@ -158,9 +167,9 @@ defmodule Temple.Parser do
                              {Keyword.get(@aliases, el, el), el}
                            end)
 
-  def nonvoid_elements, do: @nonvoid_elements
-  def nonvoid_elements_aliases, do: @nonvoid_elements_aliases
-  def nonvoid_elements_lookup, do: @nonvoid_elements_lookup
+  def nonvoid_elements, do: @nonvoid_elements ++ Keyword.values(@nonvoid_svg_aliases)
+  def nonvoid_elements_aliases, do: @nonvoid_elements_aliases ++ @nonvoid_svg_aliases
+  def nonvoid_elements_lookup, do: @nonvoid_elements_lookup ++ @nonvoid_svg_lookup
 
   @void_elements ~w[
     meta link base
@@ -172,9 +181,9 @@ defmodule Temple.Parser do
                           {Keyword.get(@aliases, el, el), el}
                         end)
 
-  def void_elements, do: @void_elements
-  def void_elements_aliases, do: @void_elements_aliases
-  def void_elements_lookup, do: @void_elements_lookup
+  def void_elements, do: @void_elements ++ Keyword.values(@void_svg_aliases)
+  def void_elements_aliases, do: @void_elements_aliases ++ @void_svg_aliases
+  def void_elements_lookup, do: @void_elements_lookup ++ @void_svg_lookup
 
   def parsers() do
     [
