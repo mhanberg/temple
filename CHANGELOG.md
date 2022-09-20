@@ -2,9 +2,12 @@
 
 ## Main
 
+### 0.10.0
+
 ### Enhancements
 
 - mix temple.convert task to convert HTML into Temple syntax.
+- Temple now works with SVG elements.
 
 ### 0.9.0
 
