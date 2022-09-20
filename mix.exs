@@ -9,7 +9,7 @@ defmodule Temple.MixProject do
       version: "0.9.0",
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
-      elixir: "~> 1.12",
+      elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/mhanberg/temple",
