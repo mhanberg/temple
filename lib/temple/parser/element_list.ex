@@ -1,9 +1,14 @@
 defmodule Temple.Parser.ElementList do
   @moduledoc false
 
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct children: [], whitespace: :loose
+  use TypedStruct
+
+  typedstruct do
+    field :children, list()
+    field :whitespace, :loose | :tight
+  end
 
   @impl true
   def applicable?(asts), do: is_list(asts)

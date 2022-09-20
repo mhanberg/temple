@@ -1,8 +1,13 @@
 defmodule Temple.Parser.DoExpressions do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct elixir_ast: nil, children: []
+  use TypedStruct
+
+  typedstruct do
+    field :elixir_ast, Macro.t()
+    field :children, [map()]
+  end
 
   @impl true
   def applicable?({_, _, args}) when is_list(args) do

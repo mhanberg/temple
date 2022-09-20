@@ -1,8 +1,15 @@
 defmodule Temple.Parser.NonvoidElementsAliases do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct name: nil, attrs: [], children: [], meta: %{}
+  use TypedStruct
+
+  typedstruct do
+    field :name, atom()
+    field :attrs, list()
+    field :children, list()
+    field :meta, map()
+  end
 
   alias Temple.Parser
 

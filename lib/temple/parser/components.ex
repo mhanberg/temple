@@ -1,8 +1,15 @@
 defmodule Temple.Parser.Components do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct function: nil, assigns: [], children: [], slots: []
+  use TypedStruct
+
+  typedstruct do
+    field :function, function()
+    field :assigns, map()
+    field :children, [map()]
+    field :slots, [function()]
+  end
 
   @impl true
   def applicable?({:c, _, _}) do

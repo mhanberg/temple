@@ -1,6 +1,6 @@
 defmodule Temple.Parser.TempleNamespaceNonvoid do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
   alias Temple.Parser
 

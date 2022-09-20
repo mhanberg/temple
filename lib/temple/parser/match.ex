@@ -1,10 +1,12 @@
 defmodule Temple.Parser.Match do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct elixir_ast: nil
+  use TypedStruct
 
-  alias Temple.Parser
+  typedstruct do
+    field :elixir_ast, Macro.t()
+  end
 
   @impl true
   def applicable?({name, _, _}) do

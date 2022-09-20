@@ -1,8 +1,13 @@
 defmodule Temple.Parser.VoidElementsAliases do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct name: nil, attrs: []
+  use TypedStruct
+
+  typedstruct do
+    field :name, atom()
+    field :attrs, list(), default: []
+  end
 
   @impl true
   def applicable?({name, _, _}) do

@@ -1,8 +1,12 @@
 defmodule Temple.Parser.Default do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct elixir_ast: nil
+  use TypedStruct
+
+  typedstruct do
+    field :elixir_ast, Macro.t()
+  end
 
   @impl true
   def applicable?(_ast), do: true

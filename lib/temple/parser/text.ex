@@ -1,8 +1,12 @@
 defmodule Temple.Parser.Text do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
-  defstruct text: nil
+  use TypedStruct
+
+  typedstruct do
+    field :text, String.t()
+  end
 
   @impl true
   def applicable?(text) when is_binary(text), do: true

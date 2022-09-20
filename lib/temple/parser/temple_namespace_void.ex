@@ -1,6 +1,6 @@
 defmodule Temple.Parser.TempleNamespaceVoid do
   @moduledoc false
-  @behaviour Temple.Ast
+  @behaviour Temple.Parser
 
   @impl true
   def applicable?({{:., _, [{:__aliases__, _, [:Temple]}, name]}, _meta, _args}) do

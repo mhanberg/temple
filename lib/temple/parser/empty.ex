@@ -1,8 +1,12 @@
 defmodule Temple.Parser.Empty do
   @moduledoc false
-  @behaviour Temple.Ast
 
-  defstruct []
+  use TypedStruct
+
+  @behaviour Temple.Parser
+
+  typedstruct do
+  end
 
   @impl true
   def applicable?(ast) when ast in [nil, []], do: true

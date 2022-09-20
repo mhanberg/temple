@@ -27,6 +27,17 @@ defmodule Temple.Parser do
   #   'rect',
   #   'stop',
   #   'use'
+  @doc """
+  Should return true if the parser should apply for the given AST.
+  """
+  @callback applicable?(ast :: Macro.t()) :: boolean()
+
+  @doc """
+  Processes the given AST, adding the markup to the given buffer.
+
+  Should return Temple.AST.
+  """
+  @callback run(ast :: Macro.t()) :: Temple.Ast.t()
 
   # nonvoid tags
   # 'a',
