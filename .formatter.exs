@@ -116,7 +116,7 @@ svg = ~w[
   vkern
 ]a
 
-locals_without_parens = Enum.map(temple ++ html ++ svg, & {&1, :*})
+locals_without_parens = Enum.map(temple ++ html ++ svg, &{&1, :*})
 
 [
   import_deps: [:typed_struct],
