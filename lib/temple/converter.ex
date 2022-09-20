@@ -43,7 +43,7 @@ defmodule Temple.Converter do
 
   def to_temple([{tag, attrs, children} | rest]) do
     [
-      tag |> to_string() |> dash_to_underscore(),
+      to_string(tag),
       " ",
       to_temple_attrs(attrs),
       " do\n",
@@ -90,14 +90,14 @@ defmodule Temple.Converter do
   defp to_temple_attrs(attrs) do
     Enum.map_join(attrs, ", ", fn
       {attr, _value} when attr in @boolean_attributes ->
-        dash_to_underscore(attr) <> ": true"
+        to_attr_name(attr) <> ": true"
 
       {attr, value} ->
-        ~s|#{dash_to_underscore(attr)}: "#{value}"|
+        ~s|#{to_attr_name(attr)}: "#{value}"|
     end)
   end
 
-  defp dash_to_underscore(name) do
+  defp to_attr_name(name) do
     String.replace(name, "-", "_")
   end
 end

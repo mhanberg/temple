@@ -41,7 +41,6 @@ svg = ~w[
   audio
   canvas
   clipPath
-  color_profile
   cursor
   defs
   desc
@@ -73,11 +72,6 @@ svg = ~w[
   feTurbulence
   filter
   font
-  font_face
-  font_face_format
-  font_face_name
-  font_face_src
-  font_face_uri
   foreignObject
   g
   glyph
@@ -97,7 +91,6 @@ svg = ~w[
   meshpatch
   meshrow
   metadata
-  missing_glyph
   mpath
   pattern
   prefetch
