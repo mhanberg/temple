@@ -2,16 +2,23 @@ defmodule Temple.Parser.Components do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct function: nil, assigns: [], children: [], slots: []
+  use TypedStruct
 
-  @impl Temple.Parser
+  typedstruct do
+    field :function, function()
+    field :assigns, map()
+    field :children, [map()]
+    field :slots, [function()]
+  end
+
+  @impl true
   def applicable?({:c, _, _}) do
     true
   end
 
   def applicable?(_), do: false
 
-  @impl Temple.Parser
+  @impl true
   def run({:c, _meta, [component_function | args]}) do
     {do_and_else, args} =
       args

@@ -5,7 +5,7 @@
 
 > You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.9.0).
 
-Temple is an Elixir DSL for writing HTML.
+Temple is an Elixir DSL for writing HTML and SVG.
 
 ## Installation
 

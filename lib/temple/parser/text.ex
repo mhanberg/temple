@@ -2,15 +2,17 @@ defmodule Temple.Parser.Text do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct text: nil
+  use TypedStruct
 
-  alias Temple.Parser
+  typedstruct do
+    field :text, String.t()
+  end
 
-  @impl Parser
+  @impl true
   def applicable?(text) when is_binary(text), do: true
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run(text) do
     Temple.Ast.new(__MODULE__, text: text)
   end

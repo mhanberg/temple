@@ -1,19 +1,22 @@
 defmodule Temple.Parser.DoExpressions do
   @moduledoc false
-  alias Temple.Parser
+  @behaviour Temple.Parser
 
-  @behaviour Parser
+  use TypedStruct
 
-  defstruct elixir_ast: nil, children: []
+  typedstruct do
+    field :elixir_ast, Macro.t()
+    field :children, [map()]
+  end
 
-  @impl Parser
+  @impl true
   def applicable?({_, _, args}) when is_list(args) do
     Enum.any?(args, fn arg -> match?([{:do, _} | _], arg) end)
   end
 
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run({name, meta, args}) do
     {do_and_else, args} = Temple.Parser.Utils.split_args(args)
 

@@ -1,8 +1,12 @@
 defmodule Temple.Parser.Slot do
   @moduledoc false
   @behaviour Temple.Parser
+  use TypedStruct
 
-  defstruct name: nil, args: []
+  typedstruct do
+    field :name, atom()
+    field :args, list(), default: []
+  end
 
   @impl true
   def applicable?({:slot, _, _}) do

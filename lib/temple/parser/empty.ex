@@ -1,16 +1,18 @@
 defmodule Temple.Parser.Empty do
   @moduledoc false
+
+  use TypedStruct
+
   @behaviour Temple.Parser
 
-  defstruct []
+  typedstruct do
+  end
 
-  alias Temple.Parser
-
-  @impl Parser
+  @impl true
   def applicable?(ast) when ast in [nil, []], do: true
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run(_ast) do
     Temple.Ast.new(__MODULE__)
   end

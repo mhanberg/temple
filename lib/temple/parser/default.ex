@@ -2,14 +2,16 @@ defmodule Temple.Parser.Default do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct elixir_ast: nil
+  use TypedStruct
 
-  alias Temple.Parser
+  typedstruct do
+    field :elixir_ast, Macro.t()
+  end
 
-  @impl Parser
+  @impl true
   def applicable?(_ast), do: true
 
-  @impl Parser
+  @impl true
   def run(ast) do
     Temple.Ast.new(__MODULE__, elixir_ast: ast)
   end

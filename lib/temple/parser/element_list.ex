@@ -3,12 +3,17 @@ defmodule Temple.Parser.ElementList do
 
   @behaviour Temple.Parser
 
-  defstruct children: [], whitespace: :loose
+  use TypedStruct
 
-  @impl Temple.Parser
+  typedstruct do
+    field :children, list()
+    field :whitespace, :loose | :tight
+  end
+
+  @impl true
   def applicable?(asts), do: is_list(asts)
 
-  @impl Temple.Parser
+  @impl true
   def run(asts) do
     children = Enum.flat_map(asts, &Temple.Parser.parse/1)
 

@@ -2,16 +2,21 @@ defmodule Temple.Parser.VoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct name: nil, attrs: []
+  use TypedStruct
 
-  @impl Temple.Parser
+  typedstruct do
+    field :name, atom()
+    field :attrs, list(), default: []
+  end
+
+  @impl true
   def applicable?({name, _, _}) do
     name in Temple.Parser.void_elements_aliases()
   end
 
   def applicable?(_), do: false
 
-  @impl Temple.Parser
+  @impl true
   def run({name, _, args}) do
     args =
       case Temple.Parser.Utils.split_args(args) do

@@ -2,11 +2,14 @@ defmodule Temple.Parser.AnonymousFunctions do
   @moduledoc false
   @behaviour Temple.Parser
 
-  defstruct elixir_ast: nil, children: []
+  use TypedStruct
 
-  alias Temple.Parser
+  typedstruct do
+    field :elixir_ast, Macro.t()
+    field :children, [map()]
+  end
 
-  @impl Parser
+  @impl true
   def applicable?({_, _, args}) do
     import Temple.Parser.Utils, only: [split_args: 1]
 
@@ -18,7 +21,7 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   def applicable?(_), do: false
 
-  @impl Parser
+  @impl true
   def run({_name, _, args} = expression) do
     {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
 
