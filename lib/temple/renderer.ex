@@ -78,7 +78,7 @@ defmodule Temple.Renderer do
         slots: slots
       }) do
     slot_quotes =
-      Enum.group_by(slots, & &1.name, fn slot ->
+      Enum.group_by(slots, & &1.name, fn %Temple.Parser.Slottable{} = slot ->
         slot_buffer = state.engine.handle_begin(buffer)
 
         slot_buffer =
@@ -92,7 +92,7 @@ defmodule Temple.Renderer do
         inner_block =
           quote do
             inner_block unquote(slot.name) do
-              unquote(slot.assigns) ->
+              unquote(slot.assigns || quote(do: _)) ->
                 unquote(ast)
             end
           end
@@ -126,7 +126,7 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Slot{} = ast) do
     render_slot_func =
       quote do
-        render_slot(var!(assigns)[unquote(ast.name)], Map.new(unquote(ast.args)))
+        render_slot(unquote(ast.name), unquote(ast.args))
       end
 
     state.engine.handle_expr(buffer, "=", render_slot_func)

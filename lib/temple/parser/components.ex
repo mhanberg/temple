@@ -36,7 +36,7 @@ defmodule Temple.Parser.Components do
               {node, {name, named_slots}}
 
             {:slot, _, [name | args]} = node, {^component_function, named_slots} ->
-              {assigns, slot} = split_assigns_and_children(args, Macro.escape(%{}))
+              {assigns, slot} = split_assigns_and_children(args, nil)
 
               if is_nil(slot) do
                 {node, {component_function, named_slots}}

@@ -162,7 +162,7 @@ defmodule Temple.Parser.ComponentsTest do
       assert [
                %Temple.Parser.Slottable{
                  name: :inner_block,
-                 assigns: {:%{}, [], []}
+                 assigns: nil
                }
              ] = ast.slots
 

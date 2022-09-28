@@ -5,7 +5,7 @@ defmodule Temple.Parser.Slottable do
 
   typedstruct do
     field :content, any()
-    field :assigns, map(), default: Macro.escape(%{})
+    field :assigns, map()
     field :name, atom()
   end
 end

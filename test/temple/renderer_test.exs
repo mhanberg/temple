@@ -368,7 +368,7 @@ defmodule Temple.RendererTest do
       temple do
         div do
           "I am above the slot"
-          slot :inner_block
+          slot @inner_block
         end
       end
     end
@@ -406,11 +406,13 @@ defmodule Temple.RendererTest do
       temple do
         div do
           "#{@name} is above the slot"
-          slot :inner_block
+          slot @inner_block
         end
 
         footer do
-          slot :footer, %{name: @name}
+          for f <- @footer do
+            slot f, %{name: @name}
+          end
         end
       end
     end
@@ -543,11 +545,9 @@ defmodule Temple.RendererTest do
         <p>
           motchy boi's in the footer!
         </p>
-
         <p>
           motchy boi is the second footer!
         </p>
-
 
       </footer>
 
