@@ -368,7 +368,7 @@ defmodule Temple.RendererTest do
       temple do
         div do
           "I am above the slot"
-          slot :default
+          slot :inner_block
         end
       end
     end
@@ -406,7 +406,7 @@ defmodule Temple.RendererTest do
       temple do
         div do
           "#{@name} is above the slot"
-          slot :default
+          slot :inner_block
         end
 
         footer do

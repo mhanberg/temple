@@ -161,7 +161,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert [
                %Temple.Parser.Slottable{
-                 name: :default,
+                 name: :inner_block,
                  assigns: {:%{}, [], []}
                }
              ] = ast.slots
@@ -177,7 +177,7 @@ defmodule Temple.Parser.ComponentsTest do
                              %Components{
                                slots: [
                                  %Slottable{
-                                   name: :default
+                                   name: :inner_block
                                  },
                                  %Slottable{
                                    name: :foo

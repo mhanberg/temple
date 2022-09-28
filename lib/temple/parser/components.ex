@@ -60,7 +60,7 @@ defmodule Temple.Parser.Components do
         [
           Temple.Ast.new(
             Temple.Parser.Slottable,
-            name: :default,
+            name: :inner_block,
             content: Temple.Parser.parse(default_slot)
           )
         ]
