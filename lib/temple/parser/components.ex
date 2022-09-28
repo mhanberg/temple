@@ -30,7 +30,7 @@ defmodule Temple.Parser.Components do
       if children = do_and_else[:do] do
         Macro.prewalk(
           children,
-          {component_function, %{}},
+          {component_function, []},
           fn
             {:c, _, [name | _]} = node, {_, named_slots} ->
               {node, {name, named_slots}}
@@ -41,8 +41,8 @@ defmodule Temple.Parser.Components do
               if is_nil(slot) do
                 {node, {component_function, named_slots}}
               else
-                {nil,
-                 {component_function, Map.put(named_slots, name, %{assigns: assigns, slot: slot})}}
+                new_slot = {name, %{assigns: assigns, slot: slot}}
+                {nil, {component_function, named_slots ++ [new_slot]}}
               end
 
             node, acc ->
@@ -57,7 +57,13 @@ defmodule Temple.Parser.Components do
       if default_slot == nil do
         []
       else
-        Temple.Parser.parse(default_slot)
+        [
+          Temple.Ast.new(
+            Temple.Parser.Slottable,
+            name: :default,
+            content: Temple.Parser.parse(default_slot)
+          )
+        ]
       end
 
     slots =
@@ -70,11 +76,12 @@ defmodule Temple.Parser.Components do
         )
       end
 
+    slots = children ++ slots
+
     Temple.Ast.new(__MODULE__,
       function: component_function,
       assigns: assigns,
-      slots: slots,
-      children: children
+      slots: slots
     )
   end
 

@@ -106,8 +106,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
-               children: []
+               assigns: [foo: :bar]
              } = ast
     end
 
@@ -132,8 +131,7 @@ defmodule Temple.Parser.ComponentsTest do
                    content: [%Temple.Parser.Text{}],
                    assigns: {:%{}, _, [form: _]}
                  }
-               ],
-               children: []
+               ]
              } = ast
     end
 
@@ -149,7 +147,7 @@ defmodule Temple.Parser.ComponentsTest do
               c unquote(list), socials: @user.socials do
                 "hello"
 
-                slot :default, %{text: text, url: url} do
+                slot :foo, %{text: text, url: url} do
                   a class: "text-blue-500 hover:underline", href: url do
                     text
                   end
@@ -161,16 +159,32 @@ defmodule Temple.Parser.ComponentsTest do
 
       ast = Components.run(raw_ast)
 
-      assert Kernel.==(ast.slots, [])
+      assert [
+               %Temple.Parser.Slottable{
+                 name: :default,
+                 assigns: {:%{}, [], []}
+               }
+             ] = ast.slots
 
       assert %Components{
-               children: [
-                 %Components{
-                   children: [
+               slots: [
+                 %Temple.Parser.Slottable{
+                   content: [
                      %Components{
                        slots: [
-                         %Slottable{
-                           name: :default
+                         %Temple.Parser.Slottable{
+                           content: [
+                             %Components{
+                               slots: [
+                                 %Slottable{
+                                   name: :default
+                                 },
+                                 %Slottable{
+                                   name: :foo
+                                 }
+                               ]
+                             }
+                           ]
                          }
                        ]
                      }

@@ -37,7 +37,7 @@ defmodule Temple.Renderer do
       terminal_node: false
     }
 
-    buffer = engine.init(%{})
+    buffer = engine.init([])
 
     buffer =
       for ast <- asts, reduce: buffer do
@@ -74,24 +74,11 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Components{
         function: function,
         assigns: assigns,
-        children: children,
+        # children: children,
         slots: slots
       }) do
-    child_quoted =
-      if Enum.any?(children) do
-        children_buffer = state.engine.handle_begin(buffer)
-
-        children_buffer =
-          for child <- children(children), reduce: children_buffer do
-            children_buffer ->
-              render(children_buffer, state, child)
-          end
-
-        state.engine.handle_end(children_buffer)
-      end
-
     slot_quotes =
-      for slot <- slots do
+      Enum.group_by(slots, & &1.name, fn slot ->
         slot_buffer = state.engine.handle_begin(buffer)
 
         slot_buffer =
@@ -102,29 +89,34 @@ defmodule Temple.Renderer do
 
         ast = state.engine.handle_end(slot_buffer)
 
-        [quoted] =
+        inner_block =
           quote do
-            {unquote(slot.name), unquote(slot.assigns)} ->
-              unquote(ast)
+            inner_block unquote(slot.name) do
+              unquote(slot.assigns) ->
+                unquote(ast)
+            end
           end
 
-        quoted
-      end
+        {:%{}, [],
+         [
+           __slot__: slot.name,
+           inner_block: inner_block
+         ]}
+      end)
 
-    {:fn, meta, clauses} =
-      quote do
-        fn
-          {:default, _} -> unquote(child_quoted)
-        end
-      end
-
-    slot_func = {:fn, meta, slot_quotes ++ clauses}
+    assigns =
+      {:%{}, [],
+       assigns
+       |> Map.new()
+       |> Map.merge(slot_quotes)
+       |> Enum.to_list()}
 
     expr =
       quote do
         component(
           unquote(function),
-          Map.put(Map.new(unquote(assigns)), :__slots__, unquote(slot_func))
+          unquote(assigns),
+          {__MODULE__, __ENV__.function, __ENV__.file, nil}
         )
       end
 
@@ -134,7 +126,7 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Slot{} = ast) do
     render_slot_func =
       quote do
-        var!(assigns).__slots__.({unquote(ast.name), Map.new(unquote(ast.args))})
+        render_slot(var!(assigns)[unquote(ast.name)], Map.new(unquote(ast.args)))
       end
 
     state.engine.handle_expr(buffer, "=", render_slot_func)

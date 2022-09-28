@@ -374,6 +374,8 @@ defmodule Temple.RendererTest do
     end
 
     test "component with default slot" do
+      assigns = %{}
+
       result =
         Renderer.compile do
           div do
@@ -414,6 +416,8 @@ defmodule Temple.RendererTest do
     end
 
     test "component with a named slot" do
+      assigns = %{}
+
       result =
         Renderer.compile do
           div do
@@ -497,6 +501,59 @@ defmodule Temple.RendererTest do
       # html
       expected = """
       <input type="text" placeholder="Enter some text...">
+      """
+
+      assert expected == result
+    end
+
+    test "multiple slots" do
+      assigns = %{}
+
+      result =
+        Renderer.compile do
+          div do
+            c &named_slot/1, name: "motchy boi" do
+              span do: "i'm a slot"
+
+              slot :footer, %{name: name} do
+                p do
+                  "#{name}'s in the footer!"
+                end
+              end
+
+              slot :footer, %{name: name} do
+                p do
+                  "#{name} is the second footer!"
+                end
+              end
+            end
+          end
+        end
+
+      # heex
+      expected = """
+      <div>
+      <div>
+        motchy boi is above the slot
+        <span>i'm a slot</span>
+
+      </div>
+
+      <footer>
+        <p>
+          motchy boi's in the footer!
+        </p>
+
+        <p>
+          motchy boi is the second footer!
+        </p>
+
+
+      </footer>
+
+
+      </div>
+
       """
 
       assert expected == result
