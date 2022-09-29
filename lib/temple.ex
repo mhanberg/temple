@@ -162,7 +162,7 @@ defmodule Temple do
 
   defp call_inner_block!(entry, argument) do
     if !entry.inner_block do
-      message = "attempted to render slot <:#{entry.__slot__}> but the slot has no inner content"
+      message = "attempted to render slot #{entry.__slot__} but the slot has no inner content"
       raise RuntimeError, message
     end
 
