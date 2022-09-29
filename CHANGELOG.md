@@ -2,6 +2,15 @@
 
 ## Main
 
+### Enhancements
+
+- Temple components are now compatible with HEEx/Surface components! Some small tweaks to the component implementation has made this possible. Please see the guides for more information.
+- Multiple instances of the same slot name can now be declared and then rendered inside the component (similar to HEEx and Surface).
+
+### Breaking Changes
+
+- Rendering slots is now done by passing the assign with the slot name to the `slot` keyword instead of name as an atom. If this slot has multiple definitions, you can loop through them and render each one individually, or render them all at once. Please see the migration guide for more information.
+
 ### 0.10.0
 
 ### Enhancements

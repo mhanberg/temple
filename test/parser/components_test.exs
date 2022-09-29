@@ -57,7 +57,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [],
+               assigns: []
              } = ast
     end
 
@@ -71,7 +71,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
+               assigns: [foo: :bar]
              } = ast
     end
 
@@ -89,7 +89,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
+               assigns: [foo: :bar]
              } = ast
     end
 
