@@ -1,7 +1,7 @@
-defmodule Temple.Parser.AnonymousFunctionsTest do
+defmodule Temple.Ast.AnonymousFunctionsTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.AnonymousFunctions
+  alias Temple.Ast.AnonymousFunctions
 
   describe "applicable?/1" do
     test "returns true when the node contains an anonymous function as an argument to a function" do
@@ -57,7 +57,7 @@ defmodule Temple.Parser.AnonymousFunctionsTest do
       assert %AnonymousFunctions{
                elixir_ast: _,
                children: [
-                 %Temple.Parser.Default{
+                 %Temple.Ast.Default{
                    elixir_ast: ^expected_child
                  }
                ]

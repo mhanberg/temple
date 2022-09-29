@@ -1,7 +1,7 @@
-defmodule Temple.Parser.ComponentsTest do
+defmodule Temple.Ast.ComponentsTest do
   use ExUnit.Case, async: false
-  alias Temple.Parser.Components
-  alias Temple.Parser.Slottable
+  alias Temple.Ast.Components
+  alias Temple.Ast.Slottable
 
   describe "applicable?/1" do
     test "runs when using the `c` ast with a block" do
@@ -125,7 +125,7 @@ defmodule Temple.Parser.ComponentsTest do
                slots: [
                  %Slottable{
                    name: :foo,
-                   content: [%Temple.Parser.Text{}],
+                   content: [%Temple.Ast.Text{}],
                    assigns: {:%{}, _, [form: _]}
                  }
                ]
@@ -157,7 +157,7 @@ defmodule Temple.Parser.ComponentsTest do
       ast = Components.run(raw_ast)
 
       assert [
-               %Temple.Parser.Slottable{
+               %Slottable{
                  name: :inner_block,
                  assigns: nil
                }
@@ -165,11 +165,11 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                slots: [
-                 %Temple.Parser.Slottable{
+                 %Slottable{
                    content: [
                      %Components{
                        slots: [
-                         %Temple.Parser.Slottable{
+                         %Slottable{
                            content: [
                              %Components{
                                slots: [

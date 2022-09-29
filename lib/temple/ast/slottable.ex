@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Slottable do
+defmodule Temple.Ast.Slottable do
   @moduledoc false
 
   use TypedStruct

@@ -1,4 +1,4 @@
-defmodule Temple.Parser.VoidElementsAliases do
+defmodule Temple.Ast.VoidElementsAliases do
   @moduledoc false
   @behaviour Temple.Parser
 
@@ -19,7 +19,7 @@ defmodule Temple.Parser.VoidElementsAliases do
   @impl true
   def run({name, _, args}) do
     args =
-      case Temple.Parser.Utils.split_args(args) do
+      case Temple.Ast.Utils.split_args(args) do
         {_, [args]} when is_list(args) ->
           args
 

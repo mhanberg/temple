@@ -1,8 +1,10 @@
-defmodule Temple.Parser.TempleNamespaceNonvoidTest do
+defmodule Temple.Ast.TempleNamespaceNonvoidTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.NonvoidElementsAliases
-  alias Temple.Parser.TempleNamespaceNonvoid
+  alias Temple.Ast.ElementList
+  alias Temple.Ast.NonvoidElementsAliases
+  alias Temple.Ast.TempleNamespaceNonvoid
+  alias Temple.Ast.Text
 
   describe "applicable?/1" do
     test "returns true when the node is a Temple aliased nonvoid element" do
@@ -50,8 +52,8 @@ defmodule Temple.Parser.TempleNamespaceNonvoidTest do
       assert %NonvoidElementsAliases{
                name: "div",
                attrs: [class: "foo", id: {:var, [], _}],
-               children: %Temple.Parser.ElementList{
-                 children: [%Temple.Parser.Text{text: "foo"}],
+               children: %ElementList{
+                 children: [%Text{text: "foo"}],
                  whitespace: :loose
                }
              } = ast

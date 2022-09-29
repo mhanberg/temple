@@ -1,4 +1,4 @@
-defmodule Temple.Parser.AnonymousFunctions do
+defmodule Temple.Ast.AnonymousFunctions do
   @moduledoc false
   @behaviour Temple.Parser
 
@@ -11,7 +11,7 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   @impl true
   def applicable?({_, _, args}) do
-    import Temple.Parser.Utils, only: [split_args: 1]
+    import Temple.Ast.Utils, only: [split_args: 1]
 
     args
     |> split_args()
@@ -23,9 +23,9 @@ defmodule Temple.Parser.AnonymousFunctions do
 
   @impl true
   def run({_name, _, args} = expression) do
-    {_do_and_else, args} = Temple.Parser.Utils.split_args(args)
+    {_do_and_else, args} = Temple.Ast.Utils.split_args(args)
 
-    {_args, func_arg, _args2} = Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
+    {_args, func_arg, _args2} = Temple.Ast.Utils.split_on_fn(args, {[], nil, []})
 
     {_func, _, [{_arrow, _, [[{_arg, _, _}], block]}]} = func_arg
 

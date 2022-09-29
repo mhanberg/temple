@@ -1,20 +1,21 @@
 defmodule Temple.Renderer do
   @moduledoc false
 
-  alias Temple.Parser.ElementList
-  alias Temple.Parser.Text
-  alias Temple.Parser.Components
-  alias Temple.Parser.Slot
-  alias Temple.Parser.NonvoidElementsAliases
-  alias Temple.Parser.VoidElementsAliases
-  alias Temple.Parser.AnonymousFunctions
-  alias Temple.Parser.RightArrow
-  alias Temple.Parser.DoExpressions
-  alias Temple.Parser.Match
-  alias Temple.Parser.Default
-  alias Temple.Parser.Empty
+  alias Temple.Ast.ElementList
+  alias Temple.Ast.Text
+  alias Temple.Ast.Components
+  alias Temple.Ast.Slot
+  alias Temple.Ast.Slottable
+  alias Temple.Ast.NonvoidElementsAliases
+  alias Temple.Ast.VoidElementsAliases
+  alias Temple.Ast.AnonymousFunctions
+  alias Temple.Ast.RightArrow
+  alias Temple.Ast.DoExpressions
+  alias Temple.Ast.Match
+  alias Temple.Ast.Default
+  alias Temple.Ast.Empty
 
-  alias Temple.Parser.Utils
+  alias Temple.Ast.Utils
 
   @default_engine EEx.SmartEngine
 
@@ -23,7 +24,7 @@ defmodule Temple.Renderer do
     |> Temple.Parser.parse()
     |> Temple.Renderer.render(opts)
 
-    # |> Temple.Parser.Utils.inspect_ast()
+    # |> Temple.Ast.Utils.inspect_ast()
   end
 
   def render(asts, opts \\ [])
@@ -77,7 +78,7 @@ defmodule Temple.Renderer do
         slots: slots
       }) do
     slot_quotes =
-      Enum.group_by(slots, & &1.name, fn %Temple.Parser.Slottable{} = slot ->
+      Enum.group_by(slots, & &1.name, fn %Slottable{} = slot ->
         slot_buffer = state.engine.handle_begin(buffer)
 
         slot_buffer =
@@ -233,7 +234,7 @@ defmodule Temple.Renderer do
     {name, meta, args} = ast.elixir_ast
 
     {args, {func, fmeta, [{arrow, arrowmeta, [first, _block]}]}, args2} =
-      Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
+      Temple.Ast.Utils.split_on_fn(args, {[], nil, []})
 
     full_ast =
       {name, meta, args ++ [{func, fmeta, [{arrow, arrowmeta, [first, inner_quoted]}]}] ++ args2}

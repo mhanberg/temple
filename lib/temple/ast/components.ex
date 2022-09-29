@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Components do
+defmodule Temple.Ast.Components do
   @moduledoc false
   @behaviour Temple.Parser
 
@@ -21,9 +21,9 @@ defmodule Temple.Parser.Components do
   def run({:c, _meta, [component_function | args]}) do
     {do_and_else, args} =
       args
-      |> Temple.Parser.Utils.split_args()
+      |> Temple.Ast.Utils.split_args()
 
-    {do_and_else, assigns} = Temple.Parser.Utils.consolidate_blocks(do_and_else, args)
+    {do_and_else, assigns} = Temple.Ast.Utils.consolidate_blocks(do_and_else, args)
 
     {default_slot, {_, named_slots}} =
       if children = do_and_else[:do] do
@@ -58,7 +58,7 @@ defmodule Temple.Parser.Components do
       else
         [
           Temple.Ast.new(
-            Temple.Parser.Slottable,
+            Temple.Ast.Slottable,
             name: :inner_block,
             content: Temple.Parser.parse(default_slot)
           )
@@ -68,7 +68,7 @@ defmodule Temple.Parser.Components do
     slots =
       for {name, %{slot: slot, assigns: assigns}} <- named_slots do
         Temple.Ast.new(
-          Temple.Parser.Slottable,
+          Temple.Ast.Slottable,
           name: name,
           content: Temple.Parser.parse(slot),
           assigns: assigns

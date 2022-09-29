@@ -1,7 +1,7 @@
-defmodule Temple.Parser.RightArrowTest do
+defmodule Temple.Ast.RightArrowTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.RightArrow
+  alias Temple.Ast.RightArrow
 
   describe "applicable?/1" do
     test "returns true when the node contains a right arrow" do
@@ -52,7 +52,7 @@ defmodule Temple.Parser.RightArrowTest do
       assert %RightArrow{
                elixir_ast: {:->, [newlines: 1], [[:bing]]},
                children: [
-                 %Temple.Parser.Default{
+                 %Temple.Ast.Default{
                    elixir_ast: ^bong
                  }
                ]

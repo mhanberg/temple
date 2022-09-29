@@ -1,4 +1,4 @@
-defmodule Temple.Parser.DoExpressions do
+defmodule Temple.Ast.DoExpressions do
   @moduledoc false
   @behaviour Temple.Parser
 
@@ -18,7 +18,7 @@ defmodule Temple.Parser.DoExpressions do
 
   @impl true
   def run({name, meta, args}) do
-    {do_and_else, args} = Temple.Parser.Utils.split_args(args)
+    {do_and_else, args} = Temple.Ast.Utils.split_args(args)
 
     do_body = Temple.Parser.parse(do_and_else[:do])
 

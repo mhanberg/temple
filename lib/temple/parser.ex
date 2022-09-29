@@ -1,19 +1,19 @@
 defmodule Temple.Parser do
   @moduledoc false
 
-  alias Temple.Parser.AnonymousFunctions
-  alias Temple.Parser.Components
-  alias Temple.Parser.Default
-  alias Temple.Parser.DoExpressions
-  alias Temple.Parser.Empty
-  alias Temple.Parser.Match
-  alias Temple.Parser.NonvoidElementsAliases
-  alias Temple.Parser.RightArrow
-  alias Temple.Parser.Slot
-  alias Temple.Parser.TempleNamespaceNonvoid
-  alias Temple.Parser.TempleNamespaceVoid
-  alias Temple.Parser.Text
-  alias Temple.Parser.VoidElementsAliases
+  alias Temple.Ast.AnonymousFunctions
+  alias Temple.Ast.Components
+  alias Temple.Ast.Default
+  alias Temple.Ast.DoExpressions
+  alias Temple.Ast.Empty
+  alias Temple.Ast.Match
+  alias Temple.Ast.NonvoidElementsAliases
+  alias Temple.Ast.RightArrow
+  alias Temple.Ast.Slot
+  alias Temple.Ast.TempleNamespaceNonvoid
+  alias Temple.Ast.TempleNamespaceVoid
+  alias Temple.Ast.Text
+  alias Temple.Ast.VoidElementsAliases
 
   @aliases Application.compile_env(:temple, :aliases, [])
 

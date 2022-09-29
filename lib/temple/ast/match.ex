@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Match do
+defmodule Temple.Ast.Match do
   @moduledoc false
   @behaviour Temple.Parser
 
