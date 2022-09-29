@@ -7,7 +7,6 @@ defmodule Temple.Parser.Components do
   typedstruct do
     field :function, function()
     field :assigns, map()
-    field :children, [map()]
     field :slots, [function()]
   end
 

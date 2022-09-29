@@ -58,7 +58,6 @@ defmodule Temple.Parser.ComponentsTest do
       assert %Components{
                function: ^func,
                assigns: [],
-               children: _
              } = ast
     end
 
@@ -73,7 +72,6 @@ defmodule Temple.Parser.ComponentsTest do
       assert %Components{
                function: ^func,
                assigns: [foo: :bar],
-               children: _
              } = ast
     end
 
@@ -92,7 +90,6 @@ defmodule Temple.Parser.ComponentsTest do
       assert %Components{
                function: ^func,
                assigns: [foo: :bar],
-               children: _
              } = ast
     end
 

@@ -74,7 +74,6 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Components{
         function: function,
         assigns: assigns,
-        # children: children,
         slots: slots
       }) do
     slot_quotes =
