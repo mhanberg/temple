@@ -101,7 +101,7 @@ defmodule Temple.Renderer do
          [
            __slot__: slot.name,
            inner_block: inner_block
-         ]}
+         ] ++ slot.attributes}
       end)
 
     assigns =

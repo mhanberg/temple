@@ -411,6 +411,7 @@ defmodule Temple.RendererTest do
 
         footer do
           for f <- @footer do
+            span do: f[:label]
             slot f, %{name: @name}
           end
         end
@@ -418,7 +419,7 @@ defmodule Temple.RendererTest do
     end
 
     test "component with a named slot" do
-      assigns = %{}
+      assigns = %{label: "i'm a slot attribute"}
 
       result =
         Renderer.compile do
@@ -426,7 +427,7 @@ defmodule Temple.RendererTest do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, %{name: name} do
+              slot :footer, let: %{name: name}, label: @label, expr: 1 + 1 do
                 p do
                   "#{name}'s in the footer!"
                 end
@@ -445,6 +446,7 @@ defmodule Temple.RendererTest do
       </div>
 
       <footer>
+        <span>i'm a slot attribute</span>
         <p>
           motchy boi's in the footer!
         </p>
@@ -517,13 +519,13 @@ defmodule Temple.RendererTest do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, %{name: name} do
+              slot :footer, let: %{name: name} do
                 p do
                   "#{name}'s in the footer!"
                 end
               end
 
-              slot :footer, %{name: name} do
+              slot :footer, let: %{name: name} do
                 p do
                   "#{name} is the second footer!"
                 end
@@ -542,9 +544,11 @@ defmodule Temple.RendererTest do
       </div>
 
       <footer>
+        <span></span>
         <p>
           motchy boi's in the footer!
         </p>
+        <span></span>
         <p>
           motchy boi is the second footer!
         </p>

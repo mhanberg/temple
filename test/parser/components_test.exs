@@ -111,7 +111,7 @@ defmodule Temple.Ast.ComponentsTest do
       raw_ast =
         quote do
           c unquote(func), foo: :bar do
-            slot :foo, %{form: form} do
+            slot :foo, let: %{form: form} do
               "in the slot"
             end
           end
@@ -132,6 +132,32 @@ defmodule Temple.Ast.ComponentsTest do
              } = ast
     end
 
+    test "slot attributes", %{func: func} do
+      raw_ast =
+        quote do
+          c unquote(func), foo: :bar do
+            slot :foo, let: %{form: form}, label: the_label do
+              "in the slot"
+            end
+          end
+        end
+
+      ast = Components.run(raw_ast)
+
+      assert %Components{
+               function: ^func,
+               assigns: [foo: :bar],
+               slots: [
+                 %Slottable{
+                   name: :foo,
+                   content: [%Temple.Ast.Text{}],
+                   assigns: {:%{}, _, [form: _]},
+                   attributes: [label: {:the_label, [], Temple.Ast.ComponentsTest}]
+                 }
+               ]
+             } = ast
+    end
+
     test "slots should only be assigned to the component root" do
       card = quote do: &Card.render/1
       footer = quote do: &Card.Footer.render/1
@@ -144,7 +170,7 @@ defmodule Temple.Ast.ComponentsTest do
               c unquote(list), socials: @user.socials do
                 "hello"
 
-                slot :foo, %{text: text, url: url} do
+                slot :foo, let: %{text: text, url: url} do
                   a class: "text-blue-500 hover:underline", href: url do
                     text
                   end

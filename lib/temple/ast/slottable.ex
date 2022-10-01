@@ -4,8 +4,9 @@ defmodule Temple.Ast.Slottable do
   use TypedStruct
 
   typedstruct do
-    field :content, any()
-    field :assigns, map()
+    field :content, [Temple.Ast.t()]
+    field :assigns, Macro.t()
     field :name, atom()
+    field :attributes, Macro.t(), default: []
   end
 end

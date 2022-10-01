@@ -40,7 +40,8 @@ defmodule Temple.Ast.Components do
               if is_nil(slot) do
                 {node, {component_function, named_slots}}
               else
-                new_slot = {name, %{assigns: assigns, slot: slot}}
+                {assigns, attributes} = Keyword.pop(assigns, :let)
+                new_slot = {name, %{assigns: assigns, slot: slot, attributes: attributes}}
                 {nil, {component_function, named_slots ++ [new_slot]}}
               end
 
@@ -66,12 +67,13 @@ defmodule Temple.Ast.Components do
       end
 
     slots =
-      for {name, %{slot: slot, assigns: assigns}} <- named_slots do
+      for {name, %{slot: slot, assigns: assigns, attributes: attributes}} <- named_slots do
         Temple.Ast.new(
           Temple.Ast.Slottable,
           name: name,
           content: Temple.Parser.parse(slot),
-          assigns: assigns
+          assigns: assigns,
+          attributes: attributes
         )
       end
 
