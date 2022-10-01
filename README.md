@@ -67,6 +67,8 @@ Temple components are simple to write and easy to use.
 
 Unlike normal partials, Temple components have the concept of "slots", which are similar [Vue](https://v3.vuejs.org/guide/component-slots.html#named-slots). You can also refer to HEEx and Surface for examples of templates that have the "slot" concept.
 
+Temple components are compatible with HEEx and Surface components and can be shared.
+
 Please see the [guides](https://hexdocs.pm/temple/components.html) for more details.
 
 ```elixir
@@ -77,15 +79,15 @@ defmodule MyAppWeb.Component do
     temple do
       section do
         div do
-          slot :header
+          slot @header
         end
 
         div do
-          slot :default
+          slot @inner_block
         end
 
         div do
-          slot :footer
+          slot @footer
         end
       end
     end

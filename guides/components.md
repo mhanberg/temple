@@ -54,7 +54,7 @@ Slots are defined and rendered using the `slot` keyword. This is similar to the 
 
 ### Default Slot
 
-The default slot can be rendered from within your component by passing the `slot` the atom `:default`. Let's redefine our button component using slots.
+The default slot can be rendered from within your component by passing the `slot` the `@inner_block` assign. Let's redefine our button component using slots.
 
 ```elixir
 defmodule MyApp.Components do
@@ -63,7 +63,7 @@ defmodule MyApp.Components do
   def button(assigns) do
     temple do
       button type: "button", class: "bg-blue-800 text-white rounded #{@class}" do
-        slot :default
+        slot @inner_block
       end
     end
   end
@@ -109,18 +109,18 @@ defmodule MyApp.Components do
       div class: "card" do
         header class: "card-header", style: "background-color: @f5f5f5" do
           p class: "card-header-title" do
-            slot :header
+            slot @header
           end
         end
 
         div class: "card-content" do
           div class: "content" do
-            slot :default
+            slot @inner_block
           end
         end
 
         footer class: "card-footer", style: "background-color: #f5f5f5" do
-          slot :footer
+          slot @footer
         end
       end
     end
@@ -154,11 +154,15 @@ def MyApp.CardExample do
 end
 ```
 
-## Passing Data Through Slots
+## Passing data to and through Slots
 
-Sometimes it is necessary to pass data from a component definition back to the call site.
+Sometimes it is necessary to pass data _into_ a slot (hereby known as *slot attributes*) from the call site and _from_ a component definition (hereby known as *slot arguments*) back to the call site.
 
-Let's look at what a `table` component could look like.
+Let's look at what a `table` component could look like. Here we observe we access an attribute in the slot in the header with `col.label`.
+
+This example is taken from the HEEx documentation to demonstrate how you can build the same thing with Temple.
+
+Note: Slot attributes can only be accessed on an individual slot, so if you define a single slot definition, you still need to loop through it to access it, as they are stored as a list.
 
 #### Definition
 
@@ -166,30 +170,23 @@ Let's look at what a `table` component could look like.
 defmodule MyApp.Components do
   import Temple
 
-  def cols(items) do
-    items
-    |> List.first()
-    |> Map.keys()
-    |> Enum.sort()
-  end
-
   def table(assigns) do
     temple do
       table do
         thead do
           tr do
-            for col <- cols(@entries) do
-              tr do: String.upcase(to_string(col))
+            for col <- @col do
+              th do: col.label # 👈 accessing a slot attribute
             end
           end
         end
 
         tbody do
-          for row <- @entries do
+          for row <- @rows do
             tr do
-              for col <- cols(@entries) do
+              for col <- @col do
                 td do
-                  slot :cell, %{value: row[cell]}
+                  slot col, row
                 end
               end
             end
@@ -203,7 +200,7 @@ end
 
 #### Usage
 
-When we render the slot, we can pattern match on the data passed through the slot. If this seems familiar, it's because this is the same syntax you use when writing your tests using `ExUnit.Case.test/3`.
+When we render the slot, we can pattern match on the data passed through the slot via the `:let` attribute.
 
 ```elixir
 def MyApp.TableExample do
@@ -213,24 +210,16 @@ def MyApp.TableExample do
   def render(assigns) do
     temple do
       section do
-        h2 do: "Inventory Levels"
+        h2 do: "Users"
 
-        c &table/1, entries: @item_inventories do
-          slot :cell, %{value: value} do
-            case value do
-              0 ->
-                span class: "font-bold" do
-                  "Out of stock!"
-                end
+        c &table/1, rows: @users do
+          #          👇 defining the parameter for the slot argument
+          slot :col, let: user, label: "Name" do # 👈 passing a slot attribute
+            user.name
+          end
 
-              level when is_number(level) ->
-                span do
-                  "#{level} in stock"
-                end
-
-              _ ->
-                span do: value
-            end
+          slot :col, let: user, label: "Address" do
+            user.address
           end
         end
       end

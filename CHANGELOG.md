@@ -6,10 +6,14 @@
 
 - Temple components are now compatible with HEEx/Surface components! Some small tweaks to the component implementation has made this possible. Please see the guides for more information.
 - Multiple instances of the same slot name can now be declared and then rendered inside the component (similar to HEEx and Surface).
+- You can now pass arbitrary data to slots, and it does not need to be a map or a keyword list. I don't think this is a breaking change, but please submit an issue if you notice it is.
+- Slot attributes. You can now pass data into a slot from the definition site and use it at the call site (inside the component).
 
 ### Breaking Changes
 
 - Rendering slots is now done by passing the assign with the slot name to the `slot` keyword instead of name as an atom. If this slot has multiple definitions, you can loop through them and render each one individually, or render them all at once. Please see the migration guide for more information.
+- The `:default` slot has been renamed to `:inner_block`. This is to be easily compatible with HEEx/Surface. Please see the migration guide for more information.
+- Capturing the data being passed into a slot is now defined using the `:let` attribute. Please see the migration guide for more information.
 
 ### 0.10.0
 
