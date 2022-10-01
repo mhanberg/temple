@@ -149,6 +149,9 @@ defmodule Temple do
   end
 
   def __render_slot__(entries, argument) when is_list(entries) do
+    assigns = %{}
+    _ = assigns
+
     temple do
       for entry <- entries do
         call_inner_block!(entry, argument)
