@@ -74,7 +74,7 @@ defmodule Temple.Renderer do
 
   def render(buffer, state, %Components{
         function: function,
-        assigns: assigns,
+        arguments: arguments,
         slots: slots
       }) do
     slot_quotes =
@@ -92,7 +92,7 @@ defmodule Temple.Renderer do
         inner_block =
           quote do
             inner_block unquote(slot.name) do
-              unquote(slot.assigns || quote(do: _)) ->
+              unquote(slot.parameter || quote(do: _)) ->
                 unquote(ast)
             end
           end
@@ -104,9 +104,9 @@ defmodule Temple.Renderer do
          ] ++ slot.attributes}
       end)
 
-    assigns =
+    component_arguments =
       {:%{}, [],
-       assigns
+       arguments
        |> Map.new()
        |> Map.merge(slot_quotes)
        |> Enum.to_list()}
@@ -115,7 +115,7 @@ defmodule Temple.Renderer do
       quote do
         component(
           unquote(function),
-          unquote(assigns),
+          unquote(component_arguments),
           {__MODULE__, __ENV__.function, __ENV__.file, nil}
         )
       end

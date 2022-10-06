@@ -6,7 +6,7 @@ defmodule Temple.Ast.Components do
 
   typedstruct do
     field :function, function()
-    field :assigns, map()
+    field :arguments, map()
     field :slots, [function()]
   end
 
@@ -23,7 +23,7 @@ defmodule Temple.Ast.Components do
       args
       |> Temple.Ast.Utils.split_args()
 
-    {do_and_else, assigns} = Temple.Ast.Utils.consolidate_blocks(do_and_else, args)
+    {do_and_else, arguments} = Temple.Ast.Utils.consolidate_blocks(do_and_else, args)
 
     {default_slot, {_, named_slots}} =
       if children = do_and_else[:do] do
@@ -35,13 +35,13 @@ defmodule Temple.Ast.Components do
               {node, {name, named_slots}}
 
             {:slot, _, [name | args]} = node, {^component_function, named_slots} ->
-              {assigns, slot} = split_assigns_and_children(args, nil)
+              {arguments, slot} = split_assigns_and_children(args, nil)
 
               if is_nil(slot) do
                 {node, {component_function, named_slots}}
               else
-                {assigns, attributes} = Keyword.pop(assigns || [], :let)
-                new_slot = {name, %{assigns: assigns, slot: slot, attributes: attributes}}
+                {parameter, attributes} = Keyword.pop(arguments || [], :let)
+                new_slot = {name, %{parameter: parameter, slot: slot, attributes: attributes}}
                 {nil, {component_function, named_slots ++ [new_slot]}}
               end
 
@@ -67,12 +67,12 @@ defmodule Temple.Ast.Components do
       end
 
     slots =
-      for {name, %{slot: slot, assigns: assigns, attributes: attributes}} <- named_slots do
+      for {name, %{slot: slot, parameter: parameter, attributes: attributes}} <- named_slots do
         Temple.Ast.new(
           Temple.Ast.Slottable,
           name: name,
           content: Temple.Parser.parse(slot),
-          assigns: assigns,
+          parameter: parameter,
           attributes: attributes
         )
       end
@@ -81,21 +81,21 @@ defmodule Temple.Ast.Components do
 
     Temple.Ast.new(__MODULE__,
       function: component_function,
-      assigns: assigns,
+      arguments: arguments,
       slots: slots
     )
   end
 
   defp split_assigns_and_children(args, empty) do
     case args do
-      [assigns, [do: block]] ->
-        {assigns, block}
+      [arguments, [do: block]] ->
+        {arguments, block}
 
       [[do: block]] ->
         {empty, block}
 
-      [assigns] ->
-        {assigns, nil}
+      [arguments] ->
+        {arguments, nil}
 
       _ ->
         {empty, nil}

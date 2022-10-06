@@ -57,7 +57,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: []
+               arguments: []
              } = ast
     end
 
@@ -71,7 +71,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar]
+               arguments: [foo: :bar]
              } = ast
     end
 
@@ -89,7 +89,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar]
+               arguments: [foo: :bar]
              } = ast
     end
 
@@ -103,7 +103,7 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar]
+               arguments: [foo: :bar]
              } = ast
     end
 
@@ -121,12 +121,12 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
+               arguments: [foo: :bar],
                slots: [
                  %Slottable{
                    name: :foo,
                    content: [%Temple.Ast.Text{}],
-                   assigns: {:%{}, _, [form: _]}
+                   parameter: {:%{}, _, [form: _]}
                  }
                ]
              } = ast
@@ -146,12 +146,12 @@ defmodule Temple.Ast.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
+               arguments: [foo: :bar],
                slots: [
                  %Slottable{
                    name: :foo,
                    content: [%Temple.Ast.Text{}],
-                   assigns: {:%{}, _, [form: _]},
+                   parameter: {:%{}, _, [form: _]},
                    attributes: [label: {:the_label, [], Temple.Ast.ComponentsTest}]
                  }
                ]
@@ -185,7 +185,7 @@ defmodule Temple.Ast.ComponentsTest do
       assert [
                %Slottable{
                  name: :inner_block,
-                 assigns: nil
+                 parameter: nil
                }
              ] = ast.slots
 
