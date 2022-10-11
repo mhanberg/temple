@@ -1,5 +1,5 @@
 defmodule Temple.Ast.SlotTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
   alias Temple.Ast.Slot
 
   describe "applicable?/1" do

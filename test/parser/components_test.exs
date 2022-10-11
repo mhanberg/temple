@@ -1,5 +1,5 @@
 defmodule Temple.Ast.ComponentsTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
   alias Temple.Ast.Components
   alias Temple.Ast.Slottable
 

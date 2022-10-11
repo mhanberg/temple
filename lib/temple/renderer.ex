@@ -116,7 +116,7 @@ defmodule Temple.Renderer do
         component(
           unquote(function),
           unquote(component_arguments),
-          {__MODULE__, __ENV__.function, __ENV__.file, nil}
+          {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
         )
       end
 
