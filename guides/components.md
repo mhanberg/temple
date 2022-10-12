@@ -145,8 +145,8 @@ def MyApp.CardExample do
         "This example demonstrates how to create components with multiple, named slots"
 
         slot :footer do
-          a href="#", class: "card-footer-item", do: "Footer Item 1"
-          a href="#", class: "card-footer-item", do: "Footer Item 2"
+          a href: "#", class: "card-footer-item", do: "Footer Item 1"
+          a href: "#", class: "card-footer-item", do: "Footer Item 2"
         end
       end
     end
