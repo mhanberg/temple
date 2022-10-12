@@ -1,7 +1,7 @@
-defmodule Temple.Parser.MatchTest do
+defmodule Temple.Ast.MatchTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.Match
+  alias Temple.Ast.Match
 
   describe "applicable?/1" do
     test "returns true when the node is an elixir match expression" do

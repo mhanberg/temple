@@ -1,7 +1,7 @@
-defmodule Temple.Parser.UtilsTest do
+defmodule Temple.Ast.UtilsTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.Utils
+  alias Temple.Ast.Utils
 
   describe "compile_attrs/1" do
     test "returns a list of text nodes for static attributes" do

@@ -1,7 +1,7 @@
-defmodule Temple.Parser.ComponentsTest do
-  use ExUnit.Case, async: false
-  alias Temple.Parser.Components
-  alias Temple.Parser.Slottable
+defmodule Temple.Ast.ComponentsTest do
+  use ExUnit.Case, async: true
+  alias Temple.Ast.Components
+  alias Temple.Ast.Slottable
 
   describe "applicable?/1" do
     test "runs when using the `c` ast with a block" do
@@ -57,8 +57,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [],
-               children: _
+               arguments: []
              } = ast
     end
 
@@ -72,8 +71,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
-               children: _
+               arguments: [foo: :bar]
              } = ast
     end
 
@@ -91,8 +89,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
-               children: _
+               arguments: [foo: :bar]
              } = ast
     end
 
@@ -106,8 +103,7 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
-               children: []
+               arguments: [foo: :bar]
              } = ast
     end
 
@@ -115,7 +111,7 @@ defmodule Temple.Parser.ComponentsTest do
       raw_ast =
         quote do
           c unquote(func), foo: :bar do
-            slot :foo, %{form: form} do
+            slot :foo, let: %{form: form} do
               "in the slot"
             end
           end
@@ -125,15 +121,40 @@ defmodule Temple.Parser.ComponentsTest do
 
       assert %Components{
                function: ^func,
-               assigns: [foo: :bar],
+               arguments: [foo: :bar],
                slots: [
                  %Slottable{
                    name: :foo,
-                   content: [%Temple.Parser.Text{}],
-                   assigns: {:%{}, _, [form: _]}
+                   content: [%Temple.Ast.Text{}],
+                   parameter: {:%{}, _, [form: _]}
                  }
-               ],
-               children: []
+               ]
+             } = ast
+    end
+
+    test "slot attributes", %{func: func} do
+      raw_ast =
+        quote do
+          c unquote(func), foo: :bar do
+            slot :foo, let: %{form: form}, label: the_label do
+              "in the slot"
+            end
+          end
+        end
+
+      ast = Components.run(raw_ast)
+
+      assert %Components{
+               function: ^func,
+               arguments: [foo: :bar],
+               slots: [
+                 %Slottable{
+                   name: :foo,
+                   content: [%Temple.Ast.Text{}],
+                   parameter: {:%{}, _, [form: _]},
+                   attributes: [label: {:the_label, [], Temple.Ast.ComponentsTest}]
+                 }
+               ]
              } = ast
     end
 
@@ -149,7 +170,7 @@ defmodule Temple.Parser.ComponentsTest do
               c unquote(list), socials: @user.socials do
                 "hello"
 
-                slot :default, %{text: text, url: url} do
+                slot :foo, let: %{text: text, url: url} do
                   a class: "text-blue-500 hover:underline", href: url do
                     text
                   end
@@ -161,16 +182,32 @@ defmodule Temple.Parser.ComponentsTest do
 
       ast = Components.run(raw_ast)
 
-      assert Kernel.==(ast.slots, [])
+      assert [
+               %Slottable{
+                 name: :inner_block,
+                 parameter: nil
+               }
+             ] = ast.slots
 
       assert %Components{
-               children: [
-                 %Components{
-                   children: [
+               slots: [
+                 %Slottable{
+                   content: [
                      %Components{
                        slots: [
                          %Slottable{
-                           name: :default
+                           content: [
+                             %Components{
+                               slots: [
+                                 %Slottable{
+                                   name: :inner_block
+                                 },
+                                 %Slottable{
+                                   name: :foo
+                                 }
+                               ]
+                             }
+                           ]
                          }
                        ]
                      }

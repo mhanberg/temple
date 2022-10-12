@@ -1,4 +1,4 @@
-defmodule Temple.Parser.RightArrow do
+defmodule Temple.Ast.RightArrow do
   @moduledoc false
 
   @behaviour Temple.Parser

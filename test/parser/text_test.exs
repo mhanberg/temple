@@ -1,7 +1,7 @@
-defmodule Temple.Parser.TextTest do
+defmodule Temple.Ast.TextTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.Text
+  alias Temple.Ast.Text
 
   describe "applicable?/1" do
     test "returns true when the node is a string literal" do

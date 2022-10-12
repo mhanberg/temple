@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Utils do
+defmodule Temple.Ast.Utils do
   @moduledoc false
 
   def snake_to_kebab(stringable),
@@ -25,7 +25,7 @@ defmodule Temple.Parser.Utils do
             [{:text, " " <> name <> "=\"" <> to_string(value) <> "\""} | acc]
           else
             true ->
-              nodes = Temple.Parser.Utils.build_attr(name, value)
+              nodes = Temple.Ast.Utils.build_attr(name, value)
               Enum.reverse(nodes) ++ acc
           end
       end

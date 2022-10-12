@@ -1,6 +1,6 @@
-defmodule Temple.Parser.SlotTest do
-  use ExUnit.Case, async: false
-  alias Temple.Parser.Slot
+defmodule Temple.Ast.SlotTest do
+  use ExUnit.Case, async: true
+  alias Temple.Ast.Slot
 
   describe "applicable?/1" do
     test "runs when using the `c` ast with a block" do

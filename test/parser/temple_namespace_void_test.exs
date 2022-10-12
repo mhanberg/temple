@@ -1,8 +1,8 @@
-defmodule Temple.Parser.TempleNamespaceVoidTest do
+defmodule Temple.Ast.TempleNamespaceVoidTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.TempleNamespaceVoid
-  alias Temple.Parser.VoidElementsAliases
+  alias Temple.Ast.TempleNamespaceVoid
+  alias Temple.Ast.VoidElementsAliases
 
   describe "applicable?/1" do
     test "returns true when the node is a Temple aliased nonvoid element" do

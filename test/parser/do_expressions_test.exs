@@ -1,7 +1,7 @@
-defmodule Temple.Parser.DoExpressionsTest do
+defmodule Temple.Ast.DoExpressionsTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.DoExpressions
+  alias Temple.Ast.DoExpressions
 
   describe "applicable?/1" do
     test "returns true when the node contains a do expression" do
@@ -30,7 +30,7 @@ defmodule Temple.Parser.DoExpressionsTest do
       assert %DoExpressions{
                elixir_ast: _,
                children: [
-                 [%Temple.Parser.Text{text: "bob"}],
+                 [%Temple.Ast.Text{text: "bob"}],
                  nil
                ]
              } = ast

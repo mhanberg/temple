@@ -1,20 +1,21 @@
 defmodule Temple.Renderer do
   @moduledoc false
 
-  alias Temple.Parser.ElementList
-  alias Temple.Parser.Text
-  alias Temple.Parser.Components
-  alias Temple.Parser.Slot
-  alias Temple.Parser.NonvoidElementsAliases
-  alias Temple.Parser.VoidElementsAliases
-  alias Temple.Parser.AnonymousFunctions
-  alias Temple.Parser.RightArrow
-  alias Temple.Parser.DoExpressions
-  alias Temple.Parser.Match
-  alias Temple.Parser.Default
-  alias Temple.Parser.Empty
+  alias Temple.Ast.ElementList
+  alias Temple.Ast.Text
+  alias Temple.Ast.Components
+  alias Temple.Ast.Slot
+  alias Temple.Ast.Slottable
+  alias Temple.Ast.NonvoidElementsAliases
+  alias Temple.Ast.VoidElementsAliases
+  alias Temple.Ast.AnonymousFunctions
+  alias Temple.Ast.RightArrow
+  alias Temple.Ast.DoExpressions
+  alias Temple.Ast.Match
+  alias Temple.Ast.Default
+  alias Temple.Ast.Empty
 
-  alias Temple.Parser.Utils
+  alias Temple.Ast.Utils
 
   @default_engine EEx.SmartEngine
 
@@ -23,7 +24,7 @@ defmodule Temple.Renderer do
     |> Temple.Parser.parse()
     |> Temple.Renderer.render(opts)
 
-    # |> Temple.Parser.Utils.inspect_ast()
+    # |> Temple.Ast.Utils.inspect_ast()
   end
 
   def render(asts, opts \\ [])
@@ -37,7 +38,7 @@ defmodule Temple.Renderer do
       terminal_node: false
     }
 
-    buffer = engine.init(%{})
+    buffer = engine.init([])
 
     buffer =
       for ast <- asts, reduce: buffer do
@@ -73,25 +74,11 @@ defmodule Temple.Renderer do
 
   def render(buffer, state, %Components{
         function: function,
-        assigns: assigns,
-        children: children,
+        arguments: arguments,
         slots: slots
       }) do
-    child_quoted =
-      if Enum.any?(children) do
-        children_buffer = state.engine.handle_begin(buffer)
-
-        children_buffer =
-          for child <- children(children), reduce: children_buffer do
-            children_buffer ->
-              render(children_buffer, state, child)
-          end
-
-        state.engine.handle_end(children_buffer)
-      end
-
     slot_quotes =
-      for slot <- slots do
+      Enum.group_by(slots, & &1.name, fn %Slottable{} = slot ->
         slot_buffer = state.engine.handle_begin(buffer)
 
         slot_buffer =
@@ -102,29 +89,34 @@ defmodule Temple.Renderer do
 
         ast = state.engine.handle_end(slot_buffer)
 
-        [quoted] =
+        inner_block =
           quote do
-            {unquote(slot.name), unquote(slot.assigns)} ->
-              unquote(ast)
+            inner_block unquote(slot.name) do
+              unquote(slot.parameter || quote(do: _)) ->
+                unquote(ast)
+            end
           end
 
-        quoted
-      end
+        {:%{}, [],
+         [
+           __slot__: slot.name,
+           inner_block: inner_block
+         ] ++ slot.attributes}
+      end)
 
-    {:fn, meta, clauses} =
-      quote do
-        fn
-          {:default, _} -> unquote(child_quoted)
-        end
-      end
-
-    slot_func = {:fn, meta, slot_quotes ++ clauses}
+    component_arguments =
+      {:%{}, [],
+       arguments
+       |> Map.new()
+       |> Map.merge(slot_quotes)
+       |> Enum.to_list()}
 
     expr =
       quote do
         component(
           unquote(function),
-          Map.put(Map.new(unquote(assigns)), :__slots__, unquote(slot_func))
+          unquote(component_arguments),
+          {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
         )
       end
 
@@ -134,7 +126,7 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Slot{} = ast) do
     render_slot_func =
       quote do
-        var!(assigns).__slots__.({unquote(ast.name), Map.new(unquote(ast.args))})
+        render_slot(unquote(ast.name), unquote(ast.args))
       end
 
     state.engine.handle_expr(buffer, "=", render_slot_func)
@@ -242,7 +234,7 @@ defmodule Temple.Renderer do
     {name, meta, args} = ast.elixir_ast
 
     {args, {func, fmeta, [{arrow, arrowmeta, [first, _block]}]}, args2} =
-      Temple.Parser.Utils.split_on_fn(args, {[], nil, []})
+      Temple.Ast.Utils.split_on_fn(args, {[], nil, []})
 
     full_ast =
       {name, meta, args ++ [{func, fmeta, [{arrow, arrowmeta, [first, inner_quoted]}]}] ++ args2}

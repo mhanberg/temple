@@ -1,10 +1,12 @@
-defmodule Temple.Parser.TempleNamespaceVoid do
+defmodule Temple.Ast.TempleNamespaceNonvoid do
   @moduledoc false
   @behaviour Temple.Parser
 
+  alias Temple.Parser
+
   @impl true
   def applicable?({{:., _, [{:__aliases__, _, [:Temple]}, name]}, _meta, _args}) do
-    name in Temple.Parser.void_elements_aliases()
+    name in Parser.nonvoid_elements_aliases()
   end
 
   def applicable?(_), do: false
@@ -12,7 +14,6 @@ defmodule Temple.Parser.TempleNamespaceVoid do
   @impl true
   def run({name, meta, args}) do
     {:., _, [{:__aliases__, _, [:Temple]}, name]} = name
-
-    Temple.Parser.VoidElementsAliases.run({name, meta, args})
+    Temple.Ast.NonvoidElementsAliases.run({name, meta, args})
   end
 end

@@ -1,7 +1,7 @@
-defmodule Temple.Parser.DefaultTest do
+defmodule Temple.Ast.DefaultTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.Default
+  alias Temple.Ast.Default
 
   describe "applicable?/1" do
     test "returns true when the node is an elixir expression" do

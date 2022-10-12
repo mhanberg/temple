@@ -1,7 +1,7 @@
-defmodule Temple.Parser.EmptyTest do
+defmodule Temple.Ast.EmptyTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.Empty
+  alias Temple.Ast.Empty
 
   describe "applicable?/1" do
     test "returns true when the node is non-content" do

@@ -1,4 +1,4 @@
-defmodule Temple.Parser.ElementList do
+defmodule Temple.Ast.ElementList do
   @moduledoc false
 
   @behaviour Temple.Parser

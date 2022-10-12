@@ -368,12 +368,14 @@ defmodule Temple.RendererTest do
       temple do
         div do
           "I am above the slot"
-          slot :default
+          slot @inner_block
         end
       end
     end
 
     test "component with default slot" do
+      assigns = %{}
+
       result =
         Renderer.compile do
           div do
@@ -404,23 +406,28 @@ defmodule Temple.RendererTest do
       temple do
         div do
           "#{@name} is above the slot"
-          slot :default
+          slot @inner_block
         end
 
         footer do
-          slot :footer, %{name: @name}
+          for f <- @footer do
+            span do: f[:label]
+            slot f, %{name: @name}
+          end
         end
       end
     end
 
     test "component with a named slot" do
+      assigns = %{label: "i'm a slot attribute"}
+
       result =
         Renderer.compile do
           div do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, %{name: name} do
+              slot :footer, let: %{name: name}, label: @label, expr: 1 + 1 do
                 p do
                   "#{name}'s in the footer!"
                 end
@@ -439,6 +446,7 @@ defmodule Temple.RendererTest do
       </div>
 
       <footer>
+        <span>i'm a slot attribute</span>
         <p>
           motchy boi's in the footer!
         </p>
@@ -497,6 +505,59 @@ defmodule Temple.RendererTest do
       # html
       expected = """
       <input type="text" placeholder="Enter some text...">
+      """
+
+      assert expected == result
+    end
+
+    test "multiple slots" do
+      assigns = %{}
+
+      result =
+        Renderer.compile do
+          div do
+            c &named_slot/1, name: "motchy boi" do
+              span do: "i'm a slot"
+
+              slot :footer, let: %{name: name} do
+                p do
+                  "#{name}'s in the footer!"
+                end
+              end
+
+              slot :footer, let: %{name: name} do
+                p do
+                  "#{name} is the second footer!"
+                end
+              end
+            end
+          end
+        end
+
+      # heex
+      expected = """
+      <div>
+      <div>
+        motchy boi is above the slot
+        <span>i'm a slot</span>
+
+      </div>
+
+      <footer>
+        <span></span>
+        <p>
+          motchy boi's in the footer!
+        </p>
+        <span></span>
+        <p>
+          motchy boi is the second footer!
+        </p>
+
+      </footer>
+
+
+      </div>
+
       """
 
       assert expected == result

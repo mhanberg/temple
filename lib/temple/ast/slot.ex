@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Slot do
+defmodule Temple.Ast.Slot do
   @moduledoc false
   @behaviour Temple.Parser
   use TypedStruct

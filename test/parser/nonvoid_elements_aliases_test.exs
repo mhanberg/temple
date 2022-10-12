@@ -1,8 +1,9 @@
-defmodule Temple.Parser.NonvoidElementsAliasesTest do
+defmodule Temple.Ast.NonvoidElementsAliasesTest do
   use ExUnit.Case, async: true
 
-  alias Temple.Parser.NonvoidElementsAliases
-  alias Temple.Parser.ElementList
+  alias Temple.Ast.NonvoidElementsAliases
+  alias Temple.Ast.ElementList
+  alias Temple.Ast.Text
 
   describe "applicable?/1" do
     test "returns true when the node is a nonvoid element or alias" do
@@ -74,7 +75,7 @@ defmodule Temple.Parser.NonvoidElementsAliasesTest do
                            name: "option",
                            children: %ElementList{
                              children: [
-                               %Temple.Parser.Text{text: "foo"}
+                               %Text{text: "foo"}
                              ]
                            }
                          }

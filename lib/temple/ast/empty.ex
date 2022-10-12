@@ -1,4 +1,4 @@
-defmodule Temple.Parser.Empty do
+defmodule Temple.Ast.Empty do
   @moduledoc false
 
   use TypedStruct
