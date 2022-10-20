@@ -63,7 +63,7 @@ defmodule Temple.MixProject do
     [
       {:typed_struct, "~> 0.3"},
       {:floki, ">= 0.0.0"},
-      {:ex_doc, "~> 0.28.3", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.29.0", only: :dev, runtime: false}
     ]
   end
 end
