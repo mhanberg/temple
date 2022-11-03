@@ -510,6 +510,21 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
+    test "runtime boolean attributes don't emit with falsy values" do
+      truthy = false
+      result =
+        Renderer.compile do
+          input type: "text", disabled: truthy, placeholder: "Enter some text..."
+        end
+
+      # html
+      expected = """
+      <input type="text" placeholder="Enter some text...">
+      """
+
+      assert expected == result
+    end
+
     test "multiple slots" do
       assigns = %{}
 
