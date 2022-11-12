@@ -19,20 +19,19 @@ defmodule Temple.Ast.UtilsTest do
 
     test "returns a list of text and expr nodes for attributes with runtime values" do
       class_ast = quote(do: @class)
-      id_ast = quote(do: @id)
-      attrs = [class: class_ast, id: id_ast, disabled: false, checked: true]
+      attrs = [class: class_ast, id: "foo"]
 
-      actual = Utils.compile_attrs(attrs)
+      assert [{:expr, actual}, {:text, ~s' id="foo"'}] = Utils.compile_attrs(attrs)
 
-      assert [
-               {:text, ~s' class="'},
-               {:expr, class_ast},
-               {:text, ~s'"'},
-               {:text, ~s' id="'},
-               {:expr, id_ast},
-               {:text, ~s'"'},
-               {:text, ~s' checked'}
-             ] == actual
+      assert Macro.to_string(
+               quote do
+                 case @class do
+                   true -> " " <> "class"
+                   false -> ""
+                   _ -> ~s' #{"class"}="#{@class}"'
+                 end
+               end
+             ) == Macro.to_string(actual)
     end
 
     test "returns a list of text and expr nodes for the class object syntax" do

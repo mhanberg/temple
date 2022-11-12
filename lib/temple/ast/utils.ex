@@ -49,7 +49,16 @@ defmodule Temple.Ast.Utils do
   end
 
   def build_attr(name, {_, _, _} = value) do
-    [{:text, ~s' #{name}="'}, {:expr, value}, {:text, ~s'"'}]
+    expr =
+      quote do
+        case unquote(value) do
+          true -> " " <> unquote(name)
+          false -> ""
+          _ -> ~s' #{unquote(name)}="#{unquote(value)}"'
+        end
+      end
+
+    [{:expr, expr}]
   end
 
   def build_attr("class", classes) when is_list(classes) do

@@ -125,8 +125,8 @@ Attributes are declared as a keyword list.
 
 - Keys with underscores are converted to the kebab syntax.
 - Values can be Elixir expressions.
-- Values that are compile time `true` will be emitted as a boolean attribute. `disabled` and `checked` are examples of boolean attributes.
-- Values that are compile time `false` will not be emitted into the document at all.
+- Values that evaluate to `true` will be emitted as a boolean attribute. `disabled` and `checked` are examples of boolean attributes.
+- Values that evaluate `false` will not be emitted into the document at all.
 - The class attribute has a special "object syntax" that allows you to specify classes as a keyword list, only emitting classes that evaluate to true into the final class.
 
 Let's look at an example.
