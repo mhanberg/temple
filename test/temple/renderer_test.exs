@@ -510,16 +510,18 @@ defmodule Temple.RendererTest do
       assert expected == result
     end
 
-    test "runtime boolean attributes don't emit with falsy values" do
-      truthy = false
+    test "runtime boolean attributes emit the right values" do
+      truthy = true
+      falsey = false
+
       result =
         Renderer.compile do
-          input type: "text", disabled: truthy, placeholder: "Enter some text..."
+          input type: "text", disabled: falsey, checked: truthy, placeholder: "Enter some text..."
         end
 
       # html
       expected = """
-      <input type="text" placeholder="Enter some text...">
+      <input type="text" checked placeholder="Enter some text...">
       """
 
       assert expected == result
