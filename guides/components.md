@@ -214,11 +214,11 @@ def MyApp.TableExample do
 
         c &table/1, rows: @users do
           #          👇 defining the parameter for the slot argument
-          slot :col, let: user, label: "Name" do # 👈 passing a slot attribute
+          slot :col, let!: user, label: "Name" do # 👈 passing a slot attribute
             user.name
           end
 
-          slot :col, let: user, label: "Address" do
+          slot :col, let!: user, label: "Address" do
             user.address
           end
         end

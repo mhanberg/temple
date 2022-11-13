@@ -6,7 +6,7 @@
 
 - Rendering slots is now done by passing the assign with the slot name to the `slot` keyword instead of name as an atom. If this slot has multiple definitions, you can loop through them and render each one individually, or render them all at once. Please see the migration guide for more information.
 - The `:default` slot has been renamed to `:inner_block`. This is to be easily compatible with HEEx/Surface. Please see the migration guide for more information.
-- Capturing the data being passed into a slot is now defined using the `:let` attribute. Please see the migration guide for more information.
+- Capturing the data being passed into a slot is now defined using the `:let!` attribute. Please see the migration guide for more information.
 
 ### Enhancements
 

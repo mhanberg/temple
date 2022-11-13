@@ -40,7 +40,7 @@ defmodule Temple.Ast.Components do
               if is_nil(slot) do
                 {node, {component_function, named_slots}}
               else
-                {parameter, attributes} = Keyword.pop(arguments || [], :let)
+                {parameter, attributes} = Keyword.pop(arguments || [], :let!)
                 new_slot = {name, %{parameter: parameter, slot: slot, attributes: attributes}}
                 {nil, {component_function, named_slots ++ [new_slot]}}
               end

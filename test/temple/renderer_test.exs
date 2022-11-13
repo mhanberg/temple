@@ -427,7 +427,7 @@ defmodule Temple.RendererTest do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, let: %{name: name}, label: @label, expr: 1 + 1 do
+              slot :footer, let!: %{name: name}, label: @label, expr: 1 + 1 do
                 p do
                   "#{name}'s in the footer!"
                 end
@@ -536,13 +536,13 @@ defmodule Temple.RendererTest do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, let: %{name: name} do
+              slot :footer, let!: %{name: name} do
                 p do
                   "#{name}'s in the footer!"
                 end
               end
 
-              slot :footer, let: %{name: name} do
+              slot :footer, let!: %{name: name} do
                 p do
                   "#{name} is the second footer!"
                 end
