@@ -14,6 +14,7 @@ defmodule TempleTest do
             end
           end
         end
+      |> :erlang.iolist_to_binary()
 
       # heex
       expected = """

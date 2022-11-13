@@ -121,6 +121,6 @@ locals_without_parens = Enum.map(temple ++ html ++ svg, &{&1, :*})
 [
   import_deps: [:typed_struct],
   inputs: ["*.{ex,exs}", "{config,lib,test}/**/*.{ex,exs}"],
-  locals_without_parens: locals_without_parens,
+  locals_without_parens: locals_without_parens ++ [assert_html: 2],
   export: [locals_without_parens: locals_without_parens]
 ]

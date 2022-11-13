@@ -1,5 +1,5 @@
 defmodule Temple do
-  @engine Application.compile_env(:temple, :engine, EEx.SmartEngine)
+  @engine Application.compile_env(:temple, :engine, Phoenix.HTML.Engine)
 
   @moduledoc """
   Temple syntax is available inside the `temple`, and is compiled into efficient Elixir code at compile time using the configured `EEx.Engine`.
@@ -101,7 +101,15 @@ defmodule Temple do
 
     quote do
       require Temple.Renderer
+
       Temple.Renderer.compile(unquote(opts), unquote(block))
+      |> then(fn
+        {:safe, template} ->
+          template
+
+        template ->
+          template
+      end)
     end
   end
 

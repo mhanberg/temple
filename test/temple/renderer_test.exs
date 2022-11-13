@@ -6,6 +6,12 @@ defmodule Temple.RendererTest do
   require Temple.Renderer
   alias Temple.Renderer
 
+  defmacro assert_html(expected, actual) do
+    quote do
+      assert unquote(expected) == Phoenix.HTML.safe_to_string(unquote(actual))
+    end
+  end
+
   describe "compile/1" do
     test "produces renders a text node" do
       result =
@@ -13,7 +19,7 @@ defmodule Temple.RendererTest do
           "hello world"
         end
 
-      assert "hello world\n" == result
+      assert_html "hello world\n", result
     end
 
     test "produces renders a div" do
@@ -36,7 +42,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "produces renders a void elements" do
@@ -61,7 +67,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "a match does not emit" do
@@ -83,7 +89,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "handles simple expression inside attributes" do
@@ -104,7 +110,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     # test "handles simple expression are the entire attributes" do
@@ -125,7 +131,7 @@ defmodule Temple.RendererTest do
 
     #   """
 
-    #   assert expected == result
+    #   assert_html expected, result
     # end
 
     test "handles simple expression with @ assign" do
@@ -146,7 +152,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "handles multi line expression" do
@@ -172,7 +178,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "if expression" do
@@ -199,7 +205,7 @@ defmodule Temple.RendererTest do
 
         """
 
-        assert expected == result
+        assert_html expected, result
       end
     end
 
@@ -232,7 +238,7 @@ defmodule Temple.RendererTest do
 
         """
 
-        assert expected == result
+        assert_html expected, result
       end
     end
 
@@ -264,7 +270,7 @@ defmodule Temple.RendererTest do
           end
         end
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "handles anonymous functions" do
@@ -293,7 +299,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     def super_map(enumerable, func, _extra_args) do
@@ -330,7 +336,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     def basic_component(_assigns) do
@@ -361,7 +367,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     def default_slot(assigns) do
@@ -399,7 +405,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     def named_slot(assigns) do
@@ -446,9 +452,9 @@ defmodule Temple.RendererTest do
       </div>
 
       <footer>
-        <span>i'm a slot attribute</span>
+        <span>i&#39;m a slot attribute</span>
         <p>
-          motchy boi's in the footer!
+          motchy boi&#39;s in the footer!
         </p>
 
       </footer>
@@ -458,7 +464,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
   end
 
@@ -479,7 +485,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "boolean attributes only emit correctly with truthy values" do
@@ -493,7 +499,7 @@ defmodule Temple.RendererTest do
       <input type="text" disabled placeholder="Enter some text...">
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "boolean attributes don't emit with falsy values" do
@@ -507,7 +513,7 @@ defmodule Temple.RendererTest do
       <input type="text" placeholder="Enter some text...">
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "runtime boolean attributes emit the right values" do
@@ -524,7 +530,7 @@ defmodule Temple.RendererTest do
       <input type="text" checked placeholder="Enter some text...">
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "multiple slots" do
@@ -563,7 +569,7 @@ defmodule Temple.RendererTest do
       <footer>
         <span></span>
         <p>
-          motchy boi's in the footer!
+          motchy boi&#39;s in the footer!
         </p>
         <span></span>
         <p>
@@ -577,7 +583,8 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
+    end
     end
   end
 end

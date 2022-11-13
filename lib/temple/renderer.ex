@@ -17,7 +17,7 @@ defmodule Temple.Renderer do
 
   alias Temple.Ast.Utils
 
-  @default_engine EEx.SmartEngine
+  @default_engine Phoenix.HTML.Engine
 
   defmacro compile(opts \\ [], do: block) do
     block
@@ -113,11 +113,12 @@ defmodule Temple.Renderer do
 
     expr =
       quote do
-        component(
-          unquote(function),
-          unquote(component_arguments),
-          {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
-        )
+        {:safe,
+         component(
+           unquote(function),
+           unquote(component_arguments),
+           {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
+         )}
       end
 
     state.engine.handle_expr(buffer, "=", expr)
