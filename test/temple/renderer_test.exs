@@ -1,6 +1,11 @@
+defmodule Temple.RendererTest.Component do
+  use Temple.Component
+end
+
 defmodule Temple.RendererTest do
   use ExUnit.Case, async: true
 
+  import __MODULE__.Component
   import Temple
 
   require Temple.Renderer

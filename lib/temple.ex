@@ -1,6 +1,4 @@
 defmodule Temple do
-  @engine Application.compile_env(:temple, :engine, Phoenix.HTML.Engine)
-
   @moduledoc """
   Temple syntax is available inside the `temple`, and is compiled into efficient Elixir code at compile time using the configured `EEx.Engine`.
 
@@ -93,16 +91,11 @@ defmodule Temple do
   <link href="/css/site.css">
   ```
   """
-  @doc false
-  def engine(), do: @engine
-
   defmacro temple(block) do
-    opts = [engine: engine()]
-
     quote do
       require Temple.Renderer
 
-      Temple.Renderer.compile(unquote(opts), unquote(block))
+      Temple.Renderer.compile(unquote(block))
       |> then(fn
         {:safe, template} ->
           template
@@ -113,70 +106,5 @@ defmodule Temple do
     end
   end
 
-  @doc false
-  def component(func, assigns, _) do
-    apply(func, [assigns])
-  end
-
-  defmacro inner_block(_name, do: do_block) do
-    __inner_block__(do_block)
-  end
-
-  @doc false
-  def __inner_block__([{:->, meta, _} | _] = do_block) do
-    inner_fun = {:fn, meta, do_block}
-
-    quote do
-      fn arg ->
-        _ = var!(assigns)
-        unquote(inner_fun).(arg)
-      end
-    end
-  end
-
-  def __inner_block__(do_block) do
-    quote do
-      fn arg ->
-        _ = var!(assigns)
-        unquote(do_block)
-      end
-    end
-  end
-
-  defmacro render_slot(slot, arg) do
-    quote do
-      unquote(__MODULE__).__render_slot__(unquote(slot), unquote(arg))
-    end
-  end
-
-  @doc false
-  def __render_slot__([], _), do: nil
-
-  def __render_slot__([entry], argument) do
-    call_inner_block!(entry, argument)
-  end
-
-  def __render_slot__(entries, argument) when is_list(entries) do
-    assigns = %{}
-    _ = assigns
-
-    temple do
-      for entry <- entries do
-        call_inner_block!(entry, argument)
-      end
-    end
-  end
-
-  def __render_slot__(entry, argument) when is_map(entry) do
-    entry.inner_block.(argument)
-  end
-
-  defp call_inner_block!(entry, argument) do
-    if !entry.inner_block do
-      message = "attempted to render slot #{entry.__slot__} but the slot has no inner content"
-      raise RuntimeError, message
-    end
-
-    entry.inner_block.(argument)
-  end
+  defdelegate engine, to: Temple.Renderer
 end

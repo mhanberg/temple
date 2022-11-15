@@ -17,12 +17,14 @@ defmodule Temple.Renderer do
 
   alias Temple.Ast.Utils
 
-  @default_engine Phoenix.HTML.Engine
+  @engine Application.compile_env(:temple, :engine, Phoenix.HTML.Engine)
+  @doc false
+  def engine(), do: @engine
 
-  defmacro compile(opts \\ [], do: block) do
+  defmacro compile(do: block) do
     block
     |> Temple.Parser.parse()
-    |> Temple.Renderer.render(opts)
+    |> Temple.Renderer.render(engine: @engine)
 
     # |> Temple.Ast.Utils.inspect_ast()
   end
@@ -30,7 +32,7 @@ defmodule Temple.Renderer do
   def render(asts, opts \\ [])
 
   def render(asts, opts) when is_list(asts) and is_list(opts) do
-    engine = Keyword.get(opts, :engine, @default_engine)
+    engine = Keyword.get(opts, :engine, Phoenix.HTML.Engine)
 
     state = %{
       engine: engine,
@@ -113,12 +115,11 @@ defmodule Temple.Renderer do
 
     expr =
       quote do
-        {:safe,
-         component(
-           unquote(function),
-           unquote(component_arguments),
-           {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
-         )}
+        component(
+          unquote(function),
+          unquote(component_arguments),
+          {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
+        )
       end
 
     state.engine.handle_expr(buffer, "=", expr)
