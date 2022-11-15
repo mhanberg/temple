@@ -106,5 +106,6 @@ defmodule Temple do
     end
   end
 
+  @doc false
   defdelegate engine, to: Temple.Renderer
 end

@@ -106,12 +106,19 @@ defmodule Temple.Renderer do
          ] ++ slot.attributes}
       end)
 
+    {rest, arguments} = Keyword.pop(arguments, :rest!, [])
+
     component_arguments =
       {:%{}, [],
        arguments
        |> Map.new()
        |> Map.merge(slot_quotes)
        |> Enum.to_list()}
+
+    component_arguments =
+      quote do
+        Map.merge(unquote(component_arguments), Map.new(unquote(rest)))
+      end
 
     expr =
       quote do

@@ -118,26 +118,26 @@ defmodule Temple.RendererTest do
       assert_html expected, result
     end
 
-    # test "handles simple expression are the entire attributes" do
-    #   assigns = %{statement: "hello world", attributes: [class: "green"]}
+    test "handles simple expression are the entire attributes" do
+      assigns = %{statement: "hello world", attributes: [class: "green"]}
 
-    #   result =
-    #     Renderer.compile do
-    #       div @attributes do
-    #         @statement
-    #       end
-    #     end
+      result =
+        Renderer.compile do
+          div @attributes do
+            @statement
+          end
+        end
 
-    #   # html
-    #   expected = """
-    #   <div class="green">
-    #     hello world
-    #   </div>
+      # html
+      expected = """
+      <div class="green">
+        hello world
+      </div>
 
-    #   """
+      """
 
-    #   assert_html expected, result
-    # end
+      assert_html expected, result
+    end
 
     test "handles simple expression with @ assign" do
       assigns = %{statement: "hello world"}
@@ -590,6 +590,62 @@ defmodule Temple.RendererTest do
 
       assert_html expected, result
     end
+
+    test "rest! attribute can mix in dynamic attrs with the static attrs" do
+      assigns = %{
+        rest: [
+          class: "font-bold",
+          disabled: true
+        ]
+      }
+
+      result =
+        Renderer.compile do
+          div id: "foo", rest!: @rest do
+            "hi"
+          end
+        end
+
+      # heex
+      expected = """
+      <div id="foo" class="font-bold" disabled>
+        hi
+      </div>
+
+      """
+
+      assert_html expected, result
+    end
+
+    def rest_component(assigns) do
+      temple do
+        div do
+          "I am a basic #{@id} with #{@class}"
+        end
+      end
+    end
+
+    test "rest! attribute can mix in dynamic assigns to components" do
+      assigns = %{
+        rest: [
+          class: "font-bold"
+        ]
+      }
+
+      result =
+        Renderer.compile do
+          c &rest_component/1, id: "foo", rest!: @rest
+        end
+
+      # heex
+      expected = """
+      <div>
+        I am a basic foo with font-bold
+      </div>
+
+      """
+
+      assert_html expected, result
     end
   end
 end
