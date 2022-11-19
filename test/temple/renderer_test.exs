@@ -1,22 +1,13 @@
 defmodule Temple.RendererTest do
   use ExUnit.Case, async: true
 
+  use Temple.Support.Component
   import Temple.Support.Components
 
   require Temple.Renderer
   alias Temple.Renderer
 
-  defmacro assert_html(expected, actual) do
-    quote do
-      assert unquote(expected) == Phoenix.HTML.safe_to_string(unquote(actual)), """
-      --- Expected ---
-      #{unquote(expected)}----------------
-
-      --- Actual ---
-      #{Phoenix.HTML.safe_to_string(unquote(actual))}--------------
-      """
-    end
-  end
+  import Temple.Support.Helpers
 
   describe "compile/1" do
     test "produces renders a text node" do
