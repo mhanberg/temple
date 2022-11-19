@@ -121,53 +121,9 @@ end
 
 ## Attributes
 
-Attributes are declared as a keyword list.
-
-- Keys with underscores are converted to the kebab syntax.
-- Values can be Elixir expressions.
-- Values that evaluate to `true` will be emitted as a boolean attribute. `disabled` and `checked` are examples of boolean attributes.
-- Values that evaluate `false` will not be emitted into the document at all.
-- The class attribute has a special "object syntax" that allows you to specify classes as a keyword list, only emitting classes that evaluate to true into the final class.
-
-Let's look at an example.
-
-```elixir
-assigns = %{highlight?: false, user_name: "Mitch"}
-
-temple do
-  div id: "hero" do
-    h2 class: "font-bold", do: "Profile"
-
-    section data_controller: "hero" do
-      p class: ["border": @highlight?] do
-        "Name: #{@user_name}"
-      end
-
-      video autoplay: true, src: "https://example.com/rick-rolled.mp4"
-    end
-  end
-end
-```
-
-...will emit markup that looks like...
-
-```html
-<div id="hero">
-  <h2 class="font-bold">Profile</h2>
-
-  <section data-controller="hero">
-    <p class="">
-      Name: Mitch
-    </p>
-  </section>
-
-  <video autoplay src="https://example.com/rick-rolled.mp4"></video>
-</div>
-```
+Temple leverages `Phoenix.HTML.attributes_escape/1` internally, so you can refer to it's documentation for all of the details.
 
 ## Elixir Expressions
-
-### They Just Work
 
 Any Elixir expression can be used anywhere inside of a Temple template. Here are a few examples.
 
