@@ -1,19 +1,20 @@
-defmodule Temple.RendererTest.Component do
-  use Temple.Component
-end
-
 defmodule Temple.RendererTest do
   use ExUnit.Case, async: true
 
-  import __MODULE__.Component
-  import Temple
+  import Temple.Support.Components
 
   require Temple.Renderer
   alias Temple.Renderer
 
   defmacro assert_html(expected, actual) do
     quote do
-      assert unquote(expected) == Phoenix.HTML.safe_to_string(unquote(actual))
+      assert unquote(expected) == Phoenix.HTML.safe_to_string(unquote(actual)), """
+      --- Expected ---
+      #{unquote(expected)}----------------
+
+      --- Actual ---
+      #{Phoenix.HTML.safe_to_string(unquote(actual))}--------------
+      """
     end
   end
 
@@ -344,14 +345,6 @@ defmodule Temple.RendererTest do
       assert_html expected, result
     end
 
-    def basic_component(_assigns) do
-      temple do
-        div do
-          "I am a basic component"
-        end
-      end
-    end
-
     test "basic component" do
       result =
         Renderer.compile do
@@ -373,15 +366,6 @@ defmodule Temple.RendererTest do
       """
 
       assert_html expected, result
-    end
-
-    def default_slot(assigns) do
-      temple do
-        div do
-          "I am above the slot"
-          slot @inner_block
-        end
-      end
     end
 
     test "component with default slot" do
@@ -411,22 +395,6 @@ defmodule Temple.RendererTest do
       """
 
       assert_html expected, result
-    end
-
-    def named_slot(assigns) do
-      temple do
-        div do
-          "#{@name} is above the slot"
-          slot @inner_block
-        end
-
-        footer do
-          for f <- @footer do
-            span do: f[:label]
-            slot f, %{name: @name}
-          end
-        end
-      end
     end
 
     test "component with a named slot" do
@@ -615,14 +583,6 @@ defmodule Temple.RendererTest do
       """
 
       assert_html expected, result
-    end
-
-    def rest_component(assigns) do
-      temple do
-        div do
-          "I am a basic #{@id} with #{@class}"
-        end
-      end
     end
 
     test "rest! attribute can mix in dynamic assigns to components" do
