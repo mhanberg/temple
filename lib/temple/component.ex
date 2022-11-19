@@ -1,4 +1,55 @@
 defmodule Temple.Component do
+  @moduledoc """
+  Use this module to create your own component implementation.
+
+  This is only required if you are not using a component implementation from another framework,
+  like Phoenix LiveView.
+
+  At it's core, a component implmentation includes the following functions
+
+  - `component/2`
+  - `inner_block/2`
+  - `render_slot/2`
+
+  These functions are used by the template compiler, so you won't be calling them directly.
+
+  ## Usage
+
+  Invoke the `__using__/1` macro to create your own module, and then import that module where you
+  need to define define or use components (usually everywhere).
+
+  We'll use an example that is similar to what Temple uses in its own test suite..
+
+  ```elixir
+  defmodule MyAppWeb.Component do
+    use Temple.Component
+
+    defmacro __using__(_) do
+      quote do
+        import Temple
+        import unquote(__MODULE__)
+      end
+    end
+  end
+  ```
+
+  Then you can `use` your module when you want to define or use a component.
+
+  ```elixir
+  defmodule MyAppWeb.Components do
+    use MyAppWeb.Component
+
+    def basic_component(_assigns) do
+      temple do
+        div do
+          "I am a basic component"
+        end
+      end
+    end
+  end
+  ```
+
+  """
   defmacro __using__(_) do
     quote do
       import Temple
