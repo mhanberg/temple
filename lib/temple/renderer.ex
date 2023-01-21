@@ -17,12 +17,14 @@ defmodule Temple.Renderer do
 
   alias Temple.Ast.Utils
 
-  @default_engine EEx.SmartEngine
+  @engine Application.compile_env(:temple, :engine, Phoenix.HTML.Engine)
+  @doc false
+  def engine(), do: @engine
 
-  defmacro compile(opts \\ [], do: block) do
+  defmacro compile(do: block) do
     block
     |> Temple.Parser.parse()
-    |> Temple.Renderer.render(opts)
+    |> Temple.Renderer.render(engine: @engine)
 
     # |> Temple.Ast.Utils.inspect_ast()
   end
@@ -30,7 +32,7 @@ defmodule Temple.Renderer do
   def render(asts, opts \\ [])
 
   def render(asts, opts) when is_list(asts) and is_list(opts) do
-    engine = Keyword.get(opts, :engine, @default_engine)
+    engine = Keyword.get(opts, :engine, Phoenix.HTML.Engine)
 
     state = %{
       engine: engine,
@@ -97,12 +99,21 @@ defmodule Temple.Renderer do
             end
           end
 
-        {:%{}, [],
-         [
-           __slot__: slot.name,
-           inner_block: inner_block
-         ] ++ slot.attributes}
+        {rest, attributes} = Keyword.pop(slot.attributes, :rest!, [])
+
+        slot =
+          {:%{}, [],
+           [
+             __slot__: slot.name,
+             inner_block: inner_block
+           ] ++ attributes}
+
+        quote do
+          Map.merge(unquote(slot), Map.new(unquote(rest)))
+        end
       end)
+
+    {rest, arguments} = Keyword.pop(arguments, :rest!, [])
 
     component_arguments =
       {:%{}, [],
@@ -110,6 +121,11 @@ defmodule Temple.Renderer do
        |> Map.new()
        |> Map.merge(slot_quotes)
        |> Enum.to_list()}
+
+    component_arguments =
+      quote do
+        Map.merge(unquote(component_arguments), Map.new(unquote(rest)))
+      end
 
     expr =
       quote do
@@ -126,7 +142,9 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Slot{} = ast) do
     render_slot_func =
       quote do
-        render_slot(unquote(ast.name), unquote(ast.args))
+        {rest, args} = Map.pop(Map.new(unquote(ast.args)), :rest!, [])
+        args = Map.merge(args, Map.new(rest))
+        render_slot(unquote(ast.name), args)
       end
 
     state.engine.handle_expr(buffer, "=", render_slot_func)

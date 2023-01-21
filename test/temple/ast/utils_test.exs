@@ -25,11 +25,7 @@ defmodule Temple.Ast.UtilsTest do
 
       assert Macro.to_string(
                quote do
-                 case @class do
-                   true -> " " <> "class"
-                   false -> ""
-                   _ -> ~s' #{"class"}="#{@class}"'
-                 end
+                 Phoenix.HTML.attributes_escape([{"class", unquote(class_ast)}])
                end
              ) == Macro.to_string(actual)
     end
@@ -59,6 +55,28 @@ defmodule Temple.Ast.UtilsTest do
 
       # the ast metadata is different, let's just compare stringified versions
       assert Macro.to_string(result_expr) == Macro.to_string(expr)
+    end
+
+    test "the rest! attribute will mix in the values at runtime" do
+      rest_ast =
+        quote do
+          rest
+        end
+
+      attrs = [class: "text-red", rest!: rest_ast]
+
+      actual = Utils.compile_attrs(attrs)
+
+      assert [
+               {:text, ~s' class="text-red"'},
+               {:expr, rest_actual}
+             ] = actual
+
+      assert Macro.to_string(
+               quote do
+                 Phoenix.HTML.attributes_escape(unquote(rest_ast))
+               end
+             ) == Macro.to_string(rest_actual)
     end
   end
 end

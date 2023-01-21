@@ -18,7 +18,17 @@ defmodule Temple.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test) do
+    # hack to get the right compiler options used on the non-script files in 
+    # test/support
+    Code.put_compiler_option(
+      :parser_options,
+      Keyword.put(Code.get_compiler_option(:parser_options), :token_metadata, true)
+    )
+
+    ["lib", "test/support"]
+  end
+
   defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
@@ -61,8 +71,9 @@ defmodule Temple.MixProject do
 
   defp deps do
     [
-      {:typed_struct, "~> 0.3"},
       {:floki, ">= 0.0.0"},
+      {:phoenix_html, "~> 3.2"},
+      {:typed_struct, "~> 0.3"},
       {:ex_doc, "~> 0.29.0", only: :dev, runtime: false}
     ]
   end

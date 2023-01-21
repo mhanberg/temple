@@ -1,10 +1,13 @@
 defmodule Temple.RendererTest do
   use ExUnit.Case, async: true
 
-  import Temple
+  use Temple.Support.Component
+  import Temple.Support.Components
 
   require Temple.Renderer
   alias Temple.Renderer
+
+  import Temple.Support.Helpers
 
   describe "compile/1" do
     test "produces renders a text node" do
@@ -13,7 +16,7 @@ defmodule Temple.RendererTest do
           "hello world"
         end
 
-      assert "hello world\n" == result
+      assert_html "hello world\n", result
     end
 
     test "produces renders a div" do
@@ -36,7 +39,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "produces renders a void elements" do
@@ -61,7 +64,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "a match does not emit" do
@@ -83,7 +86,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "handles simple expression inside attributes" do
@@ -104,29 +107,29 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
-    # test "handles simple expression are the entire attributes" do
-    #   assigns = %{statement: "hello world", attributes: [class: "green"]}
+    test "handles simple expression are the entire attributes" do
+      assigns = %{statement: "hello world", attributes: [class: "green"]}
 
-    #   result =
-    #     Renderer.compile do
-    #       div @attributes do
-    #         @statement
-    #       end
-    #     end
+      result =
+        Renderer.compile do
+          div @attributes do
+            @statement
+          end
+        end
 
-    #   # html
-    #   expected = """
-    #   <div class="green">
-    #     hello world
-    #   </div>
+      # html
+      expected = """
+      <div class="green">
+        hello world
+      </div>
 
-    #   """
+      """
 
-    #   assert expected == result
-    # end
+      assert_html expected, result
+    end
 
     test "handles simple expression with @ assign" do
       assigns = %{statement: "hello world"}
@@ -146,7 +149,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "handles multi line expression" do
@@ -172,7 +175,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "if expression" do
@@ -199,7 +202,7 @@ defmodule Temple.RendererTest do
 
         """
 
-        assert expected == result
+        assert_html expected, result
       end
     end
 
@@ -232,7 +235,7 @@ defmodule Temple.RendererTest do
 
         """
 
-        assert expected == result
+        assert_html expected, result
       end
     end
 
@@ -264,7 +267,7 @@ defmodule Temple.RendererTest do
           end
         end
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "handles anonymous functions" do
@@ -293,7 +296,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     def super_map(enumerable, func, _extra_args) do
@@ -330,15 +333,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
-    end
-
-    def basic_component(_assigns) do
-      temple do
-        div do
-          "I am a basic component"
-        end
-      end
+      assert_html expected, result
     end
 
     test "basic component" do
@@ -361,16 +356,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
-    end
-
-    def default_slot(assigns) do
-      temple do
-        div do
-          "I am above the slot"
-          slot @inner_block
-        end
-      end
+      assert_html expected, result
     end
 
     test "component with default slot" do
@@ -399,23 +385,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
-    end
-
-    def named_slot(assigns) do
-      temple do
-        div do
-          "#{@name} is above the slot"
-          slot @inner_block
-        end
-
-        footer do
-          for f <- @footer do
-            span do: f[:label]
-            slot f, %{name: @name}
-          end
-        end
-      end
+      assert_html expected, result
     end
 
     test "component with a named slot" do
@@ -427,7 +397,7 @@ defmodule Temple.RendererTest do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, let: %{name: name}, label: @label, expr: 1 + 1 do
+              slot :footer, let!: %{name: name}, label: @label, expr: 1 + 1 do
                 p do
                   "#{name}'s in the footer!"
                 end
@@ -446,9 +416,9 @@ defmodule Temple.RendererTest do
       </div>
 
       <footer>
-        <span>i'm a slot attribute</span>
+        <span>i&#39;m a slot attribute</span>
         <p>
-          motchy boi's in the footer!
+          motchy boi&#39;s in the footer!
         </p>
 
       </footer>
@@ -458,7 +428,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
   end
 
@@ -479,7 +449,7 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "boolean attributes only emit correctly with truthy values" do
@@ -493,7 +463,7 @@ defmodule Temple.RendererTest do
       <input type="text" disabled placeholder="Enter some text...">
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "boolean attributes don't emit with falsy values" do
@@ -507,7 +477,7 @@ defmodule Temple.RendererTest do
       <input type="text" placeholder="Enter some text...">
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "runtime boolean attributes emit the right values" do
@@ -524,7 +494,7 @@ defmodule Temple.RendererTest do
       <input type="text" checked placeholder="Enter some text...">
       """
 
-      assert expected == result
+      assert_html expected, result
     end
 
     test "multiple slots" do
@@ -536,13 +506,13 @@ defmodule Temple.RendererTest do
             c &named_slot/1, name: "motchy boi" do
               span do: "i'm a slot"
 
-              slot :footer, let: %{name: name} do
+              slot :footer, let!: %{name: name} do
                 p do
                   "#{name}'s in the footer!"
                 end
               end
 
-              slot :footer, let: %{name: name} do
+              slot :footer, let!: %{name: name} do
                 p do
                   "#{name} is the second footer!"
                 end
@@ -563,7 +533,7 @@ defmodule Temple.RendererTest do
       <footer>
         <span></span>
         <p>
-          motchy boi's in the footer!
+          motchy boi&#39;s in the footer!
         </p>
         <span></span>
         <p>
@@ -577,7 +547,87 @@ defmodule Temple.RendererTest do
 
       """
 
-      assert expected == result
+      assert_html expected, result
+    end
+
+    test "rest! attribute can mix in dynamic attrs with the static attrs" do
+      assigns = %{
+        rest: [
+          class: "font-bold",
+          disabled: true
+        ]
+      }
+
+      result =
+        Renderer.compile do
+          div id: "foo", rest!: @rest do
+            "hi"
+          end
+        end
+
+      # heex
+      expected = """
+      <div id="foo" class="font-bold" disabled>
+        hi
+      </div>
+
+      """
+
+      assert_html expected, result
+    end
+
+    test "rest! attribute can mix in dynamic assigns to components" do
+      assigns = %{
+        rest: [
+          class: "font-bold"
+        ]
+      }
+
+      result =
+        Renderer.compile do
+          c &rest_component/1, id: "foo", rest!: @rest
+        end
+
+      # heex
+      expected = """
+      <div>
+        I am a basic foo with font-bold
+      </div>
+
+      """
+
+      assert_html expected, result
+    end
+
+    test "rest! attribute can mix in dynamic attributes to slots" do
+      assigns = %{
+        rest: [
+          class: "font-bold"
+        ]
+      }
+
+      result =
+        Renderer.compile do
+          c &rest_slot/1 do
+            slot :foo,
+              id: "passed-into-slot",
+              rest!: @rest,
+              let!: %{slot_class: class, slot_id: id} do
+              "id is #{id} and class is #{class}"
+            end
+          end
+        end
+
+      # heex
+      expected = """
+      <div>
+      id is passed-into-slot and class is font-bold
+
+      </div>
+
+      """
+
+      assert_html expected, result
     end
   end
 end

@@ -34,7 +34,7 @@ defmodule Temple.Ast.Utils do
       [
         {:expr,
          quote do
-           unquote(List.first(attrs))
+           Phoenix.HTML.attributes_escape(unquote(List.first(attrs)))
          end}
       ]
     end
@@ -48,14 +48,25 @@ defmodule Temple.Ast.Utils do
     []
   end
 
+  def build_attr("rest!", values) when is_list(values) do
+    Enum.flat_map(values, fn {name, value} ->
+      build_attr(snake_to_kebab(name), value)
+    end)
+  end
+
+  def build_attr("rest!", {_, _, _} = value) do
+    expr =
+      quote do
+        Phoenix.HTML.attributes_escape(unquote(value))
+      end
+
+    [{:expr, expr}]
+  end
+
   def build_attr(name, {_, _, _} = value) do
     expr =
       quote do
-        case unquote(value) do
-          true -> " " <> unquote(name)
-          false -> ""
-          _ -> ~s' #{unquote(name)}="#{unquote(value)}"'
-        end
+        Phoenix.HTML.attributes_escape([{unquote(name), unquote(value)}])
       end
 
     [{:expr, expr}]
