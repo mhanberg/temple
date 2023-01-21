@@ -598,5 +598,36 @@ defmodule Temple.RendererTest do
 
       assert_html expected, result
     end
+
+    test "rest! attribute can mix in dynamic attributes to slots" do
+      assigns = %{
+        rest: [
+          class: "font-bold"
+        ]
+      }
+
+      result =
+        Renderer.compile do
+          c &rest_slot/1 do
+            slot :foo,
+              id: "passed-into-slot",
+              rest!: @rest,
+              let!: %{slot_class: class, slot_id: id} do
+              "id is #{id} and class is #{class}"
+            end
+          end
+        end
+
+      # heex
+      expected = """
+      <div>
+      id is passed-into-slot and class is font-bold
+
+      </div>
+
+      """
+
+      assert_html expected, result
+    end
   end
 end

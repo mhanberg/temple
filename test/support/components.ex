@@ -41,4 +41,14 @@ defmodule Temple.Support.Components do
       end
     end
   end
+
+  def rest_slot(assigns) do
+    temple do
+      div do
+        for foo <- @foo do
+          slot foo, slot_id: foo.id, rest!: [slot_class: foo.class]
+        end
+      end
+    end
+  end
 end

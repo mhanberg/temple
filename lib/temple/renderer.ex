@@ -99,11 +99,18 @@ defmodule Temple.Renderer do
             end
           end
 
-        {:%{}, [],
-         [
-           __slot__: slot.name,
-           inner_block: inner_block
-         ] ++ slot.attributes}
+        {rest, attributes} = Keyword.pop(slot.attributes, :rest!, [])
+
+        slot =
+          {:%{}, [],
+           [
+             __slot__: slot.name,
+             inner_block: inner_block
+           ] ++ attributes}
+
+        quote do
+          Map.merge(unquote(slot), Map.new(unquote(rest)))
+        end
       end)
 
     {rest, arguments} = Keyword.pop(arguments, :rest!, [])
@@ -135,7 +142,9 @@ defmodule Temple.Renderer do
   def render(buffer, state, %Slot{} = ast) do
     render_slot_func =
       quote do
-        render_slot(unquote(ast.name), unquote(ast.args))
+        {rest, args} = Map.pop(Map.new(unquote(ast.args)), :rest!, [])
+        args = Map.merge(args, Map.new(rest))
+        render_slot(unquote(ast.name), args)
       end
 
     state.engine.handle_expr(buffer, "=", render_slot_func)
