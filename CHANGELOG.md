@@ -2,6 +2,8 @@
 
 ## Main
 
+## v0.11.0
+
 ### Breaking Changes
 
 - Rendering slots is now done by passing the assign with the slot name to the `slot` keyword instead of name as an atom. If this slot has multiple definitions, you can loop through them and render each one individually, or render them all at once. Please see the migration guide for more information.
