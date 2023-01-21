@@ -128,7 +128,7 @@ Temple leverages `Phoenix.HTML.attributes_escape/1` internally, so you can refer
 To render dynamic attributes into a tag, you can pass them with the reserved attribute `:rest!`.
 
 ```elixir
-assigns = %
+assigns = %{
   data: [data_foo: "hi"]
 }
 

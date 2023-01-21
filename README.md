@@ -1,9 +1,12 @@
-# ![](temple-github-image.png)
+![Temple](temple-github-image.png)
+
 
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 
-> You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.9.0).
+> You are looking at the README for the main branch. The README for the latest stable release is located [here](https://github.com/mhanberg/temple/tree/v0.11.0).
+
+# Temple
 
 Temple is an Elixir DSL for writing HTML and SVG.
 
