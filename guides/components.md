@@ -26,7 +26,7 @@ end
 
 To use a component, you will use the special `c` keyword. This is called a "keyword" because it is not a function or macro, but only exists inside of the `Temple.temple/1` block.
 
-The first argument will be the function reference to your component function, followed by any assigns.
+The first argument will be the function reference to your component function, followed by any assigns. You can pass dynamic assigns using the `:rest!` keyword the same way you would with a normal tag.
 
 ```elixir
 defmodule MyApp.ConfirmDialog do
@@ -156,7 +156,7 @@ end
 
 ## Passing data to and through Slots
 
-Sometimes it is necessary to pass data _into_ a slot (hereby known as *slot attributes*) from the call site and _from_ a component definition (hereby known as *slot arguments*) back to the call site.
+Sometimes it is necessary to pass data _into_ a slot (hereby known as *slot attributes*) from the call site and _from_ a component definition (hereby known as *slot arguments*) back to the call site. Dynamic slot attributes can be passed using the `:rest!` attribute in the same way you can with tag attributes.
 
 Let's look at what a `table` component could look like. Here we observe we access an attribute in the slot in the header with `col.label`.
 

@@ -123,6 +123,30 @@ end
 
 Temple leverages `Phoenix.HTML.attributes_escape/1` internally, so you can refer to it's documentation for all of the details.
 
+### Dynamic Attributes
+
+To render dynamic attributes into a tag, you can pass them with the reserved attribute `:rest!`.
+
+```elixir
+assigns = %
+  data: [data_foo: "hi"]
+}
+
+temple do
+  div id: "foo", rest!: @data do
+    "Hello, world!"
+  end
+end
+```
+
+will render to
+
+```html
+<div id="foo" data-foo="hi">
+  Hello, world!
+</div>
+```
+
 ## Elixir Expressions
 
 Any Elixir expression can be used anywhere inside of a Temple template. Here are a few examples.
