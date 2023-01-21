@@ -14,6 +14,7 @@
 - Multiple instances of the same slot name can now be declared and then rendered inside the component (similar to HEEx and Surface).
 - You can now pass arbitrary data to slots, and it does not need to be a map or a keyword list. I don't think this is a breaking change, but please submit an issue if you notice it is.
 - Slot attributes. You can now pass data into a slot from the definition site and use it at the call site (inside the component).
+- Dynamic attributes/assigns. You can now pass dynamic attributes to the `:rest!` attribute in a tag, component, or slot.
 
 ### Fixes
 
