@@ -214,3 +214,51 @@ def card(assigns) do
   end
 end
 ```
+
+## Inserting arbitrary html
+
+Sometimes, you might want to insert in a template some arbitrary html (i.e. the result of a function that gives you a raw html string).
+
+If you do it like this:
+
+```elixir
+my_awesome_tag = "<my_awesome_tag>This is my awesome tag!</my_awesome_tag>"
+
+temple do
+  div do
+    my_awesome_tag
+  end
+end
+```
+
+The arbitrary html string will first be escaped by temple, resulting in something like this:
+
+```elixir
+"<div>&lt;my_awesome_tag&gt;This is my awesome tag!&lt;/my_awesome_tag&gt;</div>"
+```
+
+(notice the `&lt;` and `&gt;` instead of the expected `<` and `>` opening and closing `<my_awesome_tag>`)
+
+Do tell temple you want it to insert raw HTML, wrap the string in a `{:safe, string}` tuple like this:
+
+```elixir
+temple do
+  div do
+    {:safe, my_awesome_tag}
+  end
+end
+
+# => "<div><my_awesome_tag>This is my awesome tag!</my_awesome_tag></div>"
+```
+
+If you are using phoenix, you get the `raw/1` function to do that for you:
+
+```elixir
+temple do
+  div do
+    raw my_awesome_tag
+  end
+end
+
+# => "<div><my_awesome_tag>This is my awesome tag!</my_awesome_tag></div>"
+```
