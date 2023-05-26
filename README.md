@@ -145,6 +145,10 @@ To include Temple's formatter configuration, add `:temple` to your `.formatter.e
 
 ## Phoenix
 
+When using Phoenix ~> 1.7, all you need to do is include `:temple` in your mix.exs.
+
+If you plan on using the template structure that < 1.6 Phoenix applications use, you can use `:temple_phoenix` as described below.
+
 To use with [Phoenix](https://github.com/phoenixframework/phoenix), please use the [temple_phoenix](https://github.com/mhanberg/temple_phoenix) package! This bundles up some useful helpers as well as the Phoenix Template engine.
 
 ## Related
