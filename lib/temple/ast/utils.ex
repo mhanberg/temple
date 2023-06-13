@@ -1,6 +1,12 @@
 defmodule Temple.Ast.Utils do
   @moduledoc false
 
+  @attributes Application.compile_env(
+                :temple,
+                :attributes,
+                {Phoenix.HTML, :attributes_escape}
+              )
+
   def snake_to_kebab(stringable),
     do: stringable |> to_string() |> String.replace_trailing("_", "") |> String.replace("_", "-")
 
@@ -34,7 +40,7 @@ defmodule Temple.Ast.Utils do
       [
         {:expr,
          quote do
-           Phoenix.HTML.attributes_escape(unquote(List.first(attrs)))
+           unquote(__MODULE__).__attributes__(unquote(List.first(attrs)))
          end}
       ]
     end
@@ -57,7 +63,7 @@ defmodule Temple.Ast.Utils do
   def build_attr("rest!", {_, _, _} = value) do
     expr =
       quote do
-        Phoenix.HTML.attributes_escape(unquote(value))
+        unquote(__MODULE__).__attributes__(unquote(value))
       end
 
     [{:expr, expr}]
@@ -66,7 +72,7 @@ defmodule Temple.Ast.Utils do
   def build_attr(name, {_, _, _} = value) do
     expr =
       quote do
-        Phoenix.HTML.attributes_escape([{unquote(name), unquote(value)}])
+        unquote(__MODULE__).__attributes__([{unquote(name), unquote(value)}])
       end
 
     [{:expr, expr}]
@@ -153,5 +159,11 @@ defmodule Temple.Ast.Utils do
     |> IO.puts()
 
     ast
+  end
+
+  def __attributes__(attributes) do
+    {mod, func} = @attributes
+
+    apply(mod, func, [attributes])
   end
 end

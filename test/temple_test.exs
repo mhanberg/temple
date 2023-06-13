@@ -14,7 +14,7 @@ defmodule TempleTest do
             end
           end
         end
-        |> :erlang.iolist_to_binary()
+        |> Phoenix.HTML.safe_to_string()
 
       # heex
       expected = """
@@ -28,6 +28,12 @@ defmodule TempleTest do
       """
 
       assert expected == result
+    end
+  end
+
+  describe "attributes/1" do
+    test "compiles runtime attributes" do
+      assert ~s| disabled class="foo"| == attributes(disabled: true, checked: false, class: "foo")
     end
   end
 end
