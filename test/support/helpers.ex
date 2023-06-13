@@ -1,13 +1,22 @@
 defmodule Temple.Support.Helpers do
-  defmacro assert_html(expected, actual) do
-    quote do
-      assert unquote(expected) == Phoenix.HTML.safe_to_string(unquote(actual)), """
-      --- Expected ---
-      #{unquote(expected)}----------------
+  import ExUnit.Assertions
 
-      --- Actual ---
-      #{Phoenix.HTML.safe_to_string(unquote(actual))}--------------
-      """
+  defmacro assert_html(expected, actual) do
+    quote location: :keep do
+      unquote(__MODULE__).__assert_html__(unquote_splicing([expected, actual]))
     end
+  end
+
+  def __assert_html__(expected, actual) do
+    actual = actual |> Phoenix.HTML.Engine.encode_to_iodata!() |> IO.iodata_to_binary()
+
+    assert expected == actual,
+           """
+           --- Expected ---
+           #{expected}----------------
+
+           --- Actual ---
+           #{actual}--------------
+           """
   end
 end

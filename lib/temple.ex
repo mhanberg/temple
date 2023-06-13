@@ -96,13 +96,6 @@ defmodule Temple do
       require Temple.Renderer
 
       Temple.Renderer.compile(unquote(block))
-      |> then(fn
-        {:safe, template} ->
-          template
-
-        template ->
-          template
-      end)
     end
   end
 

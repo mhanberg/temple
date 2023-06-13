@@ -55,7 +55,7 @@ defmodule Temple.Component do
       import Temple
       @doc false
       def component(func, assigns, _) do
-        {:safe, apply(func, [assigns])}
+        apply(func, [assigns])
       end
 
       defmacro inner_block(_name, do: do_block) do

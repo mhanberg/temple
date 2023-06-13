@@ -42,13 +42,13 @@ Temple works out of the box without any configuration, but here are a couple of 
 
 ### Engine
 
-By default, Temple uses the built in `EEx.SmartEngine`. If you want to use a different engine, this is as easy as setting the `:engine` configuration option.
+By default, Temple uses the built in `Phoenix.HTML.Engine`. If you want to use a different engine, this is as easy as setting the `:engine` configuration option.
 
 ```elixir
 # config/config.exs
 
 config :temple,
-  engine: Phoenix.HTML.Engine
+  engine: Phoenix.LiveView.Engine
 ```
 
 ### Aliases
