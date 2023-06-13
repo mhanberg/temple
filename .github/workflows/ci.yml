@@ -21,6 +21,7 @@ jobs:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
     - uses: actions/cache@v3
+      id: cache
       with:
         path: |
           deps
@@ -95,6 +96,7 @@ jobs:
         otp-version: 25.x
         elixir-version: 1.14.x
     - uses: actions/cache@v3
+      id: cache
       with:
         path: |
           deps
