@@ -25,7 +25,7 @@ defmodule Temple.Ast.UtilsTest do
 
       assert Macro.to_string(
                quote do
-                 Temple.Ast.Utils.__attributes_escape__([{"class", unquote(class_ast)}])
+                 Temple.Ast.Utils.__attributes__([{"class", unquote(class_ast)}])
                end
              ) == Macro.to_string(actual)
     end
@@ -74,7 +74,7 @@ defmodule Temple.Ast.UtilsTest do
 
       assert Macro.to_string(
                quote do
-                 Temple.Ast.Utils.__attributes_escape__(unquote(rest_ast))
+                 Temple.Ast.Utils.__attributes__(unquote(rest_ast))
                end
              ) == Macro.to_string(rest_actual)
     end

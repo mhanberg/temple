@@ -101,4 +101,35 @@ defmodule Temple do
 
   @doc false
   defdelegate engine, to: Temple.Renderer
+
+  @doc """
+  Compiles runtime attributes.
+
+  To use this function, you set it in application config.
+
+  By default, Temple uses `{Phoenix.HTML, :attributes_escape}`. This is useful if you want to use `EEx.SmartEngine`.
+
+  ```elixir
+  config :temple,
+    engine: EEx.SmartEngine,
+    attributes: {Temple, :attributes}
+  ```
+
+  > #### Note {: .info}
+  >
+  > This function does not do any HTML escaping
+
+  > #### Note {: .info}
+  >
+  > This function is used by the compiler and shouldn't need to be used directly.
+  """
+  def attributes(attributes) do
+    for {key, value} <- attributes, into: "" do
+      case value do
+        true -> ~s| #{key}|
+        false -> ""
+        value -> ~s| #{key}="#{value}"|
+      end
+    end
+  end
 end
