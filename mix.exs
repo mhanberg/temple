@@ -66,7 +66,7 @@ defmodule Temple.MixProject do
       maintainers: ["Mitchell Hanberg"],
       licenses: ["MIT"],
       links: %{github: "https://github.com/mhanberg/temple"},
-      files: ~w(lib priv CHANGELOG.md LICENSE mix.exs README.md .formatter.exs)
+      files: ~w(lib CHANGELOG.md LICENSE mix.exs README.md .formatter.exs)
     ]
   end
 
