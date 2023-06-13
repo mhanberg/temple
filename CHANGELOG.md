@@ -2,6 +2,22 @@
 
 ## Main
 
+## [0.12.0](https://github.com/mhanberg/temple/compare/v0.11.0...v0.12.0) (2023-06-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* configure runtime attributes function ([#202](https://github.com/mhanberg/temple/issues/202))
+
+### Features
+
+* configure runtime attributes function ([#202](https://github.com/mhanberg/temple/issues/202)) ([dc57221](https://github.com/mhanberg/temple/commit/dc57221bc99e165530134559097b27b1dfe95dbe))
+
+
+### Bug Fixes
+
+* **docs:** typos ([7a50587](https://github.com/mhanberg/temple/commit/7a505875af6a1cee1536e516528f5be914df1f3f))
+
 ## v0.11.0
 
 ### Breaking Changes
