@@ -14,13 +14,16 @@ Temple is an Elixir DSL for writing HTML and SVG.
 
 Add `temple` to your list of dependencies in `mix.exs`:
 
+<!-- x-release-please-start-version -->
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.11.0"}
+    {:temple, "~> 0.12"}
   ]
 end
 ```
+<!-- x-release-please-start-end -->
+
 ## Goals
 
 Currently Temple has the following things on which it won't compromise.
