@@ -22,7 +22,7 @@ def deps do
   ]
 end
 ```
-<!-- x-release-please-start-end -->
+<!-- x-release-please-end -->
 
 ## Goals
 
