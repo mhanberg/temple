@@ -11,8 +11,8 @@ jobs:
 
     strategy:
       matrix:
-        otp: [23.x, 24.x, 25.x]
-        elixir: [1.13.x, 1.14.x]
+        otp: [25.x, 26.x, 27.x]
+        elixir: [1.15.x, 1.16.x, 1.17.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -87,23 +87,23 @@ jobs:
 
   formatter:
     runs-on: ubuntu-latest
-    name: Formatter (1.14.x.x/25.x)
+    name: Formatter (1.17.x.x/27.x)
 
     steps:
     - uses: actions/checkout@v2
     - uses: erlef/setup-beam@v1
       with:
-        otp-version: 25.x
-        elixir-version: 1.14.x
+        otp-version: 27.x
+        elixir-version: 1.17.x
     - uses: actions/cache@v3
       id: cache
       with:
         path: |
           deps
           _build
-        key: ${{ runner.os }}-mix-23-1.14-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-27-1.17-${{ hashFiles('**/mix.lock') }}
         restore-keys: |
-          ${{ runner.os }}-mix-23-1.14-
+          ${{ runner.os }}-mix-27-1.17-
 
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
