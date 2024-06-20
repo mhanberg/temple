@@ -2,6 +2,13 @@
 
 ## Main
 
+## [0.12.1](https://github.com/mhanberg/temple/compare/v0.12.0...v0.12.1) (2024-06-20)
+
+
+### Bug Fixes
+
+* relax constraint on phoenix_html ([f28468e](https://github.com/mhanberg/temple/commit/f28468e7f877a39759696333c4135fb1aa877d11))
+
 ## [0.12.0](https://github.com/mhanberg/temple/compare/v0.11.0...v0.12.0) (2023-06-13)
 
 
