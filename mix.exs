@@ -73,7 +73,7 @@ defmodule Temple.MixProject do
   defp deps do
     [
       {:floki, ">= 0.0.0"},
-      {:phoenix_html, "~> 3.2"},
+      {:phoenix_html, "~> 3.2 or ~> 4.0"},
       {:typed_struct, "~> 0.3"},
       {:ex_doc, "~> 0.34.0", only: :dev, runtime: false}
     ]
