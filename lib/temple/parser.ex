@@ -139,6 +139,7 @@ defmodule Temple.Parser do
     head title style script
     noscript template
     body section nav article aside h1 h2 h3 h4 h5 h6
+    hgroup search picture dialog
     header footer address main
     p pre blockquote ol ul li dl dt dd figure figcaption div
     a em strong small s cite q dfn abbr data time code var samp kbd
@@ -160,9 +161,30 @@ defmodule Temple.Parser do
                              {Keyword.get(@aliases, el, el), el}
                            end)
 
-  def nonvoid_elements, do: @nonvoid_elements ++ Keyword.values(@nonvoid_svg_aliases)
-  def nonvoid_elements_aliases, do: @nonvoid_elements_aliases ++ @nonvoid_svg_aliases
-  def nonvoid_elements_lookup, do: @nonvoid_elements_lookup ++ @nonvoid_svg_lookup
+  @nonvoid_mathml_elements ~w[
+    math
+    mi mn mo ms mspace mtext
+    merror mfrac mpadded mphantom mroot mrow msqrt mstyle
+    mmultiscripts mover msub msubsup msup munder munderover
+    mtable mtd mtr
+    annotation semantics
+  ]a
+
+  @nonvoid_mathml_lookup Keyword.new(@nonvoid_mathml_elements, &{&1, &1}) ++
+                           [annotation_xml: "annotation-xml"]
+
+  @nonvoid_mathml_aliases Keyword.keys(@nonvoid_mathml_lookup)
+
+  def nonvoid_elements,
+    do:
+      @nonvoid_elements ++
+        Keyword.values(@nonvoid_svg_lookup) ++ Keyword.values(@nonvoid_mathml_lookup)
+
+  def nonvoid_elements_aliases,
+    do: @nonvoid_elements_aliases ++ @nonvoid_svg_aliases ++ @nonvoid_mathml_aliases
+
+  def nonvoid_elements_lookup,
+    do: @nonvoid_elements_lookup ++ @nonvoid_svg_lookup ++ @nonvoid_mathml_lookup
 
   @void_elements ~w[
     meta link base
@@ -174,9 +196,19 @@ defmodule Temple.Parser do
                           {Keyword.get(@aliases, el, el), el}
                         end)
 
-  def void_elements, do: @void_elements ++ Keyword.values(@void_svg_aliases)
-  def void_elements_aliases, do: @void_elements_aliases ++ @void_svg_aliases
-  def void_elements_lookup, do: @void_elements_lookup ++ @void_svg_lookup
+  @void_mathml_lookup [
+    mprescripts: "mprescripts"
+  ]
+
+  @void_mathml_aliases Keyword.keys(@void_mathml_lookup)
+
+  def void_elements,
+    do: @void_elements ++ Keyword.values(@void_svg_lookup) ++ Keyword.values(@void_mathml_lookup)
+
+  def void_elements_aliases,
+    do: @void_elements_aliases ++ @void_svg_aliases ++ @void_mathml_aliases
+
+  def void_elements_lookup, do: @void_elements_lookup ++ @void_svg_lookup ++ @void_mathml_lookup
 
   def parsers() do
     [
