@@ -2,6 +2,13 @@
 
 ## Main
 
+## [0.13.0](https://github.com/mhanberg/temple/compare/v0.12.1...v0.13.0) (2024-10-17)
+
+
+### Features
+
+* add missing and new HTML elements & MathML ([#240](https://github.com/mhanberg/temple/issues/240)) ([209589e](https://github.com/mhanberg/temple/commit/209589e319d06b6aae4d32824370ce6254fd6193))
+
 ## [0.12.1](https://github.com/mhanberg/temple/compare/v0.12.0...v0.12.1) (2024-06-20)
 
 
