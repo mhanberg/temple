@@ -205,6 +205,9 @@ defmodule Temple.Parser do
   def void_elements,
     do: @void_elements ++ Keyword.values(@void_svg_lookup) ++ Keyword.values(@void_mathml_lookup)
 
+  def foreign_void_elements,
+    do: Keyword.values(@void_svg_lookup) ++ Keyword.values(@void_mathml_lookup)
+
   def void_elements_aliases,
     do: @void_elements_aliases ++ @void_svg_aliases ++ @void_mathml_aliases
 

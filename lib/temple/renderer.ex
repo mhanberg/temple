@@ -233,7 +233,14 @@ defmodule Temple.Renderer do
           end
       end
 
-    state.engine.handle_text(buffer, [], ">\n")
+    ending =
+      if ast.name in Temple.Parser.foreign_void_elements() do
+        "/>"
+      else
+        ">"
+      end
+
+    state.engine.handle_text(buffer, [], "#{ending}\n")
   end
 
   def render(buffer, state, %AnonymousFunctions{} = ast) do
