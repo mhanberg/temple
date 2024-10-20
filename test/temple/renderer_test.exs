@@ -67,6 +67,26 @@ defmodule Temple.RendererTest do
       assert_html expected, result
     end
 
+    test "foreign void elements get self closing tags" do
+      result =
+        Renderer.compile do
+          input type: "text"
+          mprescripts foo: "bar"
+          rect width: "256"
+          circle cx: "128"
+        end
+
+      # html
+      expected = """
+      <input type="text">
+      <mprescripts foo="bar"/>
+      <rect width="256"/>
+      <circle cx="128"/>
+      """
+
+      assert_html expected, result
+    end
+
     test "a match does not emit" do
       result =
         Renderer.compile do
