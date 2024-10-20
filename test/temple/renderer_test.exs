@@ -485,18 +485,26 @@ defmodule Temple.RendererTest do
   end
 
   describe "special attribute stuff" do
-    test "class object syntax" do
+    test "class list " do
       result =
         Renderer.compile do
-          div class: ["hello world": false, "text-red": true] do
+          div class: ["foo bar", "hello world": false, "text-red": true] do
             "hello world"
+          end
+
+          div class: ["foo", nil, "bar"] do
+            "hi"
           end
         end
 
       # html
       expected = """
-      <div class="text-red">
+      <div class="foo bar text-red">
         hello world
+      </div>
+
+      <div class="foo bar">
+        hi
       </div>
 
       """
