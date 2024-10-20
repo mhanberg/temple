@@ -216,5 +216,49 @@ defmodule Temple.Ast.ComponentsTest do
                ]
              } = ast
     end
+
+    test "can use let! with default slot without manually declaring it", %{func: func} do
+      raw_ast =
+        quote do
+          c unquote(func), let!: %{form: form}, foo: :bar do
+            "in the #{form} inner block"
+          end
+        end
+
+      ast = Components.run(raw_ast)
+
+      assert %Components{
+               function: ^func,
+               arguments: [foo: :bar],
+               slots: [
+                 %Slottable{
+                   name: :inner_block,
+                   content: [
+                     %Temple.Ast.Default{
+                       elixir_ast:
+                         {:<<>>,
+                          [
+                            end_of_expression: [newlines: 1, line: 224, column: 41],
+                            delimiter: "\""
+                          ],
+                          [
+                            "in the ",
+                            {:"::", [],
+                             [
+                               {{:., [], [Kernel, :to_string]},
+                                [from_interpolation: true, closing: [line: 224, column: 27]],
+                                [{:form, [], Temple.Ast.ComponentsTest}]},
+                               {:binary, [], Temple.Ast.ComponentsTest}
+                             ]},
+                            " inner block"
+                          ]}
+                     }
+                   ],
+                   parameter: {:%{}, _, [form: _]},
+                   attributes: []
+                 }
+               ]
+             } = ast
+    end
   end
 end
