@@ -2,6 +2,18 @@
 
 ## Main
 
+## [0.14.0](https://github.com/mhanberg/temple/compare/v0.13.1...v0.14.0) (2024-10-20)
+
+
+### Features
+
+* allow component to declare let! parameter ([#245](https://github.com/mhanberg/temple/issues/245)) ([a18e6fe](https://github.com/mhanberg/temple/commit/a18e6fea31a70c91cf1a9ebd5548763487e0cc4d)), closes [#239](https://github.com/mhanberg/temple/issues/239)
+
+
+### Bug Fixes
+
+* allow normal list elements in class attr ([#246](https://github.com/mhanberg/temple/issues/246)) ([e79e6c7](https://github.com/mhanberg/temple/commit/e79e6c7564666a98804182d1373701adaf931434)), closes [#238](https://github.com/mhanberg/temple/issues/238)
+
 ## [0.13.1](https://github.com/mhanberg/temple/compare/v0.13.0...v0.13.1) (2024-10-20)
 
 
