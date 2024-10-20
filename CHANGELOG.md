@@ -2,6 +2,14 @@
 
 ## Main
 
+## [0.13.1](https://github.com/mhanberg/temple/compare/v0.13.0...v0.13.1) (2024-10-20)
+
+
+### Bug Fixes
+
+* add mathml tags to formatter ([4e8de14](https://github.com/mhanberg/temple/commit/4e8de1404a390d2ddbb419ff6af8784a7a9f316c))
+* void foreign elements get self closing tags ([#243](https://github.com/mhanberg/temple/issues/243)) ([4e8de14](https://github.com/mhanberg/temple/commit/4e8de1404a390d2ddbb419ff6af8784a7a9f316c)), closes [#242](https://github.com/mhanberg/temple/issues/242)
+
 ## [0.13.0](https://github.com/mhanberg/temple/compare/v0.12.1...v0.13.0) (2024-10-17)
 
 
