@@ -81,7 +81,15 @@ defmodule Temple.Ast.Utils do
   def build_attr("class", classes) when is_list(classes) do
     value =
       quote do
-        String.trim_leading(for {class, true} <- unquote(classes), into: "", do: " #{class}")
+        String.trim_leading(
+          for value <- unquote(classes), into: "" do
+            case value do
+              {class, true} -> " #{class}"
+              class when is_binary(class) -> " #{class}"
+              _ -> ""
+            end
+          end
+        )
       end
 
     [{:text, ~s' class="'}, {:expr, value}, {:text, ~s'"'}]
