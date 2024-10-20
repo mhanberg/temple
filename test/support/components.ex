@@ -18,6 +18,14 @@ defmodule Temple.Support.Components do
     end
   end
 
+  def default_slot_with_parameter(assigns) do
+    temple do
+      div do
+        slot @inner_block, %{name: "jimbo"}
+      end
+    end
+  end
+
   def named_slot(assigns) do
     temple do
       div do

@@ -53,6 +53,8 @@ defmodule Temple.Ast.Components do
         {nil, {nil, %{}}}
       end
 
+    {default_slot_parameter, arguments} = Keyword.pop(arguments || [], :let!)
+
     children =
       if default_slot == nil do
         []
@@ -61,6 +63,7 @@ defmodule Temple.Ast.Components do
           Temple.Ast.new(
             Temple.Ast.Slottable,
             name: :inner_block,
+            parameter: default_slot_parameter,
             content: Temple.Parser.parse(default_slot)
           )
         ]

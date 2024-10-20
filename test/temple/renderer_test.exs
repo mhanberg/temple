@@ -408,6 +408,38 @@ defmodule Temple.RendererTest do
       assert_html expected, result
     end
 
+    test "component with a default slot let! parameter" do
+      assigns = %{label: "i'm a slot attribute"}
+
+      result =
+        Renderer.compile do
+          div do
+            c &default_slot_with_parameter/1, let!: %{name: name} do
+              p do
+                "#{name} comes from the component"
+              end
+            end
+          end
+        end
+
+      # heex
+      expected = """
+      <div>
+      <div>
+        <p>
+          jimbo comes from the component
+        </p>
+
+      </div>
+
+
+      </div>
+
+      """
+
+      assert_html expected, result
+    end
+
     test "component with a named slot" do
       assigns = %{label: "i'm a slot attribute"}
 
