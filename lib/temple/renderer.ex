@@ -117,15 +117,10 @@ defmodule Temple.Renderer do
 
     component_arguments =
       {:%{}, [],
-       arguments
+       (arguments ++ [rest: rest])
        |> Map.new()
        |> Map.merge(slot_quotes)
        |> Enum.to_list()}
-
-    component_arguments =
-      quote do
-        Map.merge(unquote(component_arguments), Map.new(unquote(rest)))
-      end
 
     expr =
       quote do
@@ -135,6 +130,7 @@ defmodule Temple.Renderer do
           {__MODULE__, __ENV__.function, __ENV__.file, __ENV__.line}
         )
       end
+      |> tag_slots(Enum.map(slots, & &1.name))
 
     state.engine.handle_expr(buffer, "=", expr)
   end
@@ -375,4 +371,10 @@ defmodule Temple.Renderer do
 
   def new_line(%{terminal_node: false}), do: "\n"
   def new_line(%{terminal_node: true}), do: ""
+
+  # the liveview engine expects the ast meta
+  # to have this metadata
+  defp tag_slots({call, meta, args}, slots) do
+    {call, [slots: slots] ++ meta, args}
+  end
 end
