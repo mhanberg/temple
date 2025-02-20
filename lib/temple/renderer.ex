@@ -59,11 +59,7 @@ defmodule Temple.Renderer do
     t = Utils.indent(state.indentation) <> text <> new_line(state)
 
     unless t == "" do
-      state.engine.handle_text(
-        buffer,
-        [],
-        t
-      )
+      state.engine.handle_text(buffer, [], t)
     end
   end
 
@@ -113,11 +109,11 @@ defmodule Temple.Renderer do
         end
       end)
 
-    {rest, arguments} = Keyword.pop(arguments, :rest!, [])
+    {rest, arguments} = Keyword.pop(arguments, :rest!, Macro.escape(%{}))
 
     component_arguments =
       {:%{}, [],
-       (arguments ++ [rest: rest])
+       (arguments ++ [rest: quote(do: Map.new(unquote(rest)))])
        |> Map.new()
        |> Map.merge(slot_quotes)
        |> Enum.to_list()}

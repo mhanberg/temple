@@ -651,7 +651,7 @@ defmodule Temple.RendererTest do
       # heex
       expected = """
       <div id="foo" class="font-bold">
-        [class: &quot;font-bold&quot;]
+        %{class: &quot;font-bold&quot;}
       </div>
 
       """
