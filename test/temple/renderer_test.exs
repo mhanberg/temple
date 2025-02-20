@@ -636,7 +636,7 @@ defmodule Temple.RendererTest do
       assert_html expected, result
     end
 
-    test "rest! attribute can mix in dynamic assigns to components" do
+    test "rest! attribute can is passed as @rest to component assigns" do
       assigns = %{
         rest: [
           class: "font-bold"
@@ -650,8 +650,8 @@ defmodule Temple.RendererTest do
 
       # heex
       expected = """
-      <div>
-        I am a basic foo with font-bold
+      <div id="foo" class="font-bold">
+        [class: &quot;font-bold&quot;]
       </div>
 
       """

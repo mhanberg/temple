@@ -44,8 +44,8 @@ defmodule Temple.Support.Components do
 
   def rest_component(assigns) do
     temple do
-      div do
-        "I am a basic #{@id} with #{@class}"
+      div id: @id, rest!: @rest do
+        inspect(@rest)
       end
     end
   end
