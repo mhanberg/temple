@@ -2,6 +2,20 @@
 
 ## Main
 
+## [0.15.0](https://github.com/mhanberg/temple/compare/v0.14.0...v0.15.0) (2025-02-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* correctly use rest in components ([#266](https://github.com/mhanberg/temple/issues/266))
+* pass rest! assign as @rest to components ([#261](https://github.com/mhanberg/temple/issues/261))
+
+### Bug Fixes
+
+* correctly use rest in components ([#266](https://github.com/mhanberg/temple/issues/266)) ([c772e2d](https://github.com/mhanberg/temple/commit/c772e2d37e4499c2816a5c88e3b98836fb218162))
+* pass rest! assign as [@rest](https://github.com/rest) to components ([#261](https://github.com/mhanberg/temple/issues/261)) ([8ff2208](https://github.com/mhanberg/temple/commit/8ff2208521720016dc096f3e1cd33f33e51c4727)), closes [#254](https://github.com/mhanberg/temple/issues/254)
+* turn `[@rest](https://github.com/rest)` assign into a map ([2b7feee](https://github.com/mhanberg/temple/commit/2b7feee7686f6036f90abe88b596d860749d6aec))
+
 ## [0.14.0](https://github.com/mhanberg/temple/compare/v0.13.1...v0.14.0) (2024-10-20)
 
 
