@@ -113,10 +113,15 @@ defmodule Temple.Renderer do
 
     component_arguments =
       {:%{}, [],
-       (arguments ++ [rest: quote(do: Map.new(unquote(rest)))])
+       arguments
        |> Map.new()
        |> Map.merge(slot_quotes)
        |> Enum.to_list()}
+
+    component_arguments =
+      quote do
+        Map.merge(Map.new(unquote(rest)), unquote(component_arguments))
+      end
 
     expr =
       quote do

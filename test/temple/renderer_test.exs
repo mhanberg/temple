@@ -636,29 +636,6 @@ defmodule Temple.RendererTest do
       assert_html expected, result
     end
 
-    test "rest! attribute can is passed as @rest to component assigns" do
-      assigns = %{
-        rest: [
-          class: "font-bold"
-        ]
-      }
-
-      result =
-        Renderer.compile do
-          c &rest_component/1, id: "foo", rest!: @rest
-        end
-
-      # heex
-      expected = """
-      <div id="foo" class="font-bold">
-        %{class: &quot;font-bold&quot;}
-      </div>
-
-      """
-
-      assert_html expected, result
-    end
-
     test "rest! attribute can mix in dynamic attributes to slots" do
       assigns = %{
         rest: [
