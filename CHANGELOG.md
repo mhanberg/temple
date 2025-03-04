@@ -2,6 +2,18 @@
 
 ## Main
 
+## [0.14.1](https://github.com/mhanberg/temple/compare/v0.14.0...v0.14.1) (2025-03-04)
+
+
+### Bug Fixes
+
+* correctly use rest in components ([#266](https://github.com/mhanberg/temple/issues/266)) ([c772e2d](https://github.com/mhanberg/temple/commit/c772e2d37e4499c2816a5c88e3b98836fb218162))
+
+
+### Miscellaneous Chores
+
+* release 0.14.1 ([d16b312](https://github.com/mhanberg/temple/commit/d16b312978909ed97dd6bd795ecf9115714def1c))
+
 ## [0.14.0](https://github.com/mhanberg/temple/compare/v0.13.1...v0.14.0) (2024-10-20)
 
 
