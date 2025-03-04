@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-(cd integration_test/temple_demo && mix test)
