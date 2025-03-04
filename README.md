@@ -18,7 +18,7 @@ Add `temple` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:temple, "~> 0.12"}
+    {:temple, "~> 0.14.0"}
   ]
 end
 ```

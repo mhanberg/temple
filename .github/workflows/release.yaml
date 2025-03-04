@@ -17,14 +17,8 @@ jobs:
         otp: [25.3]
         elixir: [1.14.x]
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v4
         id: release
-        with:
-          release-type: elixir
-          package-name: temple
-          bump-minor-pre-major: true
-          extra-files: |
-            README.md
 
       - uses: actions/checkout@v3
         if: ${{ steps.release.outputs.release_created }}
