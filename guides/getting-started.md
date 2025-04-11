@@ -4,7 +4,7 @@
 
 Welcome!
 
-Temple is a HTML DSL for Elixir, let's get started!
+Temple is an HTML DSL for Elixir; let's get started!
 
 
 First, make sure you are using Elixir `V1.13` or higher.
@@ -38,7 +38,7 @@ All done, Now let's start building our app!
 
 ## Configuration
 
-Temple works out of the box without any configuration, but here are a couple of conifg options that you could need to use.
+Temple works out of the box without any configuration, but here are a couple of config options that you could need to use.
 
 ### Engine
 

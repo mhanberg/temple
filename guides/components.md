@@ -1,8 +1,8 @@
 # Components
 
-Temple has the concept of components, which allow you an expressive and composable way to break up your templates into re-usable chunks.
+Temple has the concept of components, which allow you an expressive and composable way to break up your templates into reusable chunks.
 
-A component is any arity-1 function that take an argument called `assigns` and returns the result of the `Temple.temple/1` macro.
+A component is any arity-1 function that takes an argument called `assigns` and returns the result of the `Temple.temple/1` macro.
 
 ## Definition
 
@@ -24,7 +24,7 @@ end
 
 ## Usage
 
-To use a component, you will use the special `c` keyword. This is called a "keyword" because it is not a function or macro, but only exists inside of the `Temple.temple/1` block.
+To use a component, you will use the special `c` keyword. This is called a "keyword" because it is not a function or macro, but only exists inside the `Temple.temple/1` block.
 
 The first argument will be the function reference to your component function, followed by any assigns. You can pass dynamic assigns using the `:rest!` keyword the same way you would with a normal tag.
 

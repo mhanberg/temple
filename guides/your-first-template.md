@@ -1,8 +1,8 @@
 # Your First Template
 
-A Temple template is written inside of the `Temple.temple/1` macro. Code inside there will be compiled into efficient Elixir code by the configured EEx engine. 
+A Temple template is written inside the `Temple.temple/1` macro. Code inside there will be compiled into efficient Elixir code by the configured EEx engine.
 
-Local functions that have a corresponding HTML5 tag are reserved and will be used when generated your markup. Let's take a look at a basic form written with Temple.
+Local functions that have a corresponding HTML5 tag are reserved and will be used when generating your markup. Let's take a look at a basic form written with Temple.
 
 ```elixir
 defmodule MyApp.FormExample do
@@ -58,15 +58,15 @@ defmodule MyApp.FormExample do
 end
 ```
 
-This example showcases an entire HTML page made with Temple! Let's dive a little deeper everything we're seeing here.
+This example showcases an entire HTML page made with Temple! Let's dive a little deeper into everything we're seeing here.
 
-Through out this guide, you will see code that includes features that are explained later on. Feel free to skip ahead to read on, or just keep reading. It will all make sense eventually!
+Throughout this guide, you will see code that includes features that are explained later on. Feel free to skip ahead to read on, or just keep reading. It will all make sense eventually!
 
 ## Text Nodes
 
 The text node is a basic building block of any HTML document. In Temple, text nodes are represented by Elixir string literals.
 
-The very first line of the previous example is our doc type, emitted into the final document with `"<!DOCTYPE html>"`. This is a text node and will be emitted into the document as-is.
+The very first line of the previous example is our doc type, emitted into the final document with `"<!DOCTYPE html>"`. This is a text node that will be emitted into the document as-is.
 
 Note: String _literals_ are emitted into text nodes. If you are using string interpolation with the `#{some_expression}` syntax, that is treated as an expression and will be evaluated in whichever way the configured engine evaluates expression. By default, the `EEx.SmartEngine` doesn't do any escaping of expressions, so that could still be emitted as-is, or even as HTML to be interpreted by your web browser.
 
@@ -78,7 +78,7 @@ We can observe these in the previous example as the `<input>` tag. You'll note t
 
 ## Non-void Tags
 
-Non-void tags are HTML5 tags that _do_ have children. You are probably most familiar with these type of tags, as they include the famous `<div></div>` and `<span></span>`.
+Non-void tags are HTML5 tags that _do_ have children. You are probably most familiar with these types of tags, as they include the famous `<div></div>` and `<span></span>`.
 
 These tags can enclose their children nodes with either a `do/end` block or the inline `:do` keyword.
 
@@ -104,7 +104,7 @@ end
 
 Note: The Elixir comment _will not_ be rendered into an HTML comment. This is just used in the example. (This does sound like a good feature though...)
 
-Nonvoid tags that use the `:do` keyword syntax will be emitted _without_ internal whitespace. This allows you to correctly use the `:empty` CSS psuedo-selector in your stylesheet. 
+Nonvoid tags that use the `:do` keyword syntax will be emitted _without_ internal whitespace. This allows you to correctly use the `:empty` CSS pseudo-selector in your stylesheet.
 
 
 ```elixir
@@ -121,7 +121,7 @@ end
 
 ## Attributes
 
-Temple leverages `Phoenix.HTML.attributes_escape/1` internally, so you can refer to it's documentation for all of the details.
+Temple leverages `Phoenix.HTML.attributes_escape/1` internally, so you can refer to its documentation for all the details.
 
 ### Dynamic Attributes
 
@@ -149,7 +149,7 @@ will render to
 
 ## Elixir Expressions
 
-Any Elixir expression can be used anywhere inside of a Temple template. Here are a few examples.
+Any Elixir expression can be used anywhere inside a Temple template. Here are a few examples.
 
 ```elixir
 temple do
@@ -165,11 +165,11 @@ end
 
 ### Match Expressions
 
-Match expression are handled slightly differently. Generally if you are assigning an expression to a variable (a match), you are going to use that binding later and do _not_ want to emit it into the document.
+Match expressions are handled slightly differently. Generally, if you are assigning an expression to a variable (a match), you are going to use that binding later and do _not_ want to emit it into the document.
 
 So, match expressions are _not_ emitted into the document. They are functionally equivalent to the `<% .. %.` syntax of `EEx`. The expression is evaluated, but not included in the rendered document.
 
-Typically you should not be writing this type of expression inside of your template, but if you wanted to declare an alias, you would need to write the following to not emit the alias into the document.
+Typically, you should not be writing this type of expression inside your template, but if you wanted to declare an alias, you would need to write the following to not emit the alias into the document.
 
 ```elixir
 temple do
@@ -183,7 +183,7 @@ end
 
 ## Assigns
 
-Since Temple uses the `EEx.SmartEngine` by default, you are able to use the assigns feature.
+Since Temple uses the `EEx.SmartEngine` by default, you can use the assigns feature.
 
 The assigns feature allows you to ergonomically access the members of a `assigns` variable by the `@` macro.
 
