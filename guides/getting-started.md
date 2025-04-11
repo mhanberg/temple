@@ -12,7 +12,7 @@ First, make sure you are using Elixir `V1.13` or higher.
 Add `:temple` to your deps and run `mix deps.get`
 
 ```elixir
-{:temple, "~> 0.9.0-rc.0"}
+{:temple, "~> 0.14.0"}
 ```
 
 Now you must prepend the Temple compiler to your projects `:compilers` configuration in `mix.exs`. There is a chance that your project doesn't set this option at all, but don't worry, it's really easy to add!
