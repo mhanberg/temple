@@ -183,7 +183,7 @@ end
 
 ## Assigns
 
-The default engines `Phoenix.HTML.Engine` supports the `@` syntax for `assigns` parameter.
+The default engine `Phoenix.HTML.Engine` supports the `@` syntax for `assigns` parameter.
 The syntax allows you to ergonomically access `assigns.member` by `@member`.
 
 The assign variable just needs to exist within the scope of the template.
