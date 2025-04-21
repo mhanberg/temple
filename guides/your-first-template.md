@@ -68,7 +68,7 @@ The text node is a basic building block of any HTML document. In Temple, text no
 
 The very first line of the previous example is our doc type, emitted into the final document with `"<!DOCTYPE html>"`. This is a text node that will be emitted into the document as-is.
 
-Note: String _literals_ are emitted into text nodes. If you are using string interpolation with the `#{some_expression}` syntax, that is treated as an expression and will be evaluated in whichever way the configured engine evaluates expression. By default, the `EEx.SmartEngine` doesn't do any escaping of expressions, so that could still be emitted as-is, or even as HTML to be interpreted by your web browser.
+Note: String _literals_ are emitted into text nodes. If you are using string interpolation with the `#{some_expression}` syntax, that is treated as an expression and will be evaluated in whichever way the configured engine evaluates expression.
 
 ## Void Tags
 
@@ -183,11 +183,11 @@ end
 
 ## Assigns
 
-Since Temple uses the `EEx.SmartEngine` by default, you can use the assigns feature.
+The default engines `Phoenix.HTML.Engine` supports the `@` syntax for `assigns` parameter.
+The syntax allows you to ergonomically access `assigns.member` by `@member`.
 
-The assigns feature allows you to ergonomically access the members of a `assigns` variable by the `@` macro.
-
-The assign variable just needs to exist within the scope of the template (the same as a normal `EEx` template that uses `EEx.SmartEngine`), it can be a function parameter or created inside the function.
+The assign variable just needs to exist within the scope of the template.
+It can be a function parameter or created inside the function.
 
 ```elixir
 def card(assigns) do

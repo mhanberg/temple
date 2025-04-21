@@ -56,15 +56,18 @@ defmodule Temple do
 
   ### Engine
 
-  By default Temple wil use the `EEx.SmartEngine`, but you can configure it to use any other engine. Examples could be `Phoenix.HTML.Engine` or `Phoenix.LiveView.Engine`.
+  By default Temple wil use the `Phoenix.HTML.Engine`,
+  but you can configure it to use any other engine that implements the `EEx.SmartEngine`.
+  Examples could be `EEx.SmartEngine` or `Phoenix.LiveView.Engine`.
 
   ```elixir
-  config :temple, engine: Phoenix.HTML.Engine
+  config :temple, engine: EEx.SmartEngine
   ```
 
   ### Aliases
 
-  You can add an alias for an element if there is a namespace collision with a function. If you are using `Phoenix.HTML`, there will be namespace collisions with the `<link>` and `<label>` elements.
+  You can add an alias for an element if there is a namespace collision with a function.
+  If you are using `Phoenix.HTML`, there will be namespace collisions with the `<link>` and `<label>` elements.
 
   ```elixir
   config :temple, :aliases,
