@@ -6,6 +6,7 @@ Welcome!
 
 Temple is an HTML DSL for Elixir; let's get started!
 
+
 First, make sure you are using Elixir `V1.13` or higher.
 
 Add `:temple` to your deps and run `mix deps.get`
@@ -14,19 +15,24 @@ Add `:temple` to your deps and run `mix deps.get`
 {:temple, "~> 0.14.0"}
 ```
 
-Add `:temple` to `:compilers` option in `project/0` callback in your Mix project module
-to handle [whitespace](https://hexdocs.pm/temple/your-first-template.html#whitespace) correctly.
+To handle [whitespace](your-first-template.html#whitespace) correctly, prepend the Temple compiler to your projects `:compilers` configuration in `mix.exs`. There is a chance that your project doesn't set this option at all, but don't worry, it's really easy to add!
 
 ```elixir
-# mix.exs
+defmodule MyApp.MixProject do
+  use Mix.Project
 
-def project do
-  [
-    # ...
-    compilers: [:temple] ++ Mix.compilers()
-  ]
+  def project do
+    [
+      # ...
+      compilers: [:temple] ++ Mix.compilers(),
+      # ...
+    ]
+  end
+
+# ...
+
 end
- ```
+```
 
 All done, Now let's start building our app!
 
