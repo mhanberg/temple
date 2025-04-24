@@ -125,8 +125,7 @@ end
 
 ### Engine
 
-By default, Temple will use the `Phoenix.HTML.Engine`.
-It provides HTML escaping and returns it in `{:safe, html}`.
+By default, Temple will use [Phoenix.HTML.Engine](https://hexdocs.pm/phoenix_html/Phoenix.HTML.Engine.html) from [phoenix_html](https://github.com/phoenixframework/phoenix_html), which provides HTML escaping.
 You can use any other engine that implements the `EEx.Engine` behaviour,
 such as `EEx.SmartEngine` or [Aino.View.Engine](https://github.com/oestrich/aino).
 
