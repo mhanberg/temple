@@ -1,6 +1,5 @@
 ![Temple](temple-github-image.png)
 
-
 [![Actions Status](https://github.com/mhanberg/temple/workflows/CI/badge.svg)](https://github.com/mhanberg/temple/actions)
 [![Hex.pm](https://img.shields.io/hexpm/v/temple.svg)](https://hex.pm/packages/temple)
 
@@ -126,13 +125,15 @@ end
 
 ### Engine
 
-By default, Temple will use the `EEx.SmartEngine` that is built into the Elixir standard library. If you are a web framework that uses it's own template engine (such as [Aino](https://github.com/oestrich/aino) and Phoenix/LiveView, you can configure Temple to it!
+By default, Temple will use [Phoenix.HTML.Engine](https://hexdocs.pm/phoenix_html/Phoenix.HTML.Engine.html) from [phoenix_html](https://github.com/phoenixframework/phoenix_html), which provides HTML escaping.
+You can use any other engine that implements the `EEx.Engine` behaviour,
+such as `EEx.SmartEngine` or [Aino.View.Engine](https://github.com/oestrich/aino).
 
 ```elixir
 # config/config.exs
 
 config :temple,
-  engine: Aino.View.Engine # or Phoenix.HTML.Engine or Phoenix.LiveView.Engine
+  engine: Aino.View.Engine # or EEx.SmartEngine or Phoenix.LiveView.Engine
 ```
 
 ### Formatter

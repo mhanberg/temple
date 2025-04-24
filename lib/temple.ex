@@ -56,10 +56,10 @@ defmodule Temple do
 
   ### Engine
 
-  By default Temple wil use the `EEx.SmartEngine`, but you can configure it to use any other engine. Examples could be `Phoenix.HTML.Engine` or `Phoenix.LiveView.Engine`.
+  By default Temple wil use the `Phoenix.HTML.Engine`, but you can configure it to use any other engine. Examples could be `EEx.SmartEngine` or `Phoenix.LiveView.Engine`.
 
   ```elixir
-  config :temple, engine: Phoenix.HTML.Engine
+  config :temple, engine: EEx.SmartEngine
   ```
 
   ### Aliases

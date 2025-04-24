@@ -15,7 +15,7 @@ Add `:temple` to your deps and run `mix deps.get`
 {:temple, "~> 0.14.0"}
 ```
 
-Now you must prepend the Temple compiler to your projects `:compilers` configuration in `mix.exs`. There is a chance that your project doesn't set this option at all, but don't worry, it's really easy to add!
+To handle [whitespace](your-first-template.html#whitespace) correctly, prepend the Temple compiler to your projects `:compilers` configuration in `mix.exs`. There is a chance that your project doesn't set this option at all, but don't worry, it's really easy to add!
 
 ```elixir
 defmodule MyApp.MixProject do
