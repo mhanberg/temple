@@ -1,15 +1,8 @@
 version: 2
 updates:
-  - package-ecosystem: mix
-    directory: "/"
-    schedule:
-      interval: monthly
-      time: "10:00"
-    open-pull-requests-limit: 10
-
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: monthly
+      interval: weekly
       time: "10:00"
     open-pull-requests-limit: 10
