@@ -37,6 +37,33 @@ defmodule Temple.Ast.VoidElementsAliasesTest do
         refute VoidElementsAliases.applicable?(raw_ast)
       end
     end
+
+    test "returns true for an SVG void element alias" do
+      raw_ast =
+        quote do
+          path__(d: "M0 0")
+        end
+
+      assert VoidElementsAliases.applicable?(raw_ast)
+    end
+
+    test "returns false for the original SVG void name when it has been aliased" do
+      raw_ast =
+        quote do
+          path d: "M0 0"
+        end
+
+      refute VoidElementsAliases.applicable?(raw_ast)
+    end
+
+    test "returns true for an unaliased MathML void element name" do
+      raw_ast =
+        quote do
+          mprescripts(foo: "bar")
+        end
+
+      assert VoidElementsAliases.applicable?(raw_ast)
+    end
   end
 
   describe "run/2" do

@@ -41,7 +41,13 @@ defmodule Temple.Parser do
     use: "use"
   ]
 
-  @void_svg_aliases Keyword.keys(@void_svg_lookup)
+  @void_svg_aliases Enum.map(@void_svg_lookup, fn {el, _} ->
+                      Keyword.get(@aliases, el, el)
+                    end)
+
+  @void_svg_aliased_lookup Enum.map(@void_svg_lookup, fn {el, html} ->
+                             {Keyword.get(@aliases, el, el), html}
+                           end)
 
   @nonvoid_svg_lookup [
     a: "a",
@@ -131,7 +137,13 @@ defmodule Temple.Parser do
     vkern: "vkern"
   ]
 
-  @nonvoid_svg_aliases Keyword.keys(@nonvoid_svg_lookup)
+  @nonvoid_svg_aliases Enum.map(@nonvoid_svg_lookup, fn {el, _} ->
+                         Keyword.get(@aliases, el, el)
+                       end)
+
+  @nonvoid_svg_aliased_lookup Enum.map(@nonvoid_svg_lookup, fn {el, html} ->
+                                {Keyword.get(@aliases, el, el), html}
+                              end)
 
   # nonvoid tags
 
@@ -173,7 +185,13 @@ defmodule Temple.Parser do
   @nonvoid_mathml_lookup Keyword.new(@nonvoid_mathml_elements, &{&1, &1}) ++
                            [annotation_xml: "annotation-xml"]
 
-  @nonvoid_mathml_aliases Keyword.keys(@nonvoid_mathml_lookup)
+  @nonvoid_mathml_aliases Enum.map(@nonvoid_mathml_lookup, fn {el, _} ->
+                            Keyword.get(@aliases, el, el)
+                          end)
+
+  @nonvoid_mathml_aliased_lookup Enum.map(@nonvoid_mathml_lookup, fn {el, html} ->
+                                   {Keyword.get(@aliases, el, el), html}
+                                 end)
 
   def nonvoid_elements,
     do:
@@ -184,7 +202,9 @@ defmodule Temple.Parser do
     do: @nonvoid_elements_aliases ++ @nonvoid_svg_aliases ++ @nonvoid_mathml_aliases
 
   def nonvoid_elements_lookup,
-    do: @nonvoid_elements_lookup ++ @nonvoid_svg_lookup ++ @nonvoid_mathml_lookup
+    do:
+      @nonvoid_elements_lookup ++
+        @nonvoid_svg_aliased_lookup ++ @nonvoid_mathml_aliased_lookup
 
   @void_elements ~w[
     meta link base
@@ -200,7 +220,13 @@ defmodule Temple.Parser do
     mprescripts: "mprescripts"
   ]
 
-  @void_mathml_aliases Keyword.keys(@void_mathml_lookup)
+  @void_mathml_aliases Enum.map(@void_mathml_lookup, fn {el, _} ->
+                         Keyword.get(@aliases, el, el)
+                       end)
+
+  @void_mathml_aliased_lookup Enum.map(@void_mathml_lookup, fn {el, html} ->
+                                {Keyword.get(@aliases, el, el), html}
+                              end)
 
   def void_elements,
     do: @void_elements ++ Keyword.values(@void_svg_lookup) ++ Keyword.values(@void_mathml_lookup)
@@ -211,7 +237,10 @@ defmodule Temple.Parser do
   def void_elements_aliases,
     do: @void_elements_aliases ++ @void_svg_aliases ++ @void_mathml_aliases
 
-  def void_elements_lookup, do: @void_elements_lookup ++ @void_svg_lookup ++ @void_mathml_lookup
+  def void_elements_lookup,
+    do:
+      @void_elements_lookup ++
+        @void_svg_aliased_lookup ++ @void_mathml_aliased_lookup
 
   def parsers() do
     [

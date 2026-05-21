@@ -45,6 +45,39 @@ defmodule Temple.Ast.NonvoidElementsAliasesTest do
         refute NonvoidElementsAliases.applicable?(raw_ast)
       end
     end
+
+    test "returns true for an SVG element alias" do
+      raw_ast =
+        quote do
+          text__ do
+            "label"
+          end
+        end
+
+      assert NonvoidElementsAliases.applicable?(raw_ast)
+    end
+
+    test "returns false for the original SVG name when it has been aliased" do
+      raw_ast =
+        quote do
+          text do
+            "label"
+          end
+        end
+
+      refute NonvoidElementsAliases.applicable?(raw_ast)
+    end
+
+    test "returns true for a MathML element alias" do
+      raw_ast =
+        quote do
+          mtext__ do
+            "label"
+          end
+        end
+
+      assert NonvoidElementsAliases.applicable?(raw_ast)
+    end
   end
 
   describe "run/2" do
