@@ -119,5 +119,38 @@ defmodule Temple.Ast.NonvoidElementsAliasesTest do
                }
              } = ast
     end
+
+    test "uses the configured alias for an SVG element" do
+      raw_ast =
+        quote do
+          text__ x: "10" do
+            "label"
+          end
+        end
+
+      ast = NonvoidElementsAliases.run(raw_ast)
+
+      assert %NonvoidElementsAliases{
+               name: "text",
+               attrs: [x: "10"],
+               children: %ElementList{children: [%Text{text: "label"}]}
+             } = ast
+    end
+
+    test "uses the configured alias for a MathML element" do
+      raw_ast =
+        quote do
+          mtext__ do
+            "label"
+          end
+        end
+
+      ast = NonvoidElementsAliases.run(raw_ast)
+
+      assert %NonvoidElementsAliases{
+               name: "mtext",
+               children: %ElementList{children: [%Text{text: "label"}]}
+             } = ast
+    end
   end
 end

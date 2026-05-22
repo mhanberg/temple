@@ -80,5 +80,33 @@ defmodule Temple.Ast.VoidElementsAliasesTest do
                attrs: [content: "foo"]
              } = ast
     end
+
+    test "uses the configured alias for an SVG void element" do
+      raw_ast =
+        quote do
+          path__(d: "M0 0")
+        end
+
+      ast = VoidElementsAliases.run(raw_ast)
+
+      assert %VoidElementsAliases{
+               name: "path",
+               attrs: [d: "M0 0"]
+             } = ast
+    end
+
+    test "passes through an unaliased MathML void element" do
+      raw_ast =
+        quote do
+          mprescripts(foo: "bar")
+        end
+
+      ast = VoidElementsAliases.run(raw_ast)
+
+      assert %VoidElementsAliases{
+               name: "mprescripts",
+               attrs: [foo: "bar"]
+             } = ast
+    end
   end
 end
