@@ -15,12 +15,12 @@ jobs:
         elixir: [1.17.x]
 
     steps:
-    - uses: actions/checkout@v6
-    - uses: erlef/setup-beam@v1
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: erlef/setup-beam@fc68ffb90438ef2936bbb3251622353b3dcb2f93 # v1.24.0
       with:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
-    - uses: actions/cache@v5
+    - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
       id: cache
       with:
         path: |
@@ -90,12 +90,12 @@ jobs:
     name: Formatter (1.17.x.x/27.x)
 
     steps:
-    - uses: actions/checkout@v6
-    - uses: erlef/setup-beam@v1
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+    - uses: erlef/setup-beam@fc68ffb90438ef2936bbb3251622353b3dcb2f93 # v1.24.0
       with:
         otp-version: 27.x
         elixir-version: 1.17.x
-    - uses: actions/cache@v5
+    - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
       id: cache
       with:
         path: |
